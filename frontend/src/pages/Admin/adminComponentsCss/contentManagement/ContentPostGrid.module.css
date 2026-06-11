@@ -1,0 +1,417 @@
+.feedList {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 12px;
+  min-width: 780px;
+}
+
+.emptyFeed {
+  grid-column: 1 / -1;
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  min-height: 220px;
+  padding: 24px;
+  border: 1px dashed rgba(124, 77, 255, 0.24);
+  border-radius: 18px;
+  color: #667085;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.76);
+}
+
+.emptyFeed strong {
+  color: #111827;
+  font-size: 1rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.emptyFeed span {
+  font-size: 0.9rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.contentCard {
+  display: grid;
+  grid-template-rows: auto 190px minmax(160px, 1fr) auto auto;
+  gap: 12px;
+  min-height: 390px;
+  padding: 16px;
+  border: 1px solid rgba(124, 77, 255, 0.1);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 18px 44px rgba(17, 24, 39, 0.045);
+}
+
+.selectedCard {
+  border-color: rgba(124, 77, 255, 0.38);
+  box-shadow: 0 18px 44px rgba(124, 77, 255, 0.12);
+}
+
+.cardTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cardSelectLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #475467;
+  font-size: 0.76rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.cardSelectLabel input {
+  width: 15px;
+  height: 15px;
+  accent-color: #7c4dff;
+}
+
+.postId {
+  color: #667085;
+  font-size: 0.82rem;
+  font-weight: 950;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.adminPostImageWrap {
+  display: grid;
+  place-items: center;
+  height: 190px;
+  overflow: hidden;
+  border: 1px solid rgba(124, 77, 255, 0.12);
+  border-radius: 14px;
+  color: #633df2;
+  font-size: 1rem;
+  font-weight: 950;
+  background: #f3f4f6;
+}
+
+.noImageWrap {
+  background: #f6f7fb;
+}
+
+.adminPostImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 190px;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 10px;
+}
+
+.feedBody {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+
+.authorRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #633df2;
+  font-weight: 900;
+  background: rgba(124, 77, 255, 0.12);
+  overflow: hidden;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.authorRow strong {
+  display: block;
+  overflow: hidden;
+  color: #111827;
+  font-size: 0.92rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.authorRow span {
+  display: block;
+  margin-top: 2px;
+  color: #667085;
+  font-size: 0.78rem;
+}
+
+.titleWithEmotion {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+}
+
+.feedBody h3 {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: #111827;
+  font-size: 1rem;
+  font-weight: 950;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.emotionTag {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: center;
+  min-height: 24px;
+  padding: 0 8px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.emotionIcon {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+}
+
+.feedBody p {
+  margin: 0;
+  overflow: hidden;
+  color: #475467;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
+.hashtagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 6px 0 2px;
+  min-width: 0;
+}
+
+.hashtagChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border: none;
+  border-radius: 20px;
+  color: #6366f1;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  background: #eef2ff;
+}
+
+.statRow,
+.cardActions,
+.paginationButtons {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.statRow span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 26px;
+  padding: 0 8px;
+  border-radius: 999px;
+  color: #667085;
+  font-size: 0.76rem;
+  font-weight: 900;
+  background: rgba(102, 112, 133, 0.08);
+}
+
+.statEmotionIcon {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+}
+
+.statusPublic {
+  color: #067647;
+  background: rgba(18, 183, 106, 0.12);
+}
+
+.statusHidden {
+  color: #b54708;
+  background: rgba(247, 144, 9, 0.14);
+}
+
+.statusDeleted {
+  color: #d92d20;
+  background: rgba(217, 45, 32, 0.1);
+}
+
+.cardActions {
+  align-self: end;
+}
+
+.cardActions button,
+.paginationButtons button {
+  /*
+  min-height: 34px;
+  border: 0;
+  border-radius: 10px;
+  font-weight: 900;
+  cursor: pointer;
+  transition:
+    transform 0.16s ease,
+    background 0.16s ease,
+    box-shadow 0.16s ease;
+  */
+  min-height: 36px;
+  border: 1px solid #ddd8ff;
+  border-radius: 12px;
+  font-weight: 900;
+  cursor: pointer;
+  transition:
+    transform 0.16s ease,
+    background 0.16s ease,
+    box-shadow 0.16s ease,
+    filter 0.16s ease;
+}
+
+.cardActions button {
+  flex: 1;
+  min-width: 0;
+  padding: 0 10px;
+}
+
+.cardActions button:disabled,
+.paginationButtons button:disabled {
+  color: #c3c8d1;
+  cursor: not-allowed;
+  background: #f6f7f9;
+  box-shadow: none;
+}
+
+.cardActions button:first-child {
+  /*
+  color: #2f6fed;
+  background: rgba(47, 111, 237, 0.1);
+  */
+  color: #7b3ff2;
+  background: #f6f2ff;
+}
+
+.cardActions button:nth-child(2) {
+  /*
+  color: #d92d20;
+  background: rgba(217, 45, 32, 0.1);
+  */
+  border-color: rgba(239, 68, 68, 0.18);
+  color: #ef4444;
+  background: #fff5f5;
+}
+
+.cardActions button:last-child {
+  /*
+  color: #111827;
+  background: #fff;
+  border: 1px solid rgba(102, 112, 133, 0.16);
+  */
+  color: #7b3ff2;
+  background: #ffffff;
+  border-color: #ddd8ff;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0 4px;
+}
+
+.paginationButtons {
+  justify-content: center;
+}
+
+.paginationButtons button {
+  /*
+  min-width: 31px;
+  min-height: 31px;
+  padding: 0 9px;
+  color: #475467;
+  background: #fff;
+  border: 1px solid rgba(102, 112, 133, 0.16);
+  font-size: 0.78rem;
+  */
+  min-width: 32px;
+  min-height: 32px;
+  padding: 0 9px;
+  color: #7b3ff2;
+  background: #f6f2ff;
+  border: 1px solid #ddd8ff;
+  font-size: 0.78rem;
+}
+
+.paginationButtons .activePage {
+  /*
+  color: #fff;
+  border-color: #7c4dff;
+  background: #7c4dff;
+  */
+  color: #fff;
+  border-color: transparent;
+  background: linear-gradient(135deg, #4da6ff, #7c4dff, #ec24c7);
+  box-shadow: 0 10px 20px rgba(124, 77, 255, 0.2);
+}
+
+.cardActions button:hover,
+.paginationButtons button:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(124, 77, 255, 0.13);
+}
+
+.cardActions button:active,
+.paginationButtons button:not(:disabled):active {
+  transform: translateY(0) scale(0.98);
+}
+
+@media (max-width: 760px) {
+  .cardActions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

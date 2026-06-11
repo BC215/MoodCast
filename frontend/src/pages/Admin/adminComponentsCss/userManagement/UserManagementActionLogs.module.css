@@ -1,0 +1,211 @@
+.actionLogList {
+  display: grid;
+  gap: 10px;
+}
+
+.actionLogItem {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid rgba(102, 112, 133, 0.1);
+  border-radius: 12px;
+  background: rgba(248, 250, 252, 0.72);
+}
+
+.actionLogBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  border-radius: 999px;
+  color: #633df2;
+  font-size: 0.76rem;
+  font-weight: 950;
+  background: rgba(124, 77, 255, 0.1);
+}
+
+.actionLogBody {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.actionLogBody strong {
+  overflow: hidden;
+  color: #111827;
+  font-size: 0.9rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.actionLogBody p {
+  margin: 0;
+  overflow: hidden;
+  color: #475467;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.actionLogBody small {
+  overflow: hidden;
+  color: #667085;
+  font-size: 0.76rem;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.logModalLayer {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.logModalDim {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(15, 23, 42, 0.45);
+  cursor: pointer;
+}
+
+.logModalPanel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: min(760px, 100%);
+  max-height: min(720px, calc(100vh - 48px));
+  overflow: hidden;
+  padding: 18px;
+  border: 1px solid rgba(124, 77, 255, 0.12);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 28px 72px rgba(15, 23, 42, 0.24);
+}
+
+.logModalBody {
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.logModalBody::-webkit-scrollbar {
+  width: 8px;
+}
+
+.logModalBody::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(124, 77, 255, 0.32);
+}
+
+.logModalBody::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: rgba(124, 77, 255, 0.08);
+}
+
+.panel {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid rgba(124, 77, 255, 0.1);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.83);
+  box-shadow: 0 22px 52px rgba(17, 24, 39, 0.055);
+}
+
+.panelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.panelHead h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.secondaryActionButton {
+  min-height: 34px;
+  border: 1px solid rgba(124, 77, 255, 0.16);
+  border-radius: 10px;
+  padding: 0 12px;
+  color: #633df2;
+  font-size: 0.8rem;
+  font-weight: 900;
+  background: rgba(124, 77, 255, 0.08);
+  cursor: pointer;
+  transition: transform 0.16s ease, background 0.16s ease;
+}
+
+.secondaryActionButton:hover {
+  background: rgba(124, 77, 255, 0.14);
+  transform: translateY(-1px);
+}
+
+.secondaryActionButton:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* 회원 목록 페이지네이션 ---------------------------------------------------------
+ * 회원 목록은 한 페이지에 10명만 보여줍니다.
+ * 페이지 버튼은 현재 구간 기준으로 최대 10개까지 보여주어 1~10, 11~20처럼
+ * 많은 회원이 있어도 버튼 영역이 과하게 길어지지 않도록 합니다.
+ */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 14px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(102, 112, 133, 0.12);
+}
+
+.paginationButtons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+.paginationButtons button {
+  min-width: 30px;
+  height: 30px;
+  border: 1px solid rgba(124, 77, 255, 0.14);
+  border-radius: 8px;
+  padding: 0 8px;
+  color: #475467;
+  font-size: 0.76rem;
+  font-weight: 900;
+  background: #fff;
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease, transform 0.16s ease;
+}
+
+.paginationButtons button:hover:not(:disabled) {
+  color: #633df2;
+  background: rgba(124, 77, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.paginationButtons button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.paginationButtons .activePage {
+  border-color: #7c4dff;
+  color: #fff;
+  background: #7c4dff;
+  box-shadow: 0 10px 20px rgba(124, 77, 255, 0.2);
+}

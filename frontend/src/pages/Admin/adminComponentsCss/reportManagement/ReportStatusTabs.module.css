@@ -1,0 +1,64 @@
+/* 처리 상태 탭 ----------------------------------
+ * 전체 / 처리 대기 / 검토 중 / 처리 완료 / 반려 버튼과 숫자 배지 디자인입니다.
+ */
+.statusTabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid rgba(124, 77, 255, 0.12);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.statusTabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 11px;
+  color: #111827;
+  font-weight: 900;
+  background: transparent;
+  transition:
+    transform 0.16s ease,
+    background 0.16s ease,
+    color 0.16s ease;
+}
+
+.statusTabs button:hover {
+  color: #633df2;
+  background: #f3f0ff;
+}
+
+.statusTabs button:active {
+  transform: scale(0.98);
+}
+
+.statusTabs strong,
+.typeTabs strong {
+  min-width: 28px;
+  height: 24px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+/* 상태별 숫자 배지 색상 ----------------------------------
+ * 신고 상태에 따라 숫자 배지와 상태 라벨에 적용되는 색상입니다.
+ */
+.totalCount {
+  color: #633df2;
+  background: #f3f0ff;
+}
+
+.activeStatusTab {
+  color: #fff !important;
+  background: #7c4dff !important;
+}

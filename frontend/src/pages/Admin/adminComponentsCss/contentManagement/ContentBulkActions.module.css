@@ -1,0 +1,86 @@
+.bulkActionBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(124, 77, 255, 0.1);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.selectAllLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #344054;
+  font-size: 0.84rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.selectAllLabel input {
+  width: 15px;
+  height: 15px;
+  accent-color: #7c4dff;
+}
+
+.bulkActions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.bulkActions span {
+  color: #667085;
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.bulkActions button {
+  /*
+  min-height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 9px;
+  color: #633df2;
+  font-weight: 900;
+  background: rgba(124, 77, 255, 0.1);
+  cursor: pointer;
+  */
+  min-height: 34px;
+  padding: 0 13px;
+  border: 1px solid #ddd8ff;
+  border-radius: 12px;
+  color: #7b3ff2;
+  font-weight: 900;
+  line-height: 1;
+  background: #f6f2ff;
+  cursor: pointer;
+  transition: transform 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
+}
+
+.bulkActions button:hover:not(:disabled) {
+  background: #eee7ff;
+  box-shadow: 0 10px 20px rgba(124, 77, 255, 0.14);
+  transform: translateY(-1px);
+}
+
+.bulkActions button:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+.bulkActions button:disabled {
+  color: #c3c8d1;
+  cursor: not-allowed;
+  background: #f6f7f9;
+}
+
+@media (max-width: 760px) {
+  .bulkActionBar,
+  .bulkActions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

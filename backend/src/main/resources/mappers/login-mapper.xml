@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moodcast.member.dao.LoginDao">
+
+    <select id="findMemberByEmail" resultType="member">
+        <!-- 관리자 기능 담당 작업(문건우): 로그인 제한 안내에 suspended_until 값을 사용합니다. -->
+        select
+            member_id,
+            email,
+            name,
+            nickname,
+            phone,
+            profile_image_url,
+            bio,
+            email_verified,
+            phone_verified,
+            role,
+            status,
+            suspended_until,
+            last_login_at,
+            created_at,
+            updated_at,
+            deleted_at
+        from members
+        where email = #{email}
+        limit 1
+    </select>
+
+    <select id="findPasswordHashByEmail" resultType="String">
+        select
+            password_hash
+        from members
+        where email = #{email}
+        limit 1
+    </select>
+
+    <select id="findPasswordHashByMemberId" resultType="String">
+        select
+            password_hash
+        from members
+        where member_id = #{memberId}
+        limit 1
+    </select>
+
+    <select id="findMemberById" resultType="member">
+        <!-- 관리자 기능 담당 작업(문건우): refresh/me 요청에서도 정지 안내 정보를 유지합니다. -->
+        select
+            member_id,
+            email,
+            name,
+            nickname,
+            phone,
+            profile_image_url,
+            bio,
+            email_verified,
+            phone_verified,
+            role,
+            status,
+            suspended_until,
+            last_login_at,
+            created_at,
+            updated_at,
+            deleted_at
+        from members
+        where member_id = #{memberId}
+        limit 1
+    </select>
+
+    <!--
+      로그인 시간 저장입니다.
+
+      시간대 주의:
+      - RDS/MySQL 세션 시간대가 UTC라서 NOW(6)를 그대로 저장하면 서울 시간보다 9시간 빠르게 기록됩니다.
+      - 관리자 대시보드의 시간별 활성 사용자 그래프는 members.last_login_at을 서울 시간 기준으로 집계하므로,
+        로그인 성공 시점도 CONVERT_TZ(NOW(6), '+00:00', '+09:00')로 저장합니다.
+    -->
+    <update id="updateLastLoginAt">
+        update members
+        set last_login_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        where member_id = #{memberId}
+    </update>
+
+    <update id="updatePasswordHash">
+        update members
+        set
+            password_hash = #{passwordHash},
+            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        where member_id = #{memberId}
+    </update>
+
+    <update id="withdrawMember">
+        update members
+        set
+            status = 'WITHDRAW',
+            deleted_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00'),
+            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        where member_id = #{memberId}
+    </update>
+
+    <update id="updateMemberProfile">
+        update members
+        <set>
+            nickname = #{nickname},
+            bio = #{bio},
+            <if test="profileImageUrl != null">
+                profile_image_url = #{profileImageUrl},
+            </if>
+            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        </set>
+        where member_id = #{memberId}
+    </update>
+
+    <!-- 팔로우 관련 -->
+    <select id="isFollowing" resultType="int">
+        SELECT COUNT(*) FROM follow_tbl 
+        WHERE follower_member_id = #{followerId} AND following_member_id = #{followingId}
+    </select>
+
+    <insert id="follow">
+        INSERT INTO follow_tbl (follower_member_id, following_member_id)
+        VALUES (#{followerId}, #{followingId})
+        ON DUPLICATE KEY UPDATE created_at = CONVERT_TZ(NOW(), '+00:00', '+09:00')
+    </insert>
+
+    <delete id="unfollow">
+        DELETE FROM follow_tbl 
+        WHERE follower_member_id = #{followerId} AND following_member_id = #{followingId}
+    </delete>
+
+    <select id="countFollowers" resultType="long">
+        SELECT COUNT(*) FROM follow_tbl WHERE following_member_id = #{memberId}
+    </select>
+
+    <select id="countFollowing" resultType="long">
+        SELECT COUNT(*) FROM follow_tbl WHERE follower_member_id = #{memberId}
+    </select>
+
+    <select id="countPosts" resultType="long">
+        SELECT COUNT(*)
+        FROM post_tbl
+        WHERE member_id = #{memberId}
+          AND deleted_yn = 'N'
+          AND visibility = 'PUBLIC'
+    </select>
+
+    <select id="countSavedPosts" resultType="long">
+        SELECT COUNT(*) FROM saved_post WHERE member_id = #{memberId}
+    </select>
+
+    <select id="countPostLikes" resultType="long">
+        SELECT COUNT(*)
+        FROM user_post_like l
+        JOIN post_tbl p ON l.post_id = p.post_id
+        WHERE p.member_id = #{memberId}
+          AND p.deleted_yn = 'N'
+          AND p.visibility = 'PUBLIC'
+    </select>
+
+    <select id="countPostComments" resultType="long">
+        SELECT COUNT(*)
+        FROM comment_tbl c
+        JOIN post_tbl p ON c.post_id = p.post_id
+        WHERE p.member_id = #{memberId}
+          AND p.deleted_yn = 'N'
+          AND p.visibility = 'PUBLIC'
+          AND c.deleted_yn = 'N'
+          AND NOT EXISTS (
+              SELECT 1
+              FROM admin_action_logs log
+              WHERE log.target_type = 'COMMENT'
+                AND log.target_id = c.comment_id
+                AND log.action_type = 'HIDE'
+                AND log.log_id = (
+                    SELECT MAX(log_id)
+                    FROM admin_action_logs
+                    WHERE target_type = 'COMMENT'
+                      AND target_id = c.comment_id
+                      AND action_type IN ('HIDE', 'RESTORE')
+                )
+          )
+    </select>
+
+    <select id="countPostSaves" resultType="long">
+        SELECT COUNT(*)
+        FROM saved_post s
+        JOIN post_tbl p ON s.post_id = p.post_id
+        WHERE p.member_id = #{memberId}
+          AND p.deleted_yn = 'N'
+          AND p.visibility = 'PUBLIC'
+    </select>
+
+    <select id="countWeeklyPostReactions" resultType="long">
+        SELECT COUNT(*)
+        FROM (
+                 SELECT l.post_id
+                 FROM user_post_like l
+                          JOIN post_tbl p ON l.post_id = p.post_id
+                 WHERE p.member_id = #{memberId}
+                   AND p.deleted_yn = 'N'
+                   AND p.visibility = 'PUBLIC'
+                   AND l.created_at >= DATE_SUB(CONVERT_TZ(NOW(6), '+00:00', '+09:00'), INTERVAL 7 DAY)
+                 UNION ALL
+                 SELECT c.post_id
+                 FROM comment_tbl c
+                          JOIN post_tbl p ON c.post_id = p.post_id
+                 WHERE p.member_id = #{memberId}
+                   AND p.deleted_yn = 'N'
+                   AND p.visibility = 'PUBLIC'
+                   AND c.deleted_yn = 'N'
+                   AND NOT EXISTS (
+                       SELECT 1
+                       FROM admin_action_logs log
+                       WHERE log.target_type = 'COMMENT'
+                         AND log.target_id = c.comment_id
+                         AND log.action_type = 'HIDE'
+                         AND log.log_id = (
+                             SELECT MAX(log_id)
+                             FROM admin_action_logs
+                             WHERE target_type = 'COMMENT'
+                               AND target_id = c.comment_id
+                               AND action_type IN ('HIDE', 'RESTORE')
+                         )
+                   )
+                   AND c.created_at >= DATE_SUB(CONVERT_TZ(NOW(6), '+00:00', '+09:00'), INTERVAL 7 DAY)
+                 UNION ALL
+                 SELECT s.post_id
+                 FROM saved_post s
+                          JOIN post_tbl p ON s.post_id = p.post_id
+                 WHERE p.member_id = #{memberId}
+                   AND p.deleted_yn = 'N'
+                   AND p.visibility = 'PUBLIC'
+                   AND s.created_at >= DATE_SUB(CONVERT_TZ(NOW(6), '+00:00', '+09:00'), INTERVAL 7 DAY)
+             ) t
+    </select>
+
+    <select id="getFollowerList" resultType="com.moodcast.member.dto.follow.FollowItemResponse">
+        SELECT 
+            m.member_id as memberId,
+            m.name,
+            m.nickname,
+            m.email,
+            m.profile_image_url as profileImageUrl,
+            (SELECT COUNT(*) FROM follow_tbl f_check WHERE f_check.follower_member_id = #{loginId} AND f_check.following_member_id = m.member_id) as isFollowing,
+            (SELECT COUNT(*) FROM follow_tbl f_check WHERE f_check.follower_member_id = m.member_id AND f_check.following_member_id = #{loginId}) as followsMe
+        FROM follow_tbl f
+        JOIN members m ON f.follower_member_id = m.member_id
+        WHERE f.following_member_id = #{targetId}
+        ORDER BY f.created_at DESC
+    </select>
+
+    <select id="getFollowingList" resultType="com.moodcast.member.dto.follow.FollowItemResponse">
+        SELECT 
+            m.member_id as memberId,
+            m.name,
+            m.nickname,
+            m.email,
+            m.profile_image_url as profileImageUrl,
+            (SELECT COUNT(*) FROM follow_tbl f_check WHERE f_check.follower_member_id = #{loginId} AND f_check.following_member_id = m.member_id) as isFollowing,
+            (SELECT COUNT(*) FROM follow_tbl f_check WHERE f_check.follower_member_id = m.member_id AND f_check.following_member_id = #{loginId}) as followsMe
+        FROM follow_tbl f
+        JOIN members m ON f.following_member_id = m.member_id
+        WHERE f.follower_member_id = #{targetId}
+        ORDER BY f.created_at DESC
+    </select>
+
+    <select id="getMentionCandidates" resultType="com.moodcast.member.dto.follow.MentionCandidateResponse">
+        SELECT
+            m.member_id as userId,
+            coalesce(m.nickname, m.name) as nickname,
+            m.profile_image_url as profileImage
+        FROM follow_tbl f
+        JOIN members m ON f.following_member_id = m.member_id
+        WHERE f.follower_member_id = #{memberId}
+        <if test="keyword != null and keyword != ''">
+            AND LOWER(COALESCE(m.nickname, m.name)) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+        </if>
+        ORDER BY f.created_at DESC
+    </select>
+
+</mapper>

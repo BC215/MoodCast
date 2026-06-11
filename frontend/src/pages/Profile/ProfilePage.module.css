@@ -1,0 +1,692 @@
+.wrap {
+  display: grid;
+  gap: 24px;
+}
+
+.hero,
+.highlights,
+.recent {
+  padding: 24px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(17, 24, 39, 0.085);
+  box-shadow: 0 1px 3px rgba(17, 24, 39, 0.055);
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 18px;
+  align-items: center;
+}
+
+.heroContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.avatar {
+  width: 84px;
+  height: 84px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f6b0ff, #b59cff);
+  color: #111827;
+  font-size: 1.8rem;
+  font-weight: 800;
+  overflow: hidden;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.heroContent strong {
+  display: block;
+  color: #111111;
+  font-size: 1.125rem;
+  font-weight: 800;
+}
+
+.heroContent p {
+  margin: 6px 0 0;
+  color: #555555;
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+.handle {
+  display: block;
+  margin-top: 4px;
+  color: #888888;
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+.editBtnRich {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.5);
+  color: #475569;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.editBtnRich:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.actionsRich {
+  display: flex;
+  gap: 8px;
+}
+
+.followBtnRich,
+.unfollowBtnRich,
+.chatBtn {
+  min-height: 44px;
+  padding: 0 24px;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.followBtnRich {
+  background: #0095f6;
+  color: #fff;
+}
+
+.followBtnRich:hover {
+  background: #1877f2;
+}
+
+.unfollowBtnRich {
+  background: #ff4d4f;
+  color: #fff;
+}
+
+.unfollowBtnRich:hover {
+  background: #ff7875;
+}
+
+.chatBtn {
+  background: #fff;
+  color: #111827;
+  border: 1px solid #e2e8f0;
+}
+
+.chatBtn:hover {
+  background: #f8fafc;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.pill {
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(17, 24, 39, 0.085);
+  box-shadow: 0 1px 3px rgba(17, 24, 39, 0.055);
+  text-align: center;
+}
+
+.statCard {
+  min-height: 96px;
+  padding: 14px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(17, 24, 39, 0.085);
+  background: rgba(255, 255, 255, 0.28);
+  box-shadow: 0 1px 3px rgba(17, 24, 39, 0.055);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.stats button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.statCard:hover {
+  background: #f8f9ff;
+}
+
+.statCard:focus-visible {
+  outline: 2px solid #7c4dff;
+  outline-offset: 4px;
+}
+
+.statCard strong {
+  display: block;
+  color: #111111;
+  font-size: 1.9rem;
+  font-weight: 900;
+}
+
+.statCard span {
+  color: #444444;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.highlights {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.highlight {
+  text-align: center;
+}
+
+.highlight span {
+  display: block;
+  color: #444444;
+  font-size: 0.8rem;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.highlight strong {
+  color: #111111;
+  font-size: 1.45rem;
+  font-weight: 900;
+}
+
+.recent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sectionHeader h2 {
+  font-size: 1.25rem;
+  color: #111827;
+  margin: 0;
+}
+
+.sectionHeader button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.5);
+  color: #475569;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.moodFilterBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px 0 4px;
+  margin-top: 6px;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+}
+
+.moodFilterChip {
+  flex: 0 0 auto;
+  padding: 9px 14px;
+  border: 1px solid rgba(148, 163, 184, 0.65);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #475569;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.moodFilterChip:hover {
+  background: #f8fafc;
+  border-color: rgba(148, 163, 184, 1);
+}
+
+.activeMoodFilter {
+  background: #eff6ff;
+  border-color: #7c3aed;
+  color: #1e293b !important;
+}
+
+.postList {
+  display: grid;
+  gap: 16px;
+}
+
+.emptyState {
+  padding: 28px 0;
+  text-align: center;
+  color: #667085;
+  background: #f8f9ff;
+  border: 1px solid #e4e7f7;
+  border-radius: 18px;
+}
+
+@media (max-width: 768px) {
+  .wrap {
+    gap: 16px;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 14px;
+    padding: 18px;
+  }
+
+  .avatar {
+    margin: 0 auto;
+    width: 72px;
+    height: 72px;
+  }
+
+  .heroContent {
+    align-items: center;
+  }
+
+  .heroContent strong {
+    font-size: 1.02rem;
+  }
+
+  .heroContent p {
+    font-size: 0.84rem;
+  }
+
+  .handle {
+    font-size: 0.72rem;
+  }
+
+  .actionsRich,
+  .editBtnRich {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .actionsRich {
+    flex-direction: column;
+  }
+
+  .followBtnRich,
+  .unfollowBtnRich,
+  .chatBtn,
+  .editBtnRich {
+    min-height: 42px;
+    width: 100%;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .statCard,
+  .highlight {
+    min-height: 90px;
+  }
+
+  .statCard {
+    padding: 12px 10px;
+    border-radius: 16px;
+  }
+
+  .statCard strong {
+    font-size: 1.45rem;
+  }
+
+  .statCard span {
+    font-size: 0.75rem;
+  }
+
+  .highlights {
+    gap: 8px;
+  }
+
+  .highlight strong {
+    font-size: 1.18rem;
+  }
+
+  .highlight span {
+    font-size: 0.74rem;
+    margin-bottom: 4px;
+  }
+}
+/* 감정 통계 섹션 스타일 */
+.moodStatsContainer {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr) 300px;
+  gap: 36px;
+  align-items: center;
+}
+
+.moodStatsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.moodPeriodTabs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.moodPeriodTab {
+  border: 1px solid rgba(148, 163, 184, 0.65);
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #475569;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.moodPeriodTab:hover {
+  background: #f8fafc;
+}
+
+.activeMoodPeriodTab {
+  background: #eef2ff;
+  border-color: #6366f1;
+  color: #1f2937;
+}
+
+.moodChartArea {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.moodPieChart {
+  width: 200px;
+  height: 200px;
+}
+
+.moodChartTooltip {
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(17, 24, 39, 0.95);
+  color: white;
+  padding: 8px 11px;
+  border-radius: 6px;
+  text-align: center;
+  pointer-events: none;
+  z-index: 20;
+  white-space: nowrap;
+  animation: fadeIn 0.15s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.tooltipLabel {
+  font-size: 0.55rem;
+  font-weight: 600;
+  margin-bottom: 3px;
+  letter-spacing: 0.1px;
+}
+
+.tooltipValue {
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1.3;
+  margin-bottom: 2px;
+}
+
+.tooltipCount {
+  font-size: 0.5rem;
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 500;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -55%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.moodLegend {
+  display: grid;
+  gap: 14px;
+}
+
+.moodStatsInfo {
+  display: grid;
+  gap: 14px;
+  padding: 10px 8px 10px 0;
+}
+
+.moodStatItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 112px;
+  padding: 18px 16px;
+  border-radius: 24px;
+  background: rgba(0, 0, 0, 0.02);
+  transition: all 0.2s ease;
+}
+
+.moodStatItem:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.moodStatLabel {
+  font-size: 0.66rem;
+  color: #667085;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-weight: 700;
+}
+
+.moodStatValue {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #111827;
+  line-height: 1.2;
+  text-align: center;
+}
+.moodLegendItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.moodLegendItem:hover {
+  /* 범례 자체 호버는 미세한 강조만 (배경 제거) */
+  opacity: 0.9;
+}
+
+.moodLegendColor {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.moodLegendInfo {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.moodLegendLabel {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.moodLegendValue {
+  font-size: 0.8rem;
+  color: #1f2937;
+  margin-top: 0;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.moodEmptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  gap: 16px;
+}
+
+.moodEmptyIcon {
+  font-size: 3rem;
+  opacity: 0.5;
+}
+
+.moodEmptyTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.moodEmptyDesc {
+  font-size: 0.9rem;
+  color: #667085;
+  max-width: 280px;
+  line-height: 1.4;
+}
+
+.moodEmptyBtn {
+  margin-top: 12px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(124, 77, 255, 0.12), rgba(124, 77, 255, 0.06));
+  color: #7c4dff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.moodEmptyBtn:hover {
+  background: linear-gradient(135deg, rgba(124, 77, 255, 0.18), rgba(124, 77, 255, 0.1));
+  transform: translateY(-2px);
+}
+
+@media (max-width: 1024px) {
+  .moodStatsContainer {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .moodPieChart {
+    width: 160px;
+    height: 160px;
+  }
+
+  .moodLegend {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .moodStatsInfo {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 0;
+  }
+
+  .moodStatItem {
+    min-height: 90px;
+    padding: 14px 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .moodStatsContainer {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .moodPieChart {
+    width: 148px;
+    height: 148px;
+  }
+
+  .moodLegend {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .moodStatsInfo {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .moodStatItem {
+    min-height: 84px;
+    padding: 12px 12px;
+    border-radius: 18px;
+  }
+
+  .moodStatValue {
+    font-size: 1.05rem;
+  }
+
+  .moodStatLabel {
+    font-size: 0.62rem;
+  }
+
+  .moodLegendItem {
+    padding: 8px;
+  }
+
+  .moodLegendLabel {
+    font-size: 0.85rem;
+  }
+
+  .moodLegendValue {
+    font-size: 0.75rem;
+  }
+}

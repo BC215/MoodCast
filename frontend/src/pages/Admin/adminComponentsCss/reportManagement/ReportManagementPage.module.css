@@ -1,0 +1,830 @@
+.topTabs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid rgba(124, 77, 255, 0.12);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 22px 48px rgba(17, 24, 39, 0.045);
+}
+
+.topTabs button {
+  min-width: 110px;
+  min-height: 42px;
+  border: 0;
+  border-radius: 12px;
+  color: #111827;
+  font-weight: 900;
+  background: transparent;
+  transition:
+    transform 0.16s ease,
+    background 0.16s ease,
+    color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.topTabs button:hover {
+  color: #633df2;
+  background: #f3f0ff;
+  transform: translateY(-1px);
+}
+
+.topTabs button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.topTabs button:focus-visible {
+  outline: 3px solid rgba(124, 77, 255, 0.26);
+  outline-offset: 2px;
+}
+
+.topTabs .activeTopTab {
+  color: #fff;
+  background: linear-gradient(135deg, #7c4dff, #633df2);
+  box-shadow: 0 12px 24px rgba(124, 77, 255, 0.24);
+}
+
+.filterHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.filterHeader > :first-child {
+  flex: 0 1 auto;
+}
+
+.filterHeader > :last-child {
+  flex: 0 0 min(340px, 100%);
+  margin-left: auto;
+}
+
+.reportPanel,
+.historyPanel,
+.statsPanel {
+  padding: 20px;
+  border: 1px solid rgba(124, 77, 255, 0.12);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 24px 60px rgba(17, 24, 39, 0.055);
+}
+
+.panelTitleRow,
+.statsHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.panelTitleRow > div,
+.statsHeader > div:first-child {
+  min-width: 0;
+  text-align: left;
+}
+
+.panelTitleRow h2,
+.statsHeader h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 1.02rem;
+  font-weight: 900;
+}
+
+.panelTitleRow p,
+.statsHeader p {
+  margin: 6px 0 0;
+  color: #667085;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.reportListControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(102, 112, 133, 0.12);
+}
+
+.reportSelectGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.reportSelectGroup select,
+.formSection select,
+.customPeriodInput {
+  height: 42px;
+  min-height: 42px;
+  min-width: 136px;
+  padding: 0 14px;
+  border: 1px solid rgba(102, 112, 133, 0.2);
+  border-radius: 12px;
+  color: #111827;
+  font-weight: 800;
+  background: #fff;
+}
+
+@media (max-width: 860px) {
+  .filterHeader,
+  .reportListControls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .filterHeader > :last-child,
+  .reportSelectGroup {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .reportSelectGroup select {
+    flex: 1 1 0;
+  }
+
+  .historyControls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .historyFilterGroup,
+  .historyControls select {
+    width: 100%;
+  }
+
+  .historyFilterGroup button {
+    flex: 1 1 0;
+  }
+}
+
+.insightGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.historyPanel {
+  display: grid;
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+  gap: 12px;
+  min-height: 0;
+}
+
+.historyControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.historyControls select {
+  height: 38px;
+  min-width: 116px;
+  padding: 0 12px;
+  border: 1px solid rgba(102, 112, 133, 0.2);
+  border-radius: 12px;
+  color: #111827;
+  font-weight: 850;
+  background: #fff;
+}
+
+.historyFilterGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px;
+  border-radius: 14px;
+  background: #f3f0ff;
+}
+
+.historyFilterGroup button {
+  min-width: 54px;
+  min-height: 32px;
+  border: 0;
+  border-radius: 10px;
+  color: #64748b;
+  font-weight: 900;
+  background: transparent;
+  transition:
+    transform 0.14s ease,
+    background 0.14s ease,
+    color 0.14s ease;
+}
+
+.historyFilterGroup button:hover {
+  color: #633df2;
+  background: #fff;
+}
+
+.historyFilterGroup .activeHistoryFilter {
+  color: #fff;
+  background: linear-gradient(135deg, #7c4dff, #633df2);
+  box-shadow: 0 10px 20px rgba(124, 77, 255, 0.18);
+}
+
+.historyList {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.historyList::-webkit-scrollbar {
+  width: 8px;
+}
+
+.historyList::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(124, 77, 255, 0.32);
+}
+
+.historyList::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: rgba(124, 77, 255, 0.08);
+}
+
+.historyItem {
+  padding: 16px;
+  border: 1px solid rgba(124, 77, 255, 0.12);
+  border-radius: 16px;
+  background: #fff;
+}
+
+.historyItem > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.historyItem strong {
+  color: #111827;
+  font-size: 0.96rem;
+  font-weight: 900;
+}
+
+.historyItem span {
+  color: #667085;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.historyItem p {
+  margin: 8px 0 12px;
+  color: #334155;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.historyItem dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.historyItem dl > div {
+  min-width: 0;
+  text-align: left;
+}
+
+.historyItem dt {
+  margin-bottom: 3px;
+  color: #94a3b8;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.historyItem dd {
+  margin: 0;
+  color: #111827;
+  font-size: 0.82rem;
+  font-weight: 800;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.historyPagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(102, 112, 133, 0.12);
+}
+
+.historyPagination button {
+  min-width: 34px;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid #ddd8ff;
+  border-radius: 12px;
+  color: #7b3ff2;
+  font-size: 0.82rem;
+  font-weight: 900;
+  background: #fff;
+  cursor: pointer;
+  transition:
+    transform 0.14s ease,
+    background 0.14s ease,
+    color 0.14s ease,
+    box-shadow 0.14s ease;
+}
+
+.historyPagination button:hover:not(:disabled) {
+  color: #fff;
+  background: linear-gradient(135deg, #7c4dff, #633df2);
+  box-shadow: 0 10px 20px rgba(124, 77, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+.historyPagination button:disabled {
+  color: #b6bfd0;
+  background: #f8fafc;
+  cursor: not-allowed;
+}
+
+.historyPagination .activeHistoryPage {
+  color: #fff;
+  background: linear-gradient(135deg, #7c4dff, #633df2);
+  box-shadow: 0 10px 20px rgba(124, 77, 255, 0.18);
+}
+
+.statsPanel {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+
+.statsControlBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.periodTabs {
+  max-width: 100%;
+  display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 4px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px;
+  border-radius: 12px;
+  background: #f3f0ff;
+  scrollbar-width: thin;
+}
+
+.periodTabs button {
+  flex: 0 0 auto;
+  min-width: 38px;
+  min-height: 32px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 9px;
+  color: #667085;
+  font-weight: 800;
+  white-space: nowrap;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.16s ease, background 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.periodTabs .activePeriod {
+  color: #fff;
+  background: linear-gradient(135deg, #4da6ff, #7c4dff, #ec24c7);
+  box-shadow: 0 10px 20px rgba(124, 77, 255, 0.22);
+}
+
+.periodTabs button:hover {
+  color: #633df2;
+  background: rgba(124, 77, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+.periodTabs .activePeriod:hover {
+  color: #fff;
+  background: linear-gradient(135deg, #4da6ff, #7c4dff, #ec24c7);
+  box-shadow: 0 12px 24px rgba(124, 77, 255, 0.3);
+}
+
+.periodTabs button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.periodTabs button:focus-visible {
+  outline: 3px solid rgba(124, 77, 255, 0.28);
+  outline-offset: 2px;
+}
+
+.periodFilterControl {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.periodField {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 0 10px;
+  border: 1px solid rgba(124, 77, 255, 0.14);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.periodField span {
+  color: #667085;
+  font-size: 0.76rem;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.periodField input,
+.periodField select {
+  height: 30px;
+  min-width: 112px;
+  border: 0;
+  outline: 0;
+  color: #111827;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 850;
+  background: transparent;
+}
+
+.periodResetButton {
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid rgba(124, 77, 255, 0.22);
+  border-radius: 12px;
+  color: #7c4dff;
+  font-size: 0.82rem;
+  font-weight: 900;
+  background: rgba(124, 77, 255, 0.08);
+  cursor: pointer;
+}
+
+.periodResetButton:hover {
+  background: rgba(124, 77, 255, 0.13);
+}
+
+.chartCard {
+  padding: 16px;
+  border: 1px solid rgba(124, 77, 255, 0.11);
+  border-radius: 16px;
+  background: #fff;
+}
+
+.chartCard h3 {
+  margin: 0 0 14px;
+  color: #111827;
+  font-size: 0.92rem;
+  font-weight: 900;
+}
+
+.lineChartCard {
+  padding: 16px 18px 14px;
+}
+
+.lineChartHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.lineChartHeader h3 {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.98rem;
+  line-height: 1.2;
+}
+
+.lineChart {
+  width: 100%;
+  height: 255px;
+  overflow: visible;
+}
+
+.lineChart polyline {
+  fill: none;
+  stroke: #6f2cff;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.3;
+  vector-effect: non-scaling-stroke;
+}
+
+.chartArea {
+  pointer-events: none;
+}
+
+.chartGridLine {
+  stroke: rgba(148, 163, 184, 0.26);
+  stroke-dasharray: 5 7;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.chartYAxisLabel {
+  fill: #334155;
+  font-size: 11px;
+  font-weight: 800;
+  dominant-baseline: middle;
+}
+
+.chartXAxisLabel {
+  fill: #334155;
+  font-size: 12px;
+  font-weight: 900;
+  text-anchor: middle;
+}
+
+.chartPoint {
+  fill: #6f2cff;
+  opacity: 1;
+  stroke: #6f2cff;
+  stroke-width: 1.8;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 3px 6px rgba(111, 44, 255, 0.26));
+}
+
+.chartBar {
+  fill: #7c4dff;
+  filter: drop-shadow(0 7px 12px rgba(111, 44, 255, 0.16));
+  transition: opacity 0.14s ease;
+}
+
+.chartPointGroup:hover .chartBar {
+  opacity: 0.82;
+}
+
+.peakPoint {
+  fill: #6d28ff;
+  stroke: #fff;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.chartHoverLine {
+  opacity: 0;
+  stroke: rgba(111, 44, 255, 0.34);
+  stroke-dasharray: 4 4;
+  stroke-width: 1.1;
+  vector-effect: non-scaling-stroke;
+}
+
+.chartHitArea {
+  fill: transparent;
+  cursor: default;
+}
+
+.chartMoveArea {
+  fill: transparent;
+  cursor: default;
+}
+
+.chartValueLabel {
+  fill: #111827;
+  font-size: 12px;
+  font-weight: 900;
+  pointer-events: none;
+  text-anchor: middle;
+}
+
+.chartTooltip {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.14s ease;
+}
+
+.chartTooltip rect {
+  fill: #111827;
+  filter: drop-shadow(0 12px 24px rgba(15, 23, 42, 0.2));
+}
+
+.chartTooltip text {
+  fill: #fff;
+  font-size: 13px;
+  font-weight: 900;
+  text-anchor: middle;
+}
+
+.chartTooltipValue {
+  font-size: 17px;
+}
+
+.chartTooltipSubtext {
+  fill: rgba(255, 255, 255, 0.78);
+  font-size: 12px;
+}
+
+.activeChartOverlay {
+  pointer-events: none;
+}
+
+.activeChartHoverLine {
+  stroke: rgba(111, 44, 255, 0.4);
+  stroke-dasharray: 4 4;
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+}
+
+.activeChartPoint {
+  fill: #6f2cff;
+  stroke: #fff;
+  stroke-width: 3;
+  filter: drop-shadow(0 6px 12px rgba(111, 44, 255, 0.34));
+}
+
+.activeChartBar {
+  fill: #4f1fff;
+  filter: drop-shadow(0 8px 16px rgba(111, 44, 255, 0.3));
+}
+
+.interpolatedChartPoint {
+  fill: #fff;
+  stroke: #6f2cff;
+  stroke-width: 2.6;
+  filter: drop-shadow(0 6px 12px rgba(111, 44, 255, 0.24));
+}
+
+.chartPointGroup:hover .chartHoverLine {
+  opacity: 1;
+}
+
+.chartGuideText {
+  margin: 4px 0 0;
+  color: #7c4dff;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.barList {
+  display: grid;
+  gap: 10px;
+}
+
+.barRow {
+  display: grid;
+  grid-template-columns: minmax(86px, 150px) minmax(0, 1fr) minmax(86px, auto);
+  align-items: center;
+  gap: 10px;
+  color: #475569;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.barRow > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.barRow > div {
+  height: 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #eef2ff;
+}
+
+.barRow i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #7c4dff, #e637c9);
+}
+
+.barRow strong {
+  text-align: right;
+  color: #111827;
+  white-space: nowrap;
+}
+
+.donutWrap {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.donut {
+  position: relative;
+  display: grid;
+  width: 108px;
+  height: 108px;
+  place-items: center;
+  border-radius: 999px;
+}
+
+.donut::after {
+  position: absolute;
+  inset: 18px;
+  border-radius: inherit;
+  background: #fff;
+  content: "";
+}
+
+.donut strong {
+  position: relative;
+  z-index: 1;
+  color: #111827;
+  font-size: 1.2rem;
+  font-weight: 950;
+}
+
+.rateLegend {
+  display: grid;
+  gap: 8px;
+  color: #475569;
+  font-size: 0.84rem;
+  font-weight: 900;
+}
+
+.processTrendList {
+  display: grid;
+  gap: 12px;
+}
+
+.processTrendRow {
+  display: grid;
+  gap: 6px;
+}
+
+.processTrendMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: #111827;
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.processTrendMeta span {
+  color: #475569;
+}
+
+.processTrendTrack {
+  height: 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #eef2ff;
+}
+
+.processTrendTrack i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #7c4dff, #e637c9);
+}
+
+.processTrendRow p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.emptyText {
+  display: grid;
+  min-height: 180px;
+  place-items: center;
+  margin: 0;
+  color: #94a3b8;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+@media (max-width: 1180px) {
+  .insightGrid {
+    grid-template-columns: 1fr;
+  }
+}

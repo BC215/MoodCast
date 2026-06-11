@@ -1,0 +1,233 @@
+.panel {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid rgba(124, 77, 255, 0.1);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.83);
+  box-shadow: 0 22px 52px rgba(17, 24, 39, 0.055);
+}
+
+.panelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.panelHead h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.textButton {
+  /*
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid rgba(124, 77, 255, 0.18);
+  border-radius: 8px;
+  color: #633df2;
+  font-size: 0.82rem;
+  font-weight: 900;
+  background: rgba(124, 77, 255, 0.08);
+  cursor: pointer;
+  */
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid #ddd8ff;
+  border-radius: 12px;
+  color: #7b3ff2;
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1;
+  background: #f6f2ff;
+  cursor: pointer;
+  transition: transform 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
+}
+
+.textButton:hover {
+  background: #eee7ff;
+  box-shadow: 0 10px 20px rgba(124, 77, 255, 0.14);
+  transform: translateY(-1px);
+}
+
+.textButton:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.activityList {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.activityItem {
+  display: grid;
+  grid-template-columns: 50px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 10px;
+  border: 1px solid rgba(102, 112, 133, 0.12);
+  border-radius: 10px;
+  background: rgba(248, 250, 252, 0.82);
+}
+
+.activityBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 26px;
+  border-radius: 999px;
+  color: #633df2;
+  font-size: 0.75rem;
+  font-weight: 900;
+  background: rgba(124, 77, 255, 0.1);
+}
+
+.activityBody {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.activityBody strong {
+  color: #111827;
+  font-size: 0.88rem;
+  line-height: 1.35;
+}
+
+.activityBody small {
+  color: #667085;
+  font-size: 0.76rem;
+}
+
+.activityModalLayer {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.activityModalDim {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(17, 24, 39, 0.42);
+  cursor: pointer;
+}
+
+.activityModalPanel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: min(720px, 100%);
+  max-height: min(760px, 86vh);
+  overflow: hidden;
+  padding: 18px;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 24px 70px rgba(17, 24, 39, 0.22);
+}
+
+.activityModalHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.activityModalHead h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 1.05rem;
+  font-weight: 900;
+}
+
+.activityModalClose {
+  display: inline-grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid rgba(102, 112, 133, 0.18);
+  border-radius: 8px;
+  color: #475467;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.activityModalBody {
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.activityModalBody::-webkit-scrollbar {
+  width: 8px;
+}
+
+.activityModalBody::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(124, 77, 255, 0.32);
+}
+
+.activityModalBody::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: rgba(124, 77, 255, 0.08);
+}
+
+.modalPagination {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.modalPagination button {
+  /*
+  min-height: 30px;
+  padding: 0 12px;
+  border: 1px solid rgba(102, 112, 133, 0.18);
+  border-radius: 8px;
+  color: #344054;
+  font-weight: 800;
+  background: #ffffff;
+  cursor: pointer;
+  */
+  min-height: 32px;
+  padding: 0 13px;
+  border: 1px solid #ddd8ff;
+  border-radius: 12px;
+  color: #7b3ff2;
+  font-weight: 900;
+  background: #f6f2ff;
+  cursor: pointer;
+  transition: transform 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
+}
+
+.modalPagination button:hover:not(:disabled) {
+  background: #eee7ff;
+  box-shadow: 0 10px 20px rgba(124, 77, 255, 0.14);
+  transform: translateY(-1px);
+}
+
+.modalPagination button:disabled {
+  color: #98a2b3;
+  cursor: not-allowed;
+  background: #f2f4f7;
+}
+
+.modalPagination span {
+  color: #475467;
+  font-size: 0.86rem;
+  font-weight: 900;
+}

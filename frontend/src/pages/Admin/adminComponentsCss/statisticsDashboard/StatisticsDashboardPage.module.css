@@ -1,0 +1,387 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid rgba(124, 77, 255, 0.1);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.toolbarPeriod {
+  flex: 1 1 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+@media (max-width: 720px) {
+  .toolbar {
+    align-items: flex-start;
+    flex-direction: column-reverse;
+  }
+}
+
+.metricGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(150px, 1fr));
+  gap: 14px;
+}
+
+.dashboardGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+/* 차트 카드
+ * --------------------------------------------------------------------------
+ * 통계 그래프 하나를 감싸는 카드입니다.
+ * 제목, 설명, 실제 차트를 같은 구조로 반복해서 화면이 일정하게 보이도록 합니다.
+ */
+.chartCard {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid rgba(124, 77, 255, 0.1);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 18px 44px rgba(17, 24, 39, 0.045);
+}
+
+.chartCardHead {
+  display: grid;
+  grid-template-columns: minmax(160px, auto) minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+  margin-bottom: 0;
+}
+
+.chartCardHead h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 0.98rem;
+  font-weight: 950;
+}
+
+.chartCardHead p {
+  max-width: 250px;
+  margin: 0;
+  justify-self: end;
+  color: #667085;
+  font-size: 0.78rem;
+  font-weight: 750;
+  line-height: 1.45;
+  text-align: right;
+}
+
+/* 시간 기반 막대 그래프
+ * --------------------------------------------------------------------------
+ * SVG 내부에서 사용하는 스타일입니다.
+ * - chartGridLine: 배경 기준선
+ * - chartBar: 각 구간의 막대
+ * - chartHitArea: 숨겨진 시간대까지 포함한 hover 영역
+ */
+.lineChartWrap {
+  position: relative;
+  min-width: 0;
+}
+
+.previewLineChart {
+  display: block;
+  width: 100%;
+  height: 260px;
+}
+
+.chartGridLine {
+  stroke: rgba(148, 163, 184, 0.32);
+  stroke-dasharray: 5 5;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.chartArea {
+  pointer-events: none;
+}
+
+.chartLine {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.chartPoint {
+  fill: #7c4dff;
+  stroke: #ffffff;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.chartBar {
+  fill: #7c4dff;
+  filter: drop-shadow(0 7px 12px rgba(124, 77, 255, 0.16));
+  transition: opacity 0.14s ease;
+}
+
+.chartPointGroup:hover .chartBar {
+  opacity: 0.82;
+}
+
+.peakPoint {
+  fill: #7c4dff;
+  stroke: #ffffff;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.chartValueLabel {
+  fill: #111827;
+  font-size: 11px;
+  font-weight: 950;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+}
+
+.chartHoverLine {
+  opacity: 0;
+  stroke: rgba(124, 77, 255, 0.35);
+  stroke-dasharray: 2 2;
+  stroke-width: 0.9;
+  vector-effect: non-scaling-stroke;
+}
+
+.chartHitArea {
+  fill: transparent;
+  cursor: default;
+}
+
+.chartMoveArea {
+  fill: transparent;
+  cursor: default;
+}
+
+.chartOverlay {
+  pointer-events: none;
+}
+
+.chartActiveHoverLine {
+  stroke: rgba(124, 77, 255, 0.42);
+  stroke-dasharray: 4 4;
+  stroke-width: 1.1;
+  vector-effect: non-scaling-stroke;
+}
+
+.chartActivePoint {
+  fill: #7c4dff;
+  stroke: #ffffff;
+  stroke-width: 2;
+  filter: drop-shadow(0 4px 8px rgba(124, 77, 255, 0.28));
+  vector-effect: non-scaling-stroke;
+}
+
+.chartActiveBar {
+  fill: #4f1fff;
+  filter: drop-shadow(0 8px 16px rgba(124, 77, 255, 0.3));
+}
+
+.chartTooltip {
+  pointer-events: none;
+  transition: opacity 0.14s ease;
+}
+
+.chartTooltip rect {
+  fill: #111827;
+  filter: drop-shadow(0 12px 22px rgba(17, 24, 39, 0.22));
+}
+
+.chartTooltip text {
+  fill: #fff;
+  font-size: 11px;
+  font-weight: 900;
+  text-anchor: middle;
+}
+
+.chartTooltipValue {
+  font-size: 14px !important;
+  font-weight: 950 !important;
+}
+
+.chartTooltipSubtext {
+  fill: #e5e7eb !important;
+  font-size: 10px !important;
+  font-weight: 850 !important;
+}
+
+.chartPointGroup:hover .chartPoint,
+.chartPointGroup:hover .chartHoverLine {
+  opacity: 1;
+}
+
+.chartAxisLabel {
+  fill: #111827;
+  font-size: 12px;
+  font-weight: 900;
+  dominant-baseline: middle;
+}
+
+.chartYAxisLabel {
+  fill: #111827;
+  font-size: 11px;
+  font-weight: 850;
+  dominant-baseline: middle;
+}
+
+.noDataCaption {
+  display: block;
+  margin-top: 4px;
+  color: #98a2b3;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+/* 막대 그래프
+ * --------------------------------------------------------------------------
+ * 게시글/댓글/공감, 감정별 활동처럼 여러 값을 가로 막대로 비교할 때 사용합니다.
+ */
+.previewBarChart {
+  display: grid;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.previewBarRow {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr) 52px;
+  align-items: center;
+  gap: 10px;
+}
+
+.previewBarRow span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  color: #475467;
+  font-size: 0.78rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.barLabelIcon {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+}
+
+.previewBarRow strong {
+  color: #111827;
+  font-size: 0.82rem;
+  font-weight: 950;
+  text-align: right;
+}
+
+.previewBarTrack {
+  height: 18px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #eef2f6;
+}
+
+.previewBarFill {
+  height: 100%;
+  min-width: 8px;
+  border-radius: inherit;
+}
+
+.emptyChartState {
+  display: grid;
+  place-items: center;
+  min-height: 150px;
+  color: #98a2b3;
+  font-size: 0.84rem;
+  font-weight: 850;
+  text-align: center;
+}
+
+/* 하단 간단 요약
+ * --------------------------------------------------------------------------
+ * 차트 아래에서 콘텐츠 숫자만 다시 빠르게 확인하는 보조 카드입니다.
+ */
+.compactSummaryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.compactSummaryGrid article {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid rgba(102, 112, 133, 0.1);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.compactSummaryGrid svg {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  padding: 8px;
+  border-radius: 12px;
+  color: #7c4dff;
+  background: rgba(124, 77, 255, 0.1);
+}
+
+.compactSummaryGrid span {
+  display: block;
+  color: #667085;
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.compactSummaryGrid strong {
+  display: block;
+  margin-top: 3px;
+  color: #111827;
+  font-size: 1rem;
+  font-weight: 950;
+}
+
+@media (max-width: 1120px) {
+  .metricGrid,
+  .dashboardGrid,
+  .compactSummaryGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .chartCardHead {
+    display: grid;
+  }
+
+  .chartCardHead p {
+    max-width: none;
+    text-align: left;
+  }
+
+  .previewBarRow {
+    grid-template-columns: 62px minmax(0, 1fr) 46px;
+  }
+}

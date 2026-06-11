@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moodcast.report.dao.ReportDao">
+
+    <select id="existsReportByReporterAndPost" resultType="boolean">
+        SELECT EXISTS(
+            SELECT 1
+            FROM report
+            WHERE reporter_member_id = #{reporterMemberId}
+              AND post_id = #{postId}
+        )
+    </select>
+
+    <select id="existsReportByReporterAndComment" resultType="boolean">
+        SELECT EXISTS(
+            SELECT 1
+            FROM report
+            WHERE reporter_member_id = #{reporterMemberId}
+              AND comment_id = #{commentId}
+        )
+    </select>
+
+    <select id="existsPostById" resultType="int">
+        SELECT COUNT(1)
+        FROM post_tbl
+        WHERE post_id = #{postId}
+    </select>
+
+    <select id="existsCommentById" resultType="int">
+        SELECT COUNT(1)
+        FROM comment_tbl
+        WHERE comment_id = #{commentId}
+    </select>
+
+    <insert id="insertReport" parameterType="com.moodcast.report.domain.Report">
+        INSERT INTO report (
+            reporter_member_id,
+            post_id,
+            comment_id,
+            reason,
+            report_status,
+            created_at
+        ) VALUES (
+            #{reporterMemberId},
+            #{postId, jdbcType=BIGINT},
+            #{commentId, jdbcType=BIGINT},
+            #{reason},
+            'PENDING',
+            CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        )
+    </insert>
+
+</mapper>

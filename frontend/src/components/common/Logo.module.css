@@ -1,0 +1,44 @@
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  margin: 0;
+  color: #111827;
+  text-decoration: none;
+  line-height: 1;
+}
+
+.compact {
+  justify-content: center;
+}
+
+.image {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+
+.imageCompact {
+  width: 70px;
+  height: 70px;
+}
+
+.text {
+  display: grid;
+  align-content: start;
+  gap: 0;
+}
+
+.text strong {
+  display: block;
+  font-size: 1.03rem;
+  line-height: 1;
+}
+
+.text p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.77rem;
+  line-height: 1.15;
+}

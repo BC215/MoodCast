@@ -1,0 +1,53 @@
+.rangeControl {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.rangeControl label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 0 10px;
+  border: 1px solid rgba(124, 77, 255, 0.14);
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.rangeControl span {
+  color: #667085;
+  font-size: 0.76rem;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.rangeControl select,
+.rangeControl input {
+  height: 30px;
+  min-width: 110px;
+  border: 0;
+  outline: 0;
+  color: #111827;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 850;
+  background: transparent;
+}
+
+.rangeControl button {
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid rgba(124, 77, 255, 0.22);
+  border-radius: 12px;
+  color: #7c4dff;
+  font-size: 0.82rem;
+  font-weight: 900;
+  background: rgba(124, 77, 255, 0.08);
+  cursor: pointer;
+}
+
+.rangeControl button:hover {
+  background: rgba(124, 77, 255, 0.13);
+}

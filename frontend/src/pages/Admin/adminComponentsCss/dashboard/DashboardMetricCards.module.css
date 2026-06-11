@@ -1,0 +1,11 @@
+.metricGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(150px, 1fr));
+  gap: 14px;
+}
+
+@media (max-width: 1120px) {
+  .metricGrid {
+    grid-template-columns: 1fr;
+  }
+}

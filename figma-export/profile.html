@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MoodCast - 프로필</title>
+  <style>
+    :root{--bg:#f8f7ff;--surface:rgba(255,255,255,.88);--line:#e4e0f3;--text:#15142b;--text-2:#5f6377;--text-3:#8f94a7;--brand:#6e55ff;--brand-soft:#ebe4ff;--shadow:0 18px 40px rgba(61,52,120,.08),0 2px 10px rgba(61,52,120,.04)}
+    *{box-sizing:border-box}
+    html,body{margin:0;min-width:1440px;min-height:100%;font-family:Inter,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:var(--text);background:radial-gradient(circle at left top, rgba(138,99,255,.18), transparent 18%),radial-gradient(circle at right top, rgba(107,183,255,.12), transparent 18%),var(--bg)}
+    .canvas{width:1440px;min-height:1024px;margin:0 auto;padding:24px}
+    .shell{display:grid;grid-template-columns:210px minmax(0,1fr) 292px;gap:24px;align-items:start}
+    .panel{border:1px solid var(--line);border-radius:28px;background:var(--surface);box-shadow:var(--shadow);backdrop-filter:blur(12px)}
+    .left{padding:24px 18px 18px}
+    .brand{display:flex;align-items:center;gap:12px;padding:6px 8px 22px}
+    .brand-icon{width:42px;height:42px}
+    .brand strong{display:block;font-size:16px;line-height:1;font-weight:900}
+    .brand span{display:block;color:var(--text-3);font-size:12px;margin-top:4px;font-weight:600}
+    .nav{display:grid;gap:10px}
+    .nav-item{height:52px;padding:0 16px;border-radius:18px;display:flex;align-items:center;gap:12px;font-size:15px;font-weight:800;color:#20233c;background:#fff;border:1px solid transparent}
+    .nav-item.active{background:var(--brand-soft);color:var(--brand)}
+    .nav-icon{width:18px;height:18px;border:2px solid currentColor;border-radius:4px;opacity:.95}
+    .main{display:grid;gap:18px}
+    .profile-card{padding:18px 22px;height:132px;display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:26px;background:rgba(255,255,255,.78);box-shadow:var(--shadow)}
+    .profile-left{display:flex;align-items:center;gap:16px}
+    .avatar{width:82px;height:82px;border-radius:50%;background:linear-gradient(135deg,#8ccf76,#6e55ff 55%,#ff9bcf);box-shadow:inset 0 0 0 4px rgba(255,255,255,.9)}
+    .name{font-size:18px;font-weight:900;margin:0}
+    .sub{margin:7px 0 0;color:#52607d;font-size:14px;font-weight:600}
+    .handle{margin:6px 0 0;color:#6f7d9b;font-size:13px}
+    .edit{height:46px;padding:0 18px;border-radius:16px;border:1px solid #d9dff0;background:#fff;font-size:15px;font-weight:900;color:#243055}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .stat{height:106px;border-radius:20px;border:1px solid var(--line);background:rgba(255,255,255,.82);display:grid;place-items:center;text-align:center;box-shadow:var(--shadow)}
+    .stat strong{display:block;font-size:30px;line-height:1;font-weight:900}
+    .stat span{display:block;margin-top:8px;font-size:13px;color:#4f5b76;font-weight:600}
+    .stats2{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .chart{padding:20px 22px;border-radius:26px;border:1px solid var(--line);background:rgba(255,255,255,.82);box-shadow:var(--shadow)}
+    .chart-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .chart-head h3{margin:0;font-size:18px;font-weight:900}
+    .seg{display:flex;gap:10px}
+    .seg button{height:38px;padding:0 16px;border-radius:999px;border:1px solid #d5d9ea;background:#fff;color:#46506a;font-size:13px;font-weight:800}
+    .seg button.active{border-color:#6e55ff;color:#6e55ff}
+    .chart-body{height:250px;display:grid;place-items:center;color:#15142b;text-align:center}
+    .chart-body .icon{font-size:36px}
+    .chart-body strong{display:block;margin-top:16px;font-size:18px}
+    .chart-body p{margin:8px 0 0;color:#51607e;font-size:14px;line-height:1.6}
+    .chart-btn{margin-top:18px;height:44px;padding:0 18px;border-radius:14px;border:0;background:#e7e0ff;color:#6e55ff;font-size:14px;font-weight:900}
+    .recent{padding:20px 22px;border-radius:26px;border:1px solid var(--line);background:rgba(255,255,255,.82);box-shadow:var(--shadow)}
+    .recent-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+    .recent-head h3{margin:0;font-size:18px;font-weight:900}
+    .recent-head button{height:36px;padding:0 14px;border:1px solid #dce1f2;border-radius:14px;background:#fff;color:#25314f;font-size:14px;font-weight:800}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;padding-bottom:14px;border-bottom:1px solid #ece8f7}
+    .tab{height:34px;padding:0 13px;border-radius:999px;border:1px solid #d9ddeb;background:#fff;color:#243055;font-size:13px;font-weight:800}
+    .tab.active{border-color:#6e55ff;color:#6e55ff}
+    .empty{padding:26px 0 10px;text-align:center;color:#51607e;font-size:16px;border:1px solid #e8edf6;border-radius:20px;background:#fafbff}
+    .right{padding:18px}
+    .rail-card{padding:18px;border-radius:26px;background:rgba(255,255,255,.72);border:1px solid var(--line);box-shadow:var(--shadow)}
+    .section-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+    .section-title h3{margin:0;font-size:18px;font-weight:900}
+    .select{height:34px;padding:0 12px;border-radius:999px;border:1px solid #e0dcf2;background:#fff;color:#5d6173;font-size:12px;font-weight:800;display:flex;align-items:center;gap:7px}
+    .caret{width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid #8f93a7}
+    .emotion-list{display:grid;gap:14px}
+    .emotion{display:grid;grid-template-columns:minmax(0,1fr) 34px;gap:14px;align-items:start;padding:12px 0;border-bottom:1px solid #f0edf7}
+    .emotion:last-child{border-bottom:0}
+    .pill{height:32px;padding:0 12px;border-radius:999px;display:inline-flex;align-items:center;gap:8px;border:1px solid currentColor;background:rgba(255,255,255,.72);color:#b7b0c9;font-size:13px;font-weight:800}
+    .face{width:16px;height:16px;border-radius:50%;border:1.5px solid currentColor;position:relative;opacity:.8}
+    .face::before,.face::after{content:"";position:absolute;top:5px;width:2px;height:2px;border-radius:50%;background:currentColor}
+    .face::before{left:4px}.face::after{right:4px}
+    .mouth{position:absolute;left:4px;right:4px;bottom:3px;height:4px;border:1.5px solid currentColor;border-top:0;border-radius:0 0 999px 999px;opacity:.7}
+    .percent{font-size:14px;font-weight:800;color:#c5c9d7;text-align:right;padding-top:6px}
+    .bar{height:6px;border-radius:999px;background:#eff1f7;margin-top:10px}
+    .tag-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+    .tag-head h3{margin:0;font-size:18px;font-weight:900}
+    .tag-count{color:#8f94a7;font-size:14px;font-weight:700}
+    .tag-empty{padding:10px 0 0;color:#5d6173;font-size:14px}
+  </style>
+</head>
+<body>
+  <div class="canvas">
+    <div class="shell">
+      <aside class="panel left">
+        <div class="brand">
+          <svg class="brand-icon" viewBox="0 0 48 48" aria-hidden="true">
+            <path d="M4 25h8l4-6 4 12 6-18 4 12h14" fill="none" stroke="#6e55ff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 28h8l4-4 4 8 6-12 4 8h14" fill="none" stroke="#69c1ff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity=".95"/>
+            <circle cx="24" cy="24" r="2" fill="#d5d8df"/>
+          </svg>
+          <div><strong>MoodCast</strong><span>감정을 공유하는 감성 SNS</span></div>
+        </div>
+        <nav class="nav">
+          <div class="nav-item"><span class="nav-icon"></span>피드</div>
+          <div class="nav-item"><span class="nav-icon"></span>저장한 게시물</div>
+          <div class="nav-item"><span class="nav-icon"></span>Mood Chat</div>
+          <div class="nav-item active"><span class="nav-icon"></span>프로필</div>
+          <div class="nav-item"><span class="nav-icon"></span>설정</div>
+        </nav>
+      </aside>
+      <main class="main">
+        <section class="profile-card">
+          <div class="profile-left">
+            <div class="avatar"></div>
+            <div>
+              <div class="name">병창</div>
+              <div class="sub">난나에요</div>
+              <div class="handle">@dlqudckd3</div>
+            </div>
+          </div>
+          <button class="edit">프로필 편집</button>
+        </section>
+        <section class="stats">
+          <div class="stat"><strong>25</strong><span>게시물</span></div>
+          <div class="stat"><strong>8</strong><span>저장됨</span></div>
+          <div class="stat"><strong>3</strong><span>팔로워</span></div>
+          <div class="stat"><strong>4</strong><span>팔로잉</span></div>
+        </section>
+        <section class="stats2">
+          <div class="stat"><strong>16%</strong><span>감정 공감률</span></div>
+          <div class="stat"><strong>23</strong><span>주간 반응</span></div>
+          <div class="stat"><strong>활발함</strong><span>활동 상태</span></div>
+          <div class="stat"><strong>18일</strong><span>가입 후</span></div>
+        </section>
+        <section class="chart">
+          <div class="chart-head">
+            <h3>전체 감정 분포</h3>
+            <div class="seg"><button class="active">전체</button><button>월간</button><button>주간</button></div>
+          </div>
+          <div class="chart-body">
+            <div>
+              <div class="icon">📊</div>
+              <strong>아직 기록된 감정이 없습니다</strong>
+              <p>감정을 담은 게시물을 작성하면 통계가 표시됩니다</p>
+              <button class="chart-btn">첫 게시물 작성하기</button>
+            </div>
+          </div>
+        </section>
+        <section class="recent">
+          <div class="recent-head"><h3>최근 게시물</h3><button>+ 새 게시물</button></div>
+          <div class="tabs">
+            <div class="tab active">전체</div><div class="tab">행복해요</div><div class="tab">슬퍼요</div><div class="tab">차분해요</div><div class="tab">화가 나요</div><div class="tab">신나요</div><div class="tab">무덤덤해요</div>
+          </div>
+          <div class="empty">작성한 게시물이 없습니다.</div>
+        </section>
+      </main>
+      <aside class="panel right">
+        <section class="rail-card">
+          <div class="section-title"><h3>감정 통계</h3><div class="select">전체 <span class="caret"></span></div></div>
+          <div class="emotion-list">
+            <div class="emotion"><div><div class="pill" style="color:#edd787;border-color:#f1e3a4"><span class="face" style="color:#edd787"><span class="mouth"></span></span>행복해요 <span>0</span></div><div class="bar"></div></div><div class="percent">0%</div></div>
+            <div class="emotion"><div><div class="pill" style="color:#bed2f2;border-color:#d9e6fa"><span class="face" style="color:#bed2f2"><span class="mouth"></span></span>슬퍼요 <span>0</span></div><div class="bar"></div></div><div class="percent">0%</div></div>
+            <div class="emotion"><div><div class="pill" style="color:#e9d2b0;border-color:#f0dfc0"><span class="face" style="color:#e9d2b0"><span class="mouth"></span></span>차분해요 <span>0</span></div><div class="bar"></div></div><div class="percent">0%</div></div>
+            <div class="emotion"><div><div class="pill" style="color:#efc6c3;border-color:#f3ddd9"><span class="face" style="color:#efc6c3"><span class="mouth"></span></span>화가 나요 <span>0</span></div><div class="bar"></div></div><div class="percent">0%</div></div>
+            <div class="emotion"><div><div class="pill" style="color:#f1cadf;border-color:#f6ddea"><span class="face" style="color:#f1cadf"><span class="mouth"></span></span>신나요 <span>0</span></div><div class="bar"></div></div><div class="percent">0%</div></div>
+            <div class="emotion"><div><div class="pill" style="color:#d8d9df;border-color:#e5e7ec"><span class="face" style="color:#d8d9df"><span class="mouth"></span></span>무덤덤해요 <span>0</span></div><div class="bar"></div></div><div class="percent">0%</div></div>
+          </div>
+        </section>
+        <section class="rail-card" style="margin-top:22px">
+          <div class="tag-head"><h3>인기 해시태그</h3><div class="tag-count">0개</div></div>
+          <div class="tag-empty">표시할 해시태그가 없습니다.</div>
+        </section>
+      </aside>
+    </div>
+  </div>
+</body>
+</html>

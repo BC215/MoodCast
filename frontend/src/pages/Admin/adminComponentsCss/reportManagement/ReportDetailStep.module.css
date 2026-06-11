@@ -1,0 +1,536 @@
+.reportAction button,
+.sectionHead button,
+.inlineDetailButton {
+  min-width: 96px;
+  min-height: 38px;
+  border: 1px solid rgba(124, 77, 255, 0.46);
+  border-radius: 10px;
+  color: #633df2;
+  font-weight: 900;
+  background: #fff;
+  transition:
+    transform 0.16s ease,
+    background 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.reportAction button:hover,
+.sectionHead button:hover,
+.inlineDetailButton:hover {
+  background: #f3f0ff;
+  box-shadow: 0 10px 22px rgba(124, 77, 255, 0.16);
+  transform: translateY(-1px);
+}
+
+/* 사이드 패널 내부에서 실제 내용만 스크롤되는 본문 영역입니다. */
+.drawerBody {
+  min-height: 0;
+  padding: 20px 24px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: rgba(124, 77, 255, 0.32) rgba(124, 77, 255, 0.08);
+  scrollbar-width: thin;
+}
+
+.drawerBody::-webkit-scrollbar,
+.detailModalBody::-webkit-scrollbar {
+  width: 8px;
+}
+
+.drawerBody::-webkit-scrollbar-thumb,
+.detailModalBody::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(124, 77, 255, 0.32);
+}
+
+.drawerBody::-webkit-scrollbar-track,
+.detailModalBody::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: rgba(124, 77, 255, 0.08);
+}
+
+/* 신고 개요, 신고 사유, 신고자, 대상 사용자 정보, 최근 활동을 나누는 섹션입니다. */
+.detailSection {
+  padding: 0 0 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(102, 112, 133, 0.14);
+}
+
+.detailSection:last-child {
+  border-bottom: 0;
+}
+
+.detailSection h3,
+.periodSection h3,
+.confirmTable h3,
+.checkSection h3 {
+  margin: 0 0 12px;
+  color: #111827;
+  font-size: 0.95rem;
+  font-weight: 950;
+}
+
+/* 신고 개요와 대상 사용자 정보를 보여주는 카드 공통 스타일입니다. */
+.overviewCard,
+.targetMiniCard,
+.confirmTarget {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid rgba(124, 77, 255, 0.14);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.userInfoCard {
+  display: grid;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid rgba(124, 77, 255, 0.14);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.overviewCard dl,
+.targetMiniCard dl,
+.confirmTarget dl {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+}
+
+.userInfoIdentity {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(86px, auto);
+  align-items: start;
+  gap: 0 12px;
+}
+
+.userInfoIdentity > strong,
+.userInfoIdentity > span {
+  min-width: 0;
+  grid-column: 1;
+}
+
+.userInfoIdentity dl,
+.userInfoStatsRow {
+  display: grid;
+  margin: 0;
+}
+
+.userInfoIdentity dl {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
+.userInfoStatsRow {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.overviewCard dt,
+.userInfoCard dt,
+.targetMiniCard dt,
+.confirmTarget dt,
+.confirmTable dt {
+  color: #667085;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.overviewCard dd,
+.userInfoCard dd,
+.targetMiniCard dd,
+.confirmTarget dd,
+.confirmTable dd {
+  margin: 4px 0 0;
+  color: #111827;
+  font-size: 0.88rem;
+  font-weight: 900;
+}
+
+.overviewCard dd span,
+.userInfoCard span,
+.targetMiniCard span,
+.confirmTarget span {
+  display: block;
+  margin-top: 20px;
+  color: #667085;
+  font-weight: 700;
+}
+
+/* 신고 대상 사용자 아이콘 영역입니다. */
+.profileThumb {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  align-self: center;
+  border-radius: 12px;
+  color: #7c4dff;
+  background: #efe8ff;
+}
+
+.profileThumb svg {
+  width: 34px;
+  height: 34px;
+}
+
+.reasonText {
+  display: block;
+  margin-bottom: 7px;
+  color: #111827;
+  font-weight: 950;
+}
+
+.reportedContentBox {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid rgba(124, 77, 255, 0.14);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.reportedContentHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.reportedContentBox span,
+.postDetailModalContent span {
+  color: #667085;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.reportedContentBox strong,
+.postDetailModalContent strong {
+  color: #111827;
+  font-size: 0.92rem;
+  font-weight: 950;
+}
+
+.reportImageGallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.reportImageGallery img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border: 1px solid rgba(124, 77, 255, 0.14);
+  border-radius: 12px;
+  background: #f8f9ff;
+}
+
+.inlineDetailButton {
+  justify-self: start;
+  min-width: 120px;
+  min-height: 34px;
+  padding: 0 12px;
+  font-size: 0.82rem;
+}
+
+/* 긴 본문이 들어올 수 있는 설명 텍스트의 공통 스타일입니다. */
+.detailSection p,
+.guideText,
+.noticeBox p,
+.warningBox p,
+.releaseBox p,
+.postDetailModalContent p {
+  margin: 0;
+  color: #344054;
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.sectionHead h3 {
+  margin: 0;
+}
+
+/* 신고자 미리보기 목록입니다. */
+.reporterList {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.reporterList div {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+  border-radius: 12px;
+  background: #f8f9ff;
+}
+
+.reporterList span {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 900;
+  background: #7c4dff;
+}
+
+.reporterList strong {
+  color: #111827;
+  font-size: 0.88rem;
+}
+
+.reporterList em {
+  color: #667085;
+  font-size: 0.78rem;
+  font-style: normal;
+  font-weight: 800;
+  word-break: break-all;
+}
+
+.reporterList small {
+  color: #667085;
+  font-weight: 700;
+}
+
+/* 신고 대상 사용자의 최근 게시글, 댓글, 제재 활동 목록입니다. */
+.activityList {
+  display: grid;
+  gap: 12px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.activityList li {
+  display: grid;
+  gap: 4px;
+  padding-left: 12px;
+  border-left: 3px solid #7c4dff;
+}
+
+.activityList strong {
+  color: #633df2;
+  font-size: 0.82rem;
+}
+
+.activityList span {
+  color: #111827;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.activityList time {
+  color: #667085;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.modalActivityList {
+  gap: 14px;
+}
+
+.emptyActivity {
+  min-height: 72px;
+  place-items: center;
+  border-left: 0 !important;
+  border-radius: 14px;
+  color: #667085;
+  font-size: 0.9rem;
+  font-weight: 900;
+  background: #f8f9ff;
+}
+
+/* 사이드 패널 하단 버튼 영역입니다. */
+.drawerFooter {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 18px 24px 22px;
+  border-top: 1px solid rgba(102, 112, 133, 0.14);
+  background: #fff;
+}
+
+.primaryButton,
+.secondaryButton {
+  min-height: 46px;
+  border-radius: 12px;
+  font-weight: 950;
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    background 0.16s ease;
+}
+
+.primaryButton {
+  border: 0;
+  color: #fff;
+  background: linear-gradient(135deg, #7c4dff, #633df2);
+  box-shadow: 0 16px 28px rgba(124, 77, 255, 0.22);
+}
+
+.primaryButton:hover {
+  box-shadow: 0 18px 34px rgba(124, 77, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.primaryButton:disabled {
+  color: #98a2b3;
+  background: #eef0f6;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.secondaryButton {
+  border: 1px solid rgba(124, 77, 255, 0.26);
+  color: #633df2;
+  background: #fff;
+}
+
+.secondaryButton:hover {
+  background: #f3f0ff;
+}
+
+.primaryButton:active,
+.secondaryButton:active,
+.inlineDetailButton:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.resultFooter .primaryButton {
+  min-width: 140px;
+}
+
+.detailModalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.32);
+}
+
+.detailModal {
+  width: min(460px, 100%);
+  max-height: min(620px, 86vh);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid rgba(124, 77, 255, 0.14);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 22px 60px rgba(15, 23, 42, 0.18);
+}
+
+.detailModalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(102, 112, 133, 0.14);
+}
+
+.detailModalHeader h3 {
+  margin: 0;
+  color: #111827;
+  font-size: 1rem;
+  font-weight: 950;
+}
+
+.detailModalHeader button {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  color: #344054;
+  font-size: 1.5rem;
+  line-height: 1;
+  background: #f8f9ff;
+}
+
+.detailModalBody {
+  min-height: 0;
+  padding: 18px 20px 20px;
+  overflow: auto;
+  scrollbar-color: rgba(124, 77, 255, 0.32) rgba(124, 77, 255, 0.08);
+  scrollbar-width: thin;
+}
+
+.modalList {
+  display: grid;
+  gap: 10px;
+}
+
+.modalListItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #f8f9ff;
+}
+
+.modalListItem div {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.modalListItem strong {
+  color: #111827;
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.modalListItem small {
+  color: #667085;
+  font-size: 0.8rem;
+  font-weight: 800;
+  word-break: break-all;
+}
+
+.modalListItem span {
+  color: #667085;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.postDetailModalContent {
+  display: grid;
+  gap: 14px;
+}
+
+.postDetailModalContent > div {
+  display: grid;
+  gap: 5px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #f8f9ff;
+}
+
+.postDetailModalContent small {
+  color: #667085;
+  font-weight: 800;
+  word-break: break-all;
+}

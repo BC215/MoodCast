@@ -1,0 +1,256 @@
+.simpleList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.emptyFeed {
+  grid-column: 1 / -1;
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  min-height: 220px;
+  padding: 24px;
+  border: 1px dashed rgba(124, 77, 255, 0.24);
+  border-radius: 18px;
+  color: #667085;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.76);
+}
+
+.emptyFeed strong {
+  color: #111827;
+  font-size: 1rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.emptyFeed span {
+  font-size: 0.9rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.simpleCard {
+  display: grid;
+  gap: 14px;
+  min-height: 180px;
+  padding: 18px;
+  border: 1px solid rgba(124, 77, 255, 0.1);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 18px 44px rgba(17, 24, 39, 0.045);
+}
+
+.simpleCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.simpleCardHeader strong {
+  min-width: 0;
+  overflow: hidden;
+  color: #111827;
+  font-size: 1rem;
+  font-weight: 950;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.statusPublic {
+  color: #067647;
+  background: rgba(18, 183, 106, 0.12);
+}
+
+.statusDeleted {
+  color: #d92d20;
+  background: rgba(217, 45, 32, 0.1);
+}
+
+.statusHidden {
+  color: #b54708;
+  background: rgba(247, 144, 9, 0.12);
+}
+
+.simpleContent {
+  margin: 0;
+  overflow: hidden;
+  color: #344054;
+  font-size: 0.92rem;
+  font-weight: 800;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.commentAuthorRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(102, 112, 133, 0.06);
+}
+
+.commentAvatar {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border-radius: 50%;
+  background: rgba(124, 77, 255, 0.12);
+}
+
+.commentAvatar img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.commentAuthorRow div {
+  min-width: 0;
+}
+
+.commentAuthorRow span:not(.commentAvatar) {
+  display: block;
+  color: #667085;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.commentAuthorRow strong {
+  display: block;
+  overflow: hidden;
+  color: #111827;
+  font-size: 0.88rem;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.simpleMetaList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.simpleMetaList div {
+  min-width: 0;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(102, 112, 133, 0.06);
+}
+
+.simpleMetaList dt {
+  color: #667085;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.simpleMetaList dd {
+  margin: 4px 0 0;
+  overflow: hidden;
+  color: #111827;
+  font-size: 0.86rem;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardActions {
+  display: flex;
+  gap: 8px;
+}
+
+.cardActions button {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid rgba(102, 112, 133, 0.24);
+  border-radius: 10px;
+  background: #fff;
+  color: #344054;
+  font-size: 0.82rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.cardActions button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0 4px;
+}
+
+.paginationButtons {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.paginationButtons button {
+  min-width: 31px;
+  min-height: 31px;
+  padding: 0 9px;
+  border-radius: 10px;
+  color: #475467;
+  font-size: 0.78rem;
+  font-weight: 900;
+  background: #fff;
+  border: 1px solid rgba(102, 112, 133, 0.16);
+  cursor: pointer;
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.paginationButtons button:disabled {
+  color: #c3c8d1;
+  cursor: not-allowed;
+  background: #f6f7f9;
+  box-shadow: none;
+}
+
+.paginationButtons .activePage {
+  color: #fff;
+  border-color: #7c4dff;
+  background: #7c4dff;
+}
+
+.paginationButtons button:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(124, 77, 255, 0.13);
+}
+
+.paginationButtons button:not(:disabled):active {
+  transform: translateY(0) scale(0.98);
+}
+
+@media (max-width: 760px) {
+  .simpleList,
+  .simpleMetaList {
+    grid-template-columns: 1fr;
+  }
+}

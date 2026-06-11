@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moodcast.member.dao.SignupDao">
+
+    <select id="countByEmail">
+        select count(*) from members where email = #{email}
+    </select>
+
+    <select id="countByNickname">
+        select count(*) from members where nickname = #{nickname}
+    </select>
+
+    <select id="findActiveTerms" resultType="Terms">
+        select
+            terms_id,
+            terms_type,
+            version,
+            title,
+            content,
+            is_required,
+            is_active,
+            created_at
+        from terms
+        where is_active = 1
+        order by is_required desc, terms_id asc
+    </select>
+
+    <select id="findRequiredTerms" resultType="Terms">
+        select
+            terms_id,
+            terms_type,
+            version,
+            title,
+            content,
+            is_required,
+            is_active,
+            created_at
+        from terms
+        where is_active = 1
+          and is_required = 1
+        order by terms_id asc
+    </select>
+
+    <!--
+      회원 가입 시간 저장입니다.
+
+      시간대 주의:
+      - RDS/MySQL 세션 시간대가 UTC라서 created_at을 DB 기본값에 맡기면 서울 시간보다 9시간 빠르게 저장됩니다.
+      - 관리자 최근 활동/가입자 통계는 members.created_at을 서울 시간 기준으로 집계하므로,
+        로그인 시간과 같은 방식으로 CONVERT_TZ(NOW(6), '+00:00', '+09:00') 값을 직접 저장합니다.
+    -->
+    <insert id="insertMember" useGeneratedKeys="true" keyProperty="memberId">
+        insert into members (
+            email,
+            password_hash,
+            name,
+            nickname,
+            phone,
+            profile_image_url,
+            email_verified,
+            phone_verified,
+            created_at,
+            updated_at
+        ) values (
+            #{email},
+            #{passwordHash},
+            #{name},
+            #{nickname},
+            #{phone},
+            #{profileImageUrl},
+            #{emailVerified},
+            #{phoneVerified},
+            CONVERT_TZ(NOW(6), '+00:00', '+09:00'),
+            CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        )
+    </insert>
+
+    <insert id="insertMemberTermsAgreement">
+        insert into member_terms_agreements (
+            member_id,
+            terms_id,
+            agreed,
+            agreed_at
+        ) values (
+            #{memberId},
+            #{termsId},
+            #{agreed},
+            case when #{agreed} = 1 then CONVERT_TZ(NOW(6), '+00:00', '+09:00') else null end
+        )
+    </insert>
+</mapper>

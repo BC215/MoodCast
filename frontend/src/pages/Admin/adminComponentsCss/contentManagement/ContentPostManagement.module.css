@@ -1,0 +1,43 @@
+.contentShell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 20px;
+  align-items: start;
+}
+
+.contentShellFull {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.contentMain {
+  min-width: 0;
+  display: grid;
+  gap: 14px;
+}
+
+.statusPublic {
+  color: #067647;
+  background: rgba(18, 183, 106, 0.12);
+}
+
+.statusHidden {
+  color: #b54708;
+  background: rgba(247, 144, 9, 0.14);
+}
+
+.statusDeleted {
+  color: #d92d20;
+  background: rgba(217, 45, 32, 0.1);
+}
+
+@media (max-width: 1280px) {
+  .contentShell {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1080px) {
+  .contentMain {
+    overflow-x: auto;
+  }
+}

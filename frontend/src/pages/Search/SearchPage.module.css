@@ -1,0 +1,165 @@
+.wrap {
+  display: grid;
+  gap: 16px;
+}
+
+.searchField {
+  min-height: 54px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(17, 24, 39, 0.085);
+  box-shadow: 0 1px 3px rgba(17, 24, 39, 0.055);
+}
+
+.searchField input {
+  width: 100%;
+  border: 0;
+  outline: none;
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+}
+
+.tabs button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(17, 24, 39, 0.085);
+  box-shadow: 0 1px 3px rgba(17, 24, 39, 0.055);
+  color: #667085;
+  font-weight: 700;
+}
+
+.active {
+  background: rgba(124, 77, 255, 0.09) !important;
+  color: #7c4dff !important;
+}
+
+.list {
+  display: grid;
+  gap: 12px;
+}
+
+.item {
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(17, 24, 39, 0.085);
+  box-shadow: 0 1px 3px rgba(17, 24, 39, 0.055);
+}
+
+.item strong {
+  display: block;
+  color: #111827;
+}
+
+.item p {
+  margin: 6px 0 0;
+  color: #667085;
+}
+
+.followButton,
+.unfollowButton {
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.followButton {
+  background: #0095f6;
+  color: #fff;
+}
+
+.followButton:hover {
+  background: #1877f2;
+}
+
+.unfollowButton {
+  background: #ff4d4f;
+  color: #fff;
+}
+
+.unfollowButton:hover {
+  background: #ff7875;
+}
+
+.searchCondition {
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: rgba(124, 77, 255, 0.08);
+  border: 1px solid rgba(124, 77, 255, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.searchCondition strong {
+  color: #7c4dff;
+  font-weight: 700;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #7c4dff;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+/* 인기 해시태그 섹션 스타일 */
+.trendingSection {
+  margin-bottom: 24px;
+}
+
+.trendingTitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.trendingTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.trendingTag {
+  padding: 6px 12px;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.trendingTag:hover {
+  background-color: #e0e0e0;
+  border-color: #999;
+}
+
+.trendingLoading,
+.trendingEmpty {
+  text-align: center;
+  padding: 20px;
+  color: #999;
+  font-size: 13px;
+}

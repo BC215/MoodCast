@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moodcast.search.dao.SearchDao">
+
+    <!-- 게시물 검색: 게시물 내용과 작성자 이름/닉네임을 함께 검색합니다. -->
+    <select id="searchPosts" parameterType="string" resultType="com.moodcast.search.vo.SearchPostResult">
+        select
+            p.post_id as postId,
+            p.member_id as memberId,
+            m.name as authorName,
+            m.nickname as authorNickname,
+            m.profile_image_url as profileImageUrl,
+            p.title as title,
+            p.content as content,
+            p.emotion_id as emotionId,
+                <!-- 검색 결과의 태그도 입력 순서로 보여주기 위해 post_hashtag_id 기준으로 합침 -->
+            group_concat(concat('#', h.hashtag) order by ph.post_hashtag_id separator ' ') as tags,
+            coalesce((select count(*) from user_post_like upl where upl.post_id = p.post_id), 0) as likes,
+            coalesce((
+                select count(*)
+                from comment_tbl c
+                where c.post_id = p.post_id
+                  and c.deleted_yn = 'N'
+                  and not exists (
+                      select 1
+                      from admin_action_logs log
+                      where log.target_type = 'COMMENT'
+                        and log.target_id = c.comment_id
+                        and log.action_type = 'HIDE'
+                        and log.log_id = (
+                            select max(log_id)
+                            from admin_action_logs
+                            where target_type = 'COMMENT'
+                              and target_id = c.comment_id
+                              and action_type in ('HIDE', 'RESTORE')
+                        )
+                  )
+            ), 0) as comments,
+            p.created_at as createdAt
+        from post_tbl p
+                 join members m on p.member_id = m.member_id
+                 left join post_hashtag ph on p.post_id = ph.post_id
+                 left join hashtag h on ph.hashtag_id = h.hashtag_id
+        where p.deleted_yn = 'N'
+          and p.visibility = 'PUBLIC'
+          and (
+              lower(p.content) like concat('%', lower(#{query}), '%')
+              or lower(m.name) like concat('%', lower(#{query}), '%')
+              or lower(m.nickname) like concat('%', lower(#{query}), '%')
+              or lower(h.hashtag) like concat('%', lower(replace(#{query}, '#', '')), '%')
+          )
+        group by p.post_id, p.member_id, m.name, m.nickname, m.profile_image_url, p.title, p.content, p.emotion_id, p.created_at
+        order by p.created_at desc
+        limit 50
+    </select>
+
+    <!-- 사용자 검색: 이름 또는 닉네임으로 사용자 목록을 검색합니다. -->
+    <select id="searchUsers" parameterType="map" resultType="com.moodcast.search.vo.SearchUserResult">
+        select
+            m.member_id as memberId,
+            m.name,
+            m.nickname,
+            m.email,
+            m.profile_image_url as profileImageUrl,
+            CASE WHEN f.follower_member_id IS NOT NULL THEN 1 ELSE 0 END as following
+        from members m
+        left join follow_tbl f on f.follower_member_id = #{loginId} and f.following_member_id = m.member_id
+        where lower(m.name) like concat('%', lower(#{query}), '%')
+           or lower(m.nickname) like concat('%', lower(#{query}), '%')
+           or lower(m.email) like concat('%', lower(#{query}), '%')
+        order by m.name asc
+        limit 50
+    </select>
+
+    <!-- 사용자 인기 목록: 팔로워 수가 많은 사용자 순으로 보여줍니다. -->
+    <select id="selectTrendingUsers" parameterType="map" resultType="com.moodcast.search.vo.SearchUserResult">
+        select
+            m.member_id as memberId,
+            m.name,
+            m.nickname,
+            m.email,
+            m.profile_image_url as profileImageUrl,
+            coalesce(fc.followerCount, 0) as followerCount,
+            CASE WHEN f.follower_member_id IS NOT NULL THEN 1 ELSE 0 END as following
+        from members m
+                 left join (
+                    select following_member_id, count(*) as followerCount
+                    from follow_tbl
+                    group by following_member_id
+                 ) fc on fc.following_member_id = m.member_id
+                 left join follow_tbl f on f.follower_member_id = #{loginId} and f.following_member_id = m.member_id
+        order by followerCount desc, m.member_id desc
+        limit #{limit}
+    </select>
+
+    <!-- 해시태그 검색: 태그 이름에 검색어가 포함된 해시태그를 찾습니다. -->
+    <select id="searchHashtags" parameterType="string" resultType="com.moodcast.search.vo.SearchHashtagResult">
+        select
+            h.hashtag_id as hashtagId,
+            h.hashtag,
+            count(ph.post_hashtag_id) as postCount
+        from hashtag h
+                 left join post_hashtag ph on h.hashtag_id = ph.hashtag_id
+                 left join post_tbl p on p.post_id = ph.post_id
+        where lower(h.hashtag) like concat('%', lower(#{query}), '%')
+          and p.deleted_yn = 'N'
+          and p.visibility = 'PUBLIC'
+        group by h.hashtag_id, h.hashtag
+        order by postCount desc
+        limit 50
+    </select>
+
+    <select id="selectTrendingHashtags" parameterType="map" resultType="com.moodcast.search.vo.SearchHashtagResult">
+        <choose>
+            <when test="from == null">
+                select
+                    h.hashtag_id as hashtagId,
+                    h.hashtag,
+                    count(ph.post_hashtag_id) as useCount
+                from hashtag h
+                         join post_hashtag ph on h.hashtag_id = ph.hashtag_id
+                         join post_tbl p on p.post_id = ph.post_id
+                where p.deleted_yn = 'N'
+                  and p.visibility = 'PUBLIC'
+                group by h.hashtag_id, h.hashtag
+                order by useCount desc, h.hashtag asc
+                limit #{limit}
+            </when>
+            <otherwise>
+                select
+                    h.hashtag_id as hashtagId,
+                    h.hashtag,
+                    count(ph.post_hashtag_id) as useCount
+                from hashtag h
+                         join post_hashtag ph on h.hashtag_id = ph.hashtag_id
+                         join post_tbl p on p.post_id = ph.post_id
+                where p.deleted_yn = 'N'
+                  and p.visibility = 'PUBLIC'
+                  and p.created_at &gt;= #{from}
+                group by h.hashtag_id, h.hashtag
+                order by useCount desc, h.hashtag asc
+                limit #{limit}
+            </otherwise>
+        </choose>
+    </select>
+
+</mapper>

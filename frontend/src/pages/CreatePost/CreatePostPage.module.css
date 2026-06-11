@@ -1,0 +1,500 @@
+.wrap {
+  display: grid;
+  gap: 18px;
+  overflow: visible;
+}
+
+.hero,
+.card {
+  padding: 22px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(17, 24, 39, 0.085);
+  box-shadow: 0 1px 3px rgba(17, 24, 39, 0.055);
+  overflow: visible;
+}
+
+.hero strong,
+.card p {
+  color: #111827;
+}
+
+.hero p {
+  margin: 8px 0 0;
+  color: #667085;
+}
+
+.card {
+  display: grid;
+  gap: 18px;
+}
+
+.field {
+  display: grid;
+  gap: 12px;
+}
+
+.mentionInputWrap,
+.mentionField {
+  position: relative;
+  display: grid;
+  gap: 8px;
+}
+
+.field label {
+  color: #475569;
+  font-weight: 700;
+}
+
+.card input,
+.card textarea,
+.editor {
+  width: 100%;
+  border: 1px solid #e6e8f3;
+  border-radius: 16px;
+  padding: 14px 16px;
+  color: #111827;
+  background: #fcfdff;
+  font-weight: 700;
+}
+
+.editor {
+  min-height: 220px;
+  resize: vertical;
+  outline: none;
+}
+
+.field:has(.editor) {
+  gap: 8px;
+}
+
+.editor:empty:before {
+  content: attr(data-placeholder);
+  color: #9ca3af;
+}
+
+.editorImage {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 16px;
+  margin: 12px 0;
+}
+
+.mentionBox {
+  display: grid;
+  gap: 6px;
+  width: 260px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 10px;
+  border: 1px solid #e6e8f3;
+  border-radius: 14px;
+  background: #fff;
+  position: absolute;
+  left: 44px;
+  bottom: calc(100% + 10px);
+  z-index: 10000;
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.18);
+}
+
+.mentionItem {
+  width: 100%;
+  border: 0;
+  border-radius: 12px;
+  background: #f8fafc;
+  padding: 10px 12px;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mentionItem:hover {
+  background: #eef2ff;
+}
+
+.mentionText {
+  color: #7c4dff;
+  font-weight: 800;
+  word-break: break-word;
+}
+
+.mentionCandidateAvatar {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f6b0ff, #b59cff, #5ac8ff);
+}
+
+.mentionCandidateAvatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mentionCandidateMeta {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.mentionCandidateMeta strong {
+  color: #111827;
+  font-size: 0.93rem;
+  font-weight: 800;
+}
+
+.mentionCandidateMeta span {
+  color: #7c4dff;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.card textarea {
+  min-height: 220px;
+  resize: vertical;
+}
+
+.uploadSection {
+  display: grid;
+  gap: 10px;
+  padding-top: 2px;
+}
+
+.bodyUploadSection {
+  margin-top: -10px;
+  padding: 10px 12px;
+  border: 1px solid #e6e8f3;
+  border-radius: 16px;
+  background: #fcfdff;
+}
+
+.uploadGroup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.uploadButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 24px;
+  border-radius: 99px; /* 알약 모양으로 변경 */
+  border: none;
+  font-weight: 800;
+  cursor: pointer;
+  background: linear-gradient(
+    135deg,
+    #4da6ff,
+    #a162ff,
+    #ec24c7
+  ); /* 그라데이션 색상 부드럽게 조정 */
+  color: #fff;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  box-shadow: 0 4px 12px rgba(124, 77, 255, 0.2);
+}
+
+.uploadButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(124, 77, 255, 0.3);
+}
+
+.uploadButton:active {
+  transform: translateY(0);
+}
+
+.uploadDescription {
+  color: #667085;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.imageList {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.imageGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.imageItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.imageThumbWrap {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f0f2ff;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+}
+
+.imageThumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.imageRemoveButton {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(239, 68, 68, 0.88);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.2s ease;
+}
+
+.imageRemoveButton:hover {
+  background: rgba(220, 38, 38, 0.95);
+}
+
+.previewList {
+  display: grid;
+  gap: 12px;
+}
+
+.previewItem {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 16px;
+  background: #fafbff;
+  border: 1px solid #e6e8f3;
+}
+
+.previewItem img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 14px;
+}
+
+.previewItem strong {
+  display: block;
+  color: #111827;
+}
+
+.previewItem button {
+  align-self: flex-start;
+  border: 0;
+  background: transparent;
+  color: #7c4dff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.previewSection {
+  display: grid;
+  gap: 12px;
+}
+
+.sectionLabel {
+  color: #111827;
+  font-size: 0.96rem;
+}
+
+.previewMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.imageSizeRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.sizeButton {
+  border: 1px solid #e6e8f3;
+  border-radius: 999px;
+  background: #fff;
+  color: #475569;
+  padding: 6px 10px;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.sizeActive {
+  background: #eef2ff;
+  border-color: #c7d2fe;
+  color: #3730a3;
+}
+
+.removeButton {
+  border: 0;
+  background: transparent;
+  color: #7c4dff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.attachmentList {
+  display: grid;
+  gap: 10px;
+}
+
+.attachmentItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid #e6e8f3;
+}
+
+.attachmentItem span {
+  color: #111827;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attachmentItem button {
+  border: 0;
+  background: transparent;
+  color: #7c4dff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.submitButton {
+  min-height: 52px;
+  border: 0;
+  border-radius: 16px;
+  color: white;
+  font-weight: 900;
+  background: linear-gradient(135deg, #4da6ff, #7c4dff, #ec24c7);
+  cursor: pointer;
+}
+
+.submitButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.fieldError {
+  color: #dc2626;
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-top: -6px;
+}
+
+.message {
+  color: #7c4dff;
+  font-weight: 800;
+  background: #f3edff;
+  padding: 12px 14px;
+  border-radius: 16px;
+}
+
+/* 해시태그 관련 스타일 */
+.tagContainer {
+  margin-bottom: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.tagChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background-color: #f0f0f0;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tagChipButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 2px;
+  font-size: 16px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+.tagHelpText {
+  color: #666;
+  margin-top: 6px;
+  display: block;
+  font-size: 12px;
+}
+/* 감정 선택 스타일 */
+.emotionGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 12px;
+}
+
+.emotionButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 10px;
+  border: 2px solid #e6e8f3;
+  border-radius: 14px;
+  background: #fcfdff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+  gap: 6px;
+}
+
+.emotionButton:hover {
+  border-color: #d0d5e0;
+  background: #f5f7fc;
+}
+
+.emotionSelected {
+  border-width: 2px;
+}
+
+.emotionEmoji {
+  font-size: 28px;
+}
+
+.emotionName {
+  font-size: 12px;
+  color: #475569;
+}

@@ -1,0 +1,1843 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 관리자 MyBatis 매퍼입니다. 관리자 페이지 API에서 사용하는 SQL과 결과 매핑을 정의합니다. -->
+<mapper namespace="com.moodcast.admin.dao.AdminDao">
+
+    <!-- adminDashboardSummaryMap 결과 매핑입니다. DB 조회 결과 컬럼을 화면 응답 VO 필드에 연결합니다. -->
+    <resultMap id="adminDashboardSummaryMap" type="com.moodcast.admin.vo.AdminDashboardSummary">
+        <result property="totalMemberCount" column="total_member_count"/>
+        <result property="todayNewMemberCount" column="today_new_member_count"/>
+        <result property="postCount" column="post_count"/>
+        <result property="pendingReportCount" column="pending_report_count"/>
+    </resultMap>
+
+    <!-- adminMemberMap 결과 매핑입니다. DB 조회 결과 컬럼을 화면 응답 VO 필드에 연결합니다. -->
+    <resultMap id="adminMemberMap" type="com.moodcast.admin.vo.AdminMember">
+        <id property="memberId" column="member_id"/>
+        <result property="name" column="name"/>
+        <result property="nickname" column="nickname"/>
+        <result property="email" column="email"/>
+        <result property="profileImageUrl" column="profile_image_url"/>
+        <result property="status" column="status"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="role" column="role"/>
+        <result property="lastLoginAt" column="last_login_at"/>
+        <result property="reportCount" column="report_count"/>
+        <result property="postCount" column="post_count"/>
+        <result property="commentCount" column="comment_count"/>
+        <result property="suspendedUntil" column="suspended_until"/>
+        <result property="suspensionCount" column="suspension_count"/>
+        <result property="warningCount" column="warning_count"/>
+    </resultMap>
+
+    <!-- adminContentPostMap 결과 매핑입니다. DB 조회 결과 컬럼을 화면 응답 VO 필드에 연결합니다. -->
+    <resultMap id="adminContentPostMap" type="com.moodcast.admin.vo.AdminContentPost">
+        <id property="postId" column="post_id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="visibility" column="visibility"/>
+        <result property="deletedYn" column="deleted_yn"/>
+        <result property="emotionId" column="emotion_id"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="memberId" column="member_id"/>
+        <result property="authorName" column="author_name"/>
+        <result property="authorNickname" column="author_nickname"/>
+        <result property="authorProfileImageUrl" column="author_profile_image_url"/>
+        <result property="commentCount" column="comment_count"/>
+        <result property="hashtagCount" column="hashtag_count"/>
+        <result property="tags" column="tags"/>
+    </resultMap>
+
+    <!-- adminContentCommentMap 결과 매핑입니다. DB 조회 결과 컬럼을 화면 응답 VO 필드에 연결합니다. -->
+    <resultMap id="adminContentCommentMap" type="com.moodcast.admin.vo.AdminContentComment">
+        <id property="commentId" column="comment_id"/>
+        <result property="postId" column="post_id"/>
+        <result property="postTitle" column="post_title"/>
+        <result property="content" column="content"/>
+        <result property="deletedYn" column="deleted_yn"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="memberId" column="member_id"/>
+        <result property="authorName" column="author_name"/>
+        <result property="authorNickname" column="author_nickname"/>
+        <result property="authorProfileImageUrl" column="author_profile_image_url"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="moderationStatus" column="moderation_status"/>
+    </resultMap>
+
+    <!-- adminContentHashtagMap 결과 매핑입니다. DB 조회 결과 컬럼을 화면 응답 VO 필드에 연결합니다. -->
+    <resultMap id="adminContentHashtagMap" type="com.moodcast.admin.vo.AdminContentHashtag">
+        <id property="hashtagId" column="hashtag_id"/>
+        <result property="hashtag" column="hashtag"/>
+        <result property="useCount" column="use_count"/>
+        <result property="postCount" column="post_count"/>
+        <result property="latestPostCreatedAt" column="latest_post_created_at"/>
+        <result property="moderationStatus" column="moderation_status"/>
+    </resultMap>
+
+    <!-- adminProfileMap 결과 매핑입니다. DB 조회 결과 컬럼을 화면 응답 VO 필드에 연결합니다. -->
+    <resultMap id="adminProfileMap" type="com.moodcast.admin.vo.AdminProfile">
+        <id property="memberId" column="member_id"/>
+        <result property="name" column="name"/>
+        <result property="nickname" column="nickname"/>
+        <result property="phone" column="phone"/>
+    </resultMap>
+
+    <!-- adminMemberDetailMap 결과 매핑입니다. DB 조회 결과 컬럼을 화면 응답 VO 필드에 연결합니다. -->
+    <resultMap id="adminMemberDetailMap" type="com.moodcast.admin.vo.AdminMemberDetail">
+        <id property="memberId" column="member_id"/>
+        <result property="email" column="email"/>
+        <result property="name" column="name"/>
+        <result property="nickname" column="nickname"/>
+        <result property="phone" column="phone"/>
+        <result property="emailVerified" column="email_verified"/>
+        <result property="phoneVerified" column="phone_verified"/>
+        <result property="role" column="role"/>
+        <result property="status" column="status"/>
+        <result property="lastLoginAt" column="last_login_at"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="deletedAt" column="deleted_at"/>
+        <result property="suspendedUntil" column="suspended_until"/>
+        <result property="suspensionCount" column="suspension_count"/>
+        <result property="warningCount" column="warning_count"/>
+    </resultMap>
+
+    <resultMap id="adminRecentMemberMap" type="com.moodcast.admin.vo.AdminRecentMember">
+        <id property="memberId" column="member_id"/>
+        <result property="name" column="name"/>
+        <result property="nickname" column="nickname"/>
+        <result property="email" column="email"/>
+        <result property="status" column="status"/>
+        <result property="role" column="role"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="actionType" column="action_type"/>
+        <result property="actionDetail" column="action_detail"/>
+    </resultMap>
+
+    <resultMap id="adminActionLogViewMap" type="com.moodcast.admin.vo.AdminActionLogView">
+        <id property="logId" column="log_id"/>
+        <result property="adminId" column="admin_id"/>
+        <result property="adminName" column="admin_name"/>
+        <result property="adminNickname" column="admin_nickname"/>
+        <result property="actionType" column="action_type"/>
+        <result property="targetType" column="target_type"/>
+        <result property="targetId" column="target_id"/>
+        <result property="targetName" column="target_name"/>
+        <result property="targetNickname" column="target_nickname"/>
+        <result property="targetEmail" column="target_email"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="actionDetail" column="action_detail"/>
+    </resultMap>
+
+    <resultMap id="adminUserManagementSummaryMap" type="com.moodcast.admin.vo.AdminUserManagementSummary">
+        <result property="totalMemberCount" column="total_member_count"/>
+        <result property="normalMemberCount" column="normal_member_count"/>
+        <result property="adminMemberCount" column="admin_member_count"/>
+        <result property="suspendedMemberCount" column="suspended_member_count"/>
+    </resultMap>
+
+    <!-- adminEmotionActivityMap 결과 매핑입니다. DB 조회 결과 컬럼을 화면 응답 VO 필드에 연결합니다. -->
+    <resultMap id="adminEmotionActivityMap" type="com.moodcast.admin.vo.AdminEmotionActivity">
+        <id property="emotionId" column="emotion_id"/>
+        <result property="activityCount" column="activity_count"/>
+    </resultMap>
+
+    <!-- adminActiveUserStatMap 결과 매핑입니다. DB 조회 결과 컬럼을 화면 응답 VO 필드에 연결합니다. -->
+    <resultMap id="adminActiveUserStatMap" type="com.moodcast.admin.vo.AdminActiveUserStat">
+        <result property="label" column="label"/>
+        <result property="activeUserCount" column="active_user_count"/>
+    </resultMap>
+
+    <!-- adminStatisticsSummaryMap 결과 매핑입니다. DB 조회 결과 컬럼을 화면 응답 VO 필드에 연결합니다. -->
+    <resultMap id="adminStatisticsSummaryMap" type="com.moodcast.admin.vo.AdminStatisticsSummary">
+        <result property="totalMemberCount" column="total_member_count"/>
+        <result property="newMemberCount" column="new_member_count"/>
+        <result property="activeUserCount" column="active_user_count"/>
+        <result property="postCount" column="post_count"/>
+        <result property="commentCount" column="comment_count"/>
+        <result property="empathyCount" column="empathy_count"/>
+    </resultMap>
+
+    <!-- adminStatisticsTrendMap 결과 매핑입니다. DB 조회 결과 컬럼을 화면 응답 VO 필드에 연결합니다. -->
+    <resultMap id="adminStatisticsTrendMap" type="com.moodcast.admin.vo.AdminStatisticsTrend">
+        <result property="label" column="label"/>
+        <result property="value" column="value"/>
+    </resultMap>
+
+    <!-- adminRecentActivityMap 결과 매핑입니다. DB 조회 결과 컬럼을 화면 응답 VO 필드에 연결합니다. -->
+    <resultMap id="adminRecentActivityMap" type="com.moodcast.admin.vo.AdminRecentActivity">
+        <result property="activityType" column="activity_type"/>
+        <result property="memberId" column="member_id"/>
+        <result property="memberName" column="member_name"/>
+        <result property="memberNickname" column="member_nickname"/>
+        <result property="memberEmail" column="member_email"/>
+        <result property="adminId" column="admin_id"/>
+        <result property="adminName" column="admin_name"/>
+        <result property="adminNickname" column="admin_nickname"/>
+        <result property="activityDetail" column="activity_detail"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <!-- 공지사항 결과 매핑입니다. notices_tbl 컬럼을 Notice VO 필드에 연결합니다. -->
+    <resultMap id="noticeMap" type="com.moodcast.admin.vo.Notice">
+        <id property="noticeId" column="notice_id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="noticeType" column="notice_type"/>
+        <result property="createdByAdminId" column="created_by_admin_id"/>
+        <result property="createdByAdminName" column="created_by_admin_name"/>
+        <result property="createdByAdminNickname" column="created_by_admin_nickname"/>
+        <result property="createdByAdminEmail" column="created_by_admin_email"/>
+        <result property="adminName" column="admin_name"/>
+        <result property="adminNickname" column="admin_nickname"/>
+        <result property="adminEmail" column="admin_email"/>
+        <result property="updatedByAdminId" column="updated_by_admin_id"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="deletedAt" column="deleted_at"/>
+    </resultMap>
+
+    <!-- adminReportMap 결과 매핑입니다. 신고 및 제재 관리 화면의 신고 목록/상세 값을 연결합니다. -->
+    <resultMap id="adminReportMap" type="com.moodcast.admin.vo.AdminReport">
+        <id property="reportId" column="report_id"/>
+        <result property="targetType" column="target_type"/>
+        <result property="reporterMemberId" column="reporter_member_id"/>
+        <result property="reporterName" column="reporter_name"/>
+        <result property="reporterNickname" column="reporter_nickname"/>
+        <result property="reporterEmail" column="reporter_email"/>
+        <result property="targetMemberId" column="target_member_id"/>
+        <result property="targetMemberName" column="target_member_name"/>
+        <result property="targetMemberNickname" column="target_member_nickname"/>
+        <result property="targetMemberEmail" column="target_member_email"/>
+        <result property="targetMemberCreatedAt" column="target_member_created_at"/>
+        <result property="targetPostCount" column="target_post_count"/>
+        <result property="targetCommentCount" column="target_comment_count"/>
+        <result property="targetLikeCount" column="target_like_count"/>
+        <result property="targetReportCount" column="target_report_count"/>
+        <result property="targetWarningCount" column="target_warning_count"/>
+        <result property="targetSuspendCount" column="target_suspend_count"/>
+        <result property="postId" column="post_id"/>
+        <result property="commentId" column="comment_id"/>
+        <result property="postTitle" column="post_title"/>
+        <result property="postTags" column="post_tags"/>
+        <result property="targetContent" column="target_content"/>
+        <result property="commentContent" column="comment_content"/>
+        <result property="reason" column="reason"/>
+        <result property="reportStatus" column="report_status"/>
+        <result property="processResult" column="process_result"/>
+        <result property="handledMemo" column="handled_memo"/>
+        <result property="handledByMemberId" column="handled_by_member_id"/>
+        <result property="handledByMemberName" column="handled_by_member_name"/>
+        <result property="reviewedAt" column="reviewed_at"/>
+        <result property="handledAt" column="handled_at"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="sameTargetReportCount" column="same_target_report_count"/>
+        <result property="sameTargetReporterCount" column="same_target_reporter_count"/>
+    </resultMap>
+
+    <!-- 관리자 기능 담당 작업(문건우): 신고 처리율 통계 결과 매핑입니다. -->
+    <resultMap id="adminReportProcessRateStatMap" type="com.moodcast.admin.vo.AdminReportProcessRateStat">
+        <result property="totalCount" column="total_count"/>
+        <result property="doneCount" column="done_count"/>
+        <result property="openCount" column="open_count"/>
+    </resultMap>
+
+    <!-- 신고 상세 패널의 최근 활동 결과 매핑입니다. -->
+    <resultMap id="adminReportActivityMap" type="com.moodcast.admin.vo.AdminReportActivity">
+        <result property="type" column="type"/>
+        <result property="text" column="text"/>
+        <result property="time" column="time"/>
+    </resultMap>
+
+    <!-- 신고 상세 패널의 동일 대상 신고자 결과 매핑입니다. -->
+    <resultMap id="adminReportReporterMap" type="com.moodcast.admin.vo.AdminReportReporter">
+        <result property="memberId" column="member_id"/>
+        <result property="name" column="name"/>
+        <result property="nickname" column="nickname"/>
+        <result property="email" column="email"/>
+        <result property="reportCount" column="report_count"/>
+        <result property="firstReportedAt" column="first_reported_at"/>
+        <result property="latestReportedAt" column="latest_reported_at"/>
+    </resultMap>
+
+    <!-- selectTotalMemberCount 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
+    <select id="selectTotalMemberCount" resultType="long">
+        select count(*)
+        from members
+    </select>
+
+    <!-- selectMembers 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
+    <select id="selectMembers" resultMap="adminMemberMap">
+        select
+            member_id,
+            name,
+            nickname,
+            email,
+            profile_image_url,
+            upper(status) as status,
+            created_at,
+            role,
+            last_login_at,
+            suspended_until,
+            coalesce(suspension_count, 0) as suspension_count,
+            coalesce(warning_count, 0) as warning_count,
+            0 as report_count,
+            0 as post_count,
+            0 as comment_count
+        from members
+        order by created_at desc
+    </select>
+
+    <!-- selectAdminContentPosts 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
+    <select id="selectAdminContentPosts" resultMap="adminContentPostMap">
+        select
+            p.post_id,
+            p.title,
+            p.content,
+            p.visibility,
+            p.deleted_yn,
+            p.emotion_id,
+            date_format(p.created_at, '%Y-%m-%d %H:%i') as created_at,
+            p.member_id,
+            m.name as author_name,
+            m.nickname as author_nickname,
+            m.profile_image_url as author_profile_image_url,
+            coalesce((
+                select count(*)
+                from comment_tbl c
+                where c.post_id = p.post_id
+                  and c.deleted_yn = 'N'
+            ), 0) as comment_count,
+            coalesce((
+                select count(*)
+                from post_hashtag ph
+                where ph.post_id = p.post_id
+            ), 0) as hashtag_count,
+            coalesce((
+                select group_concat(concat('#', h.hashtag) order by h.hashtag separator ' ')
+                from post_hashtag ph
+                join hashtag h on h.hashtag_id = ph.hashtag_id
+                where ph.post_id = p.post_id
+            ), '') as tags
+        from post_tbl p
+        left join members m on m.member_id = p.member_id
+        order by p.created_at desc
+        limit 500
+    </select>
+
+    <!-- selectAdminContentComments 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
+    <select id="selectAdminContentComments" resultMap="adminContentCommentMap">
+        select
+            c.comment_id,
+            c.post_id,
+            coalesce(p.title, '제목 없음') as post_title,
+            c.content,
+            c.deleted_yn,
+            date_format(c.created_at, '%Y-%m-%d %H:%i') as created_at,
+            c.member_id,
+            m.name as author_name,
+            m.nickname as author_nickname,
+            m.profile_image_url as author_profile_image_url,
+            c.parent_id,
+            case
+                when c.deleted_yn = 'Y' then 'DELETED'
+                when latest_log.action_type = 'HIDE' then 'HIDDEN'
+                else 'PUBLIC'
+            end as moderation_status
+        from comment_tbl c
+        left join post_tbl p on p.post_id = c.post_id
+        left join members m on m.member_id = c.member_id
+        left join (
+            select log.target_id, log.action_type
+            from admin_action_logs log
+            inner join (
+                select target_id, max(log_id) as latest_log_id
+                from admin_action_logs
+                where target_type = 'COMMENT'
+                  and action_type in ('HIDE', 'RESTORE')
+                group by target_id
+            ) latest on latest.latest_log_id = log.log_id
+        ) latest_log on latest_log.target_id = c.comment_id
+        order by c.created_at desc
+        limit 500
+    </select>
+
+    <select id="selectAdminContentCommentById" resultMap="adminContentCommentMap">
+        select
+            c.comment_id,
+            c.post_id,
+            coalesce(p.title, '제목 없음') as post_title,
+            c.content,
+            c.deleted_yn,
+            date_format(c.created_at, '%Y-%m-%d %H:%i') as created_at,
+            c.member_id,
+            m.name as author_name,
+            m.nickname as author_nickname,
+            c.parent_id,
+            case
+                when c.deleted_yn = 'Y' then 'DELETED'
+                when latest_log.action_type = 'HIDE' then 'HIDDEN'
+                else 'PUBLIC'
+            end as moderation_status
+        from comment_tbl c
+        left join post_tbl p on p.post_id = c.post_id
+        left join members m on m.member_id = c.member_id
+        left join (
+            select log.target_id, log.action_type
+            from admin_action_logs log
+            inner join (
+                select target_id, max(log_id) as latest_log_id
+                from admin_action_logs
+                where target_type = 'COMMENT'
+                  and action_type in ('HIDE', 'RESTORE')
+                group by target_id
+            ) latest on latest.latest_log_id = log.log_id
+        ) latest_log on latest_log.target_id = c.comment_id
+        where c.comment_id = #{commentId}
+        limit 1
+    </select>
+
+    <!-- selectAdminContentHashtags 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
+    <select id="selectAdminContentHashtags" resultMap="adminContentHashtagMap">
+        select
+            h.hashtag_id,
+            h.hashtag,
+            coalesce(h.use_count, 0) as use_count,
+            count(ph.post_hashtag_id) as post_count,
+            date_format(max(p.created_at), '%Y-%m-%d %H:%i') as latest_post_created_at,
+            case
+                when latest_log.action_type = 'DELETE' then 'DELETED'
+                when latest_log.action_type = 'HIDE' then 'HIDDEN'
+                else 'PUBLIC'
+            end as moderation_status
+        from hashtag h
+        left join post_hashtag ph on ph.hashtag_id = h.hashtag_id
+        left join post_tbl p on p.post_id = ph.post_id
+        left join (
+            select log.target_id, log.action_type
+            from admin_action_logs log
+            inner join (
+                select target_id, max(log_id) as latest_log_id
+                from admin_action_logs
+                where target_type = 'HASHTAG'
+                  and action_type in ('HIDE', 'DELETE', 'RESTORE')
+                group by target_id
+            ) latest on latest.latest_log_id = log.log_id
+        ) latest_log on latest_log.target_id = h.hashtag_id
+        group by h.hashtag_id, h.hashtag, h.use_count, latest_log.action_type
+        order by post_count desc, h.hashtag asc
+        limit 500
+    </select>
+
+    <select id="selectAdminContentHashtagById" resultMap="adminContentHashtagMap">
+        select
+            h.hashtag_id,
+            h.hashtag,
+            coalesce(h.use_count, 0) as use_count,
+            count(ph.post_hashtag_id) as post_count,
+            date_format(max(p.created_at), '%Y-%m-%d %H:%i') as latest_post_created_at,
+            case
+                when latest_log.action_type = 'DELETE' then 'DELETED'
+                when latest_log.action_type = 'HIDE' then 'HIDDEN'
+                else 'PUBLIC'
+            end as moderation_status
+        from hashtag h
+        left join post_hashtag ph on ph.hashtag_id = h.hashtag_id
+        left join post_tbl p on p.post_id = ph.post_id
+        left join (
+            select log.target_id, log.action_type
+            from admin_action_logs log
+            inner join (
+                select target_id, max(log_id) as latest_log_id
+                from admin_action_logs
+                where target_type = 'HASHTAG'
+                  and action_type in ('HIDE', 'DELETE', 'RESTORE')
+                group by target_id
+            ) latest on latest.latest_log_id = log.log_id
+        ) latest_log on latest_log.target_id = h.hashtag_id
+        where h.hashtag_id = #{hashtagId}
+        group by h.hashtag_id, h.hashtag, h.use_count, latest_log.action_type
+        limit 1
+    </select>
+
+    <select id="selectAdminContentPostById" resultMap="adminContentPostMap">
+        select
+            p.post_id,
+            p.title,
+            p.content,
+            p.visibility,
+            p.deleted_yn,
+            p.emotion_id,
+            date_format(p.created_at, '%Y-%m-%d %H:%i') as created_at,
+            p.member_id,
+            m.name as author_name,
+            m.nickname as author_nickname,
+            coalesce((
+                select count(*)
+                from comment_tbl c
+                where c.post_id = p.post_id
+                  and c.deleted_yn = 'N'
+            ), 0) as comment_count,
+            coalesce((
+                select count(*)
+                from post_hashtag ph
+                where ph.post_id = p.post_id
+            ), 0) as hashtag_count,
+            coalesce((
+                select group_concat(concat('#', h.hashtag) order by h.hashtag separator ' ')
+                from post_hashtag ph
+                join hashtag h on h.hashtag_id = ph.hashtag_id
+                where ph.post_id = p.post_id
+            ), '') as tags
+        from post_tbl p
+        left join members m on m.member_id = p.member_id
+        where p.post_id = #{postId}
+        limit 1
+    </select>
+
+    <!-- hideAdminContentPost 수정 쿼리입니다. 관리자 기능에서 상태나 정보를 변경할 때 사용합니다. -->
+    <update id="hideAdminContentPost">
+        update post_tbl
+        set visibility = 'PRIVATE',
+            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        where post_id = #{postId}
+          and deleted_yn = 'N'
+    </update>
+
+    <!-- restoreHiddenAdminContentPost 수정 쿼리입니다. 관리자 기능에서 상태나 정보를 변경할 때 사용합니다. -->
+    <update id="restoreHiddenAdminContentPost">
+        update post_tbl
+        set visibility = 'PUBLIC',
+            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        where post_id = #{postId}
+          and deleted_yn = 'N'
+    </update>
+
+    <!-- softDeleteAdminContentPost 수정 쿼리입니다. 관리자 기능에서 상태나 정보를 변경할 때 사용합니다. -->
+    <update id="softDeleteAdminContentPost">
+        update post_tbl
+        set deleted_yn = 'Y',
+            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        where post_id = #{postId}
+          and deleted_yn = 'N'
+    </update>
+
+    <!-- restoreDeletedAdminContentPost 수정 쿼리입니다. 관리자 기능에서 상태나 정보를 변경할 때 사용합니다. -->
+    <update id="restoreDeletedAdminContentPost">
+        update post_tbl
+        set deleted_yn = 'N',
+            visibility = 'PUBLIC',
+            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        where post_id = #{postId}
+          and deleted_yn = 'Y'
+    </update>
+
+    <!-- deleteAdminPostComments 삭제 쿼리입니다. 관리자 기능에서 연결 데이터 또는 대상 데이터를 삭제할 때 사용합니다. -->
+    <delete id="deleteAdminPostComments">
+        delete from comment_tbl
+        where post_id = #{postId}
+    </delete>
+
+    <delete id="deleteAdminPostLikes">
+        delete from user_post_like
+        where post_id = #{postId}
+    </delete>
+
+    <delete id="deleteAdminPostSaves">
+        delete from saved_post
+        where post_id = #{postId}
+    </delete>
+
+    <delete id="deleteAdminPostHashtags">
+        delete from post_hashtag
+        where post_id = #{postId}
+    </delete>
+
+    <!-- hardDeleteAdminContentPost 삭제 쿼리입니다. 관리자 기능에서 연결 데이터 또는 대상 데이터를 삭제할 때 사용합니다. -->
+    <delete id="hardDeleteAdminContentPost">
+        delete from post_tbl
+        where post_id = #{postId}
+          and deleted_yn = 'Y'
+    </delete>
+
+    <update id="softDeleteAdminContentComment">
+        update comment_tbl
+        set deleted_yn = 'Y'
+        where comment_id = #{commentId}
+          and deleted_yn = 'N'
+    </update>
+
+    <update id="restoreAdminContentComment">
+        update comment_tbl
+        set deleted_yn = 'N'
+        where comment_id = #{commentId}
+          and deleted_yn = 'Y'
+    </update>
+
+    <delete id="deleteAdminPostHashtagsByHashtagId">
+        delete from post_hashtag
+        where hashtag_id = #{hashtagId}
+    </delete>
+
+    <delete id="hardDeleteAdminContentHashtag">
+        delete from hashtag
+        where hashtag_id = #{hashtagId}
+    </delete>
+
+    <select id="countAdminContentHashtagById" resultType="int">
+        select count(*)
+        from hashtag
+        where hashtag_id = #{hashtagId}
+    </select>
+
+    <select id="selectUserManagementSummaryCounts" resultMap="adminUserManagementSummaryMap">
+        select
+            count(*) as total_member_count,
+            coalesce(sum(case when role != 'SUPER_ADMIN' then 1 else 0 end), 0) as normal_member_count,
+            coalesce(sum(case when role = 'SUPER_ADMIN' then 1 else 0 end), 0) as admin_member_count,
+            coalesce(sum(case when status = 'SUSPENDED' then 1 else 0 end), 0) as suspended_member_count
+        from members
+    </select>
+
+    <select id="selectLatestJoinedMember" resultMap="adminRecentMemberMap">
+        select
+            member_id,
+            name,
+            nickname,
+            email,
+            upper(status) as status,
+            role,
+            created_at,
+            null as action_type,
+            null as action_detail
+        from members
+        order by created_at desc
+        limit 1
+    </select>
+
+    <select id="selectLatestSanctionedMember" resultMap="adminRecentMemberMap">
+        select
+            coalesce(target.member_id, log.target_id) as member_id,
+            target.name,
+            target.nickname,
+            target.email,
+            upper(target.status) as status,
+            target.role,
+            log.created_at,
+            log.action_type,
+            log.action_detail
+        from admin_action_logs log
+        left join members target on target.member_id = log.target_id
+        where log.target_type = 'USER'
+          and log.action_type = 'SUSPEND'
+        order by log.created_at desc, log.log_id desc
+        limit 1
+    </select>
+
+    <select id="selectRecentAdminActionLogs" resultMap="adminActionLogViewMap">
+        select
+            log.log_id,
+            log.admin_id,
+            admin_member.name as admin_name,
+            admin_member.nickname as admin_nickname,
+            log.action_type,
+            log.target_type,
+            log.target_id,
+            target_member.name as target_name,
+            target_member.nickname as target_nickname,
+            target_member.email as target_email,
+            log.created_at,
+            log.action_detail
+        from admin_action_logs log
+        left join members admin_member on admin_member.member_id = log.admin_id
+        left join members target_member on target_member.member_id = log.target_id
+        where log.target_type = 'USER'
+          and log.action_type in ('UPDATE_ADMIN_ROLE', 'SUSPEND', 'RESTORE')
+        order by log.created_at desc, log.log_id desc
+        limit 10
+    </select>
+
+    <select id="selectAllAdminActionLogs" resultMap="adminActionLogViewMap">
+        select
+            log.log_id,
+            log.admin_id,
+            admin_member.name as admin_name,
+            admin_member.nickname as admin_nickname,
+            log.action_type,
+            log.target_type,
+            log.target_id,
+            target_member.name as target_name,
+            target_member.nickname as target_nickname,
+            target_member.email as target_email,
+            log.created_at,
+            log.action_detail
+        from admin_action_logs log
+        left join members admin_member on admin_member.member_id = log.admin_id
+        left join members target_member on target_member.member_id = log.target_id
+        where log.target_type = 'USER'
+          and log.action_type in ('UPDATE_ADMIN_ROLE', 'SUSPEND', 'RESTORE')
+        order by log.created_at desc, log.log_id desc
+    </select>
+
+    <select id="selectMemberSanctionLogs" resultMap="adminActionLogViewMap">
+        select
+            log.log_id,
+            log.admin_id,
+            admin_member.name as admin_name,
+            admin_member.nickname as admin_nickname,
+            log.action_type,
+            log.target_type,
+            log.target_id,
+            target_member.name as target_name,
+            target_member.nickname as target_nickname,
+            target_member.email as target_email,
+            log.created_at,
+            log.action_detail
+        from admin_action_logs log
+        left join members admin_member on admin_member.member_id = log.admin_id
+        left join members target_member on target_member.member_id = log.target_id
+        where log.target_type = 'USER'
+          and log.target_id = #{memberId}
+          and log.action_type in ('SUSPEND', 'RESTORE')
+        order by log.created_at desc, log.log_id desc
+        limit 50
+    </select>
+
+    <!-- selectMemberDetail 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
+    <select id="selectMemberDetail" resultMap="adminMemberDetailMap">
+        select
+            member_id,
+            email,
+            name,
+            nickname,
+            phone,
+            email_verified,
+            phone_verified,
+            role,
+            upper(status) as status,
+            last_login_at,
+            created_at,
+            updated_at,
+            deleted_at,
+            suspended_until,
+            coalesce(suspension_count, 0) as suspension_count,
+            coalesce(warning_count, 0) as warning_count
+        from members
+        where member_id = #{memberId}
+        limit 1
+    </select>
+
+    <!-- searchMembersForAdminPromotion 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
+    <select id="searchMembersForAdminPromotion" resultMap="adminMemberMap">
+        select
+            member_id,
+            name,
+            nickname,
+            email,
+            upper(status) as status,
+            created_at,
+            role,
+            last_login_at,
+            suspended_until,
+            coalesce(suspension_count, 0) as suspension_count,
+            coalesce(warning_count, 0) as warning_count,
+            0 as report_count,
+            0 as post_count,
+            0 as comment_count
+        from members
+        where status = 'ACTIVE'
+          and role in ('USER', 'MEMBER', 'SUPER_ADMIN')
+          and (
+            #{keyword} = ''
+            or
+            <choose>
+                <when test="searchType == 'name'">
+                    name like concat('%', #{keyword}, '%')
+                </when>
+                <when test="searchType == 'nickname'">
+                    nickname like concat('%', #{keyword}, '%')
+                </when>
+                <otherwise>
+                    email like concat('%', #{keyword}, '%')
+                </otherwise>
+            </choose>
+          )
+        order by created_at desc
+        limit 100
+    </select>
+
+    <!-- updateMemberRoleForAdminPromotion 수정 쿼리입니다. 관리자 기능에서 상태나 정보를 변경할 때 사용합니다. -->
+    <update id="updateMemberRoleForAdminPromotion">
+        update members
+        set role = #{role},
+            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        where member_id = #{memberId}
+          and status = 'ACTIVE'
+          and role in ('USER', 'MEMBER', 'SUPER_ADMIN')
+    </update>
+
+    <!-- suspendMember 수정 쿼리입니다. 관리자 기능에서 상태나 정보를 변경할 때 사용합니다. -->
+    <update id="suspendMember">
+        update members
+        set status = 'SUSPENDED',
+            suspended_until = #{suspendedUntil},
+            suspension_count = coalesce(suspension_count, 0) + 1,
+            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        where member_id = #{memberId}
+          and deleted_at is null
+    </update>
+
+    <!-- addWarningToMember 수정 쿼리입니다. 신고 처리 결과가 경고일 때 경고 횟수를 증가시킵니다. -->
+    <update id="addWarningToMember">
+        update members
+        set warning_count = coalesce(warning_count, 0) + 1,
+            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        where member_id = #{memberId}
+          and deleted_at is null
+    </update>
+
+    <!-- restoreSuspendedMember 수정 쿼리입니다. 관리자 기능에서 상태나 정보를 변경할 때 사용합니다. -->
+    <update id="restoreSuspendedMember">
+        update members
+        set status = 'ACTIVE',
+            suspended_until = null,
+            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        where member_id = #{memberId}
+          and status = 'SUSPENDED'
+          and deleted_at is null
+    </update>
+
+    
+    <insert id="insertAdminActionLog">
+        insert into admin_action_logs (
+            admin_id,
+            action_type,
+            target_type,
+            target_id,
+            created_at,
+            action_detail
+        ) values (
+            #{adminId},
+            #{actionType},
+            #{targetType},
+            #{targetId},
+            CONVERT_TZ(NOW(6), '+00:00', '+09:00'),
+            #{actionDetail}
+        )
+    </insert>
+
+    <!-- selectAdminReports 조회 쿼리입니다. 신고 목록에서 게시글/댓글 신고를 함께 조회합니다. -->
+    <select id="selectAdminReports" resultMap="adminReportMap">
+        select
+            r.report_id,
+            case
+                when r.post_id is not null then 'POST'
+                else 'COMMENT'
+            end as target_type,
+            r.reporter_member_id,
+            reporter.name as reporter_name,
+            reporter.nickname as reporter_nickname,
+            reporter.email as reporter_email,
+            case
+                when r.post_id is not null then post_author.member_id
+                else comment_author.member_id
+            end as target_member_id,
+            case
+                when r.post_id is not null then post_author.name
+                else comment_author.name
+            end as target_member_name,
+            case
+                when r.post_id is not null then post_author.nickname
+                else comment_author.nickname
+            end as target_member_nickname,
+            case
+                when r.post_id is not null then post_author.email
+                else comment_author.email
+            end as target_member_email,
+            case
+                when r.post_id is not null then post_author.created_at
+                else comment_author.created_at
+            end as target_member_created_at,
+            (
+                select count(*)
+                from post_tbl target_post_count
+                where target_post_count.member_id = case
+                    when r.post_id is not null then post_author.member_id
+                    else comment_author.member_id
+                end
+                  and coalesce(target_post_count.deleted_yn, 'N') = 'N'
+            ) as target_post_count,
+            (
+                select count(*)
+                from comment_tbl target_comment_count
+                where target_comment_count.member_id = case
+                    when r.post_id is not null then post_author.member_id
+                    else comment_author.member_id
+                end
+                  and coalesce(target_comment_count.deleted_yn, 'N') = 'N'
+            ) as target_comment_count,
+            (
+                select count(*)
+                from post_like target_like_count
+                where target_like_count.member_id = case
+                    when r.post_id is not null then post_author.member_id
+                    else comment_author.member_id
+                end
+            ) as target_like_count,
+            (
+                select count(*)
+                from report target_report
+                left join post_tbl reported_post on reported_post.post_id = target_report.post_id
+                left join comment_tbl reported_comment on reported_comment.comment_id = target_report.comment_id
+                where coalesce(reported_post.member_id, reported_comment.member_id) = case
+                    when r.post_id is not null then post_author.member_id
+                    else comment_author.member_id
+                end
+            ) as target_report_count,
+            coalesce(
+                case
+                    when r.post_id is not null then post_author.warning_count
+                    else comment_author.warning_count
+                end,
+                0
+            ) as target_warning_count,
+            (
+                select count(*)
+                from admin_action_logs target_suspend_log
+                where target_suspend_log.target_type = 'USER'
+                  and target_suspend_log.action_type = 'SUSPEND'
+                  and target_suspend_log.target_id = case
+                    when r.post_id is not null then post_author.member_id
+                    else comment_author.member_id
+                  end
+            ) as target_suspend_count,
+            r.post_id,
+            r.comment_id,
+            coalesce(post_target.title, comment_post.title) as post_title,
+            (
+                select group_concat(concat('#', h.hashtag) order by h.hashtag separator ' ')
+                from post_hashtag ph
+                join hashtag h on h.hashtag_id = ph.hashtag_id
+                where ph.post_id = coalesce(post_target.post_id, comment_post.post_id)
+            ) as post_tags,
+            case
+                when r.post_id is not null then post_target.content
+                else comment_target.content
+            end as target_content,
+            comment_target.content as comment_content,
+            r.reason,
+            r.report_status,
+            r.process_result,
+            r.handled_memo,
+            r.handled_by_member_id,
+            handled_member.name as handled_by_member_name,
+            r.reviewed_at,
+            r.handled_at,
+            r.created_at,
+            (
+                select count(*)
+                from report same_report
+                where (
+                    r.post_id is not null
+                    and same_report.post_id = r.post_id
+                )
+                or (
+                    r.comment_id is not null
+                    and same_report.comment_id = r.comment_id
+                )
+            ) as same_target_report_count,
+            (
+                select count(distinct same_report.reporter_member_id)
+                from report same_report
+                where (
+                    r.post_id is not null
+                    and same_report.post_id = r.post_id
+                )
+                or (
+                    r.comment_id is not null
+                    and same_report.comment_id = r.comment_id
+                )
+            ) as same_target_reporter_count
+        from report r
+        left join members reporter on reporter.member_id = r.reporter_member_id
+        left join post_tbl post_target on post_target.post_id = r.post_id
+        left join members post_author on post_author.member_id = post_target.member_id
+        left join comment_tbl comment_target on comment_target.comment_id = r.comment_id
+        left join post_tbl comment_post on comment_post.post_id = comment_target.post_id
+        left join members comment_author on comment_author.member_id = comment_target.member_id
+        left join members handled_member on handled_member.member_id = r.handled_by_member_id
+        where 1 = 1
+        <if test="status != null and status != '' and status != 'ALL'">
+            and r.report_status = #{status}
+        </if>
+        <if test="targetType != null and targetType != '' and targetType != 'ALL'">
+            <choose>
+                <when test="targetType == 'POST'">
+                    and r.post_id is not null
+                </when>
+                <when test="targetType == 'COMMENT'">
+                    and r.comment_id is not null
+                </when>
+            </choose>
+        </if>
+        <if test="processResult != null and processResult != '' and processResult != 'ALL'">
+            and r.process_result = #{processResult}
+        </if>
+        order by
+            case
+                when r.report_status = 'DONE' and r.handled_at is not null then r.handled_at
+                when r.report_status = 'REVIEWING' and r.reviewed_at is not null then r.reviewed_at
+                else r.created_at
+            end desc,
+            r.report_id desc
+    </select>
+
+    <!-- 관리자 기능 담당 작업(문건우): 처리율 = 처리 완료 신고 수 / 전체 신고 수 기준으로 집계합니다. -->
+    <select id="selectAdminReportProcessRate" resultMap="adminReportProcessRateStatMap">
+        select
+            count(*) as total_count,
+            sum(case when r.report_status = 'DONE' then 1 else 0 end) as done_count,
+            sum(case when r.report_status = 'DONE' then 0 else 1 end) as open_count
+        from report r
+        where r.created_at &gt;= #{startDate}
+          and r.created_at &lt; date_add(#{endDate}, interval 1 day)
+    </select>
+
+    <!-- selectAdminReportById 조회 쿼리입니다. 신고 상세와 처리 후 갱신에 사용합니다. -->
+    <select id="selectAdminReportById" resultMap="adminReportMap">
+        select *
+        from (
+            select
+                r.report_id,
+                case
+                    when r.post_id is not null then 'POST'
+                    else 'COMMENT'
+                end as target_type,
+                r.reporter_member_id,
+                reporter.name as reporter_name,
+                reporter.nickname as reporter_nickname,
+                reporter.email as reporter_email,
+                case
+                    when r.post_id is not null then post_author.member_id
+                    else comment_author.member_id
+                end as target_member_id,
+                case
+                    when r.post_id is not null then post_author.name
+                    else comment_author.name
+                end as target_member_name,
+                case
+                    when r.post_id is not null then post_author.nickname
+                    else comment_author.nickname
+                end as target_member_nickname,
+                case
+                    when r.post_id is not null then post_author.email
+                    else comment_author.email
+                end as target_member_email,
+                case
+                    when r.post_id is not null then post_author.created_at
+                    else comment_author.created_at
+                end as target_member_created_at,
+                (
+                    select count(*)
+                    from post_tbl target_post_count
+                    where target_post_count.member_id = case
+                        when r.post_id is not null then post_author.member_id
+                        else comment_author.member_id
+                    end
+                      and coalesce(target_post_count.deleted_yn, 'N') = 'N'
+                ) as target_post_count,
+                (
+                    select count(*)
+                    from comment_tbl target_comment_count
+                    where target_comment_count.member_id = case
+                        when r.post_id is not null then post_author.member_id
+                        else comment_author.member_id
+                    end
+                      and coalesce(target_comment_count.deleted_yn, 'N') = 'N'
+                ) as target_comment_count,
+                (
+                    select count(*)
+                    from post_like target_like_count
+                    where target_like_count.member_id = case
+                        when r.post_id is not null then post_author.member_id
+                        else comment_author.member_id
+                    end
+                ) as target_like_count,
+                (
+                    select count(*)
+                    from report target_report
+                    left join post_tbl reported_post on reported_post.post_id = target_report.post_id
+                    left join comment_tbl reported_comment on reported_comment.comment_id = target_report.comment_id
+                    where coalesce(reported_post.member_id, reported_comment.member_id) = case
+                        when r.post_id is not null then post_author.member_id
+                        else comment_author.member_id
+                    end
+                ) as target_report_count,
+                coalesce(
+                    case
+                        when r.post_id is not null then post_author.warning_count
+                        else comment_author.warning_count
+                    end,
+                    0
+                ) as target_warning_count,
+                (
+                    select count(*)
+                    from admin_action_logs target_suspend_log
+                    where target_suspend_log.target_type = 'USER'
+                      and target_suspend_log.action_type = 'SUSPEND'
+                      and target_suspend_log.target_id = case
+                        when r.post_id is not null then post_author.member_id
+                        else comment_author.member_id
+                      end
+                ) as target_suspend_count,
+                r.post_id,
+                r.comment_id,
+                coalesce(post_target.title, comment_post.title) as post_title,
+                (
+                    select group_concat(concat('#', h.hashtag) order by h.hashtag separator ' ')
+                    from post_hashtag ph
+                    join hashtag h on h.hashtag_id = ph.hashtag_id
+                    where ph.post_id = coalesce(post_target.post_id, comment_post.post_id)
+                ) as post_tags,
+                case
+                    when r.post_id is not null then post_target.content
+                    else comment_target.content
+                end as target_content,
+                comment_target.content as comment_content,
+                r.reason,
+                r.report_status,
+                r.process_result,
+                r.handled_memo,
+                r.handled_by_member_id,
+                handled_member.name as handled_by_member_name,
+                r.reviewed_at,
+                r.handled_at,
+                r.created_at,
+                (
+                    select count(*)
+                    from report same_report
+                    where (
+                        r.post_id is not null
+                        and same_report.post_id = r.post_id
+                    )
+                    or (
+                        r.comment_id is not null
+                        and same_report.comment_id = r.comment_id
+                    )
+                ) as same_target_report_count,
+                (
+                    select count(distinct same_report.reporter_member_id)
+                    from report same_report
+                    where (
+                        r.post_id is not null
+                        and same_report.post_id = r.post_id
+                    )
+                    or (
+                        r.comment_id is not null
+                        and same_report.comment_id = r.comment_id
+                    )
+                ) as same_target_reporter_count
+            from report r
+            left join members reporter on reporter.member_id = r.reporter_member_id
+            left join post_tbl post_target on post_target.post_id = r.post_id
+            left join members post_author on post_author.member_id = post_target.member_id
+            left join comment_tbl comment_target on comment_target.comment_id = r.comment_id
+            left join post_tbl comment_post on comment_post.post_id = comment_target.post_id
+            left join members comment_author on comment_author.member_id = comment_target.member_id
+            left join members handled_member on handled_member.member_id = r.handled_by_member_id
+            where r.report_id = #{reportId}
+        ) report_detail
+    </select>
+
+    <!-- selectAdminReportRecentActivities 조회 쿼리입니다. 신고 대상 회원의 최근 게시글, 댓글, 제재 로그를 합쳐 조회합니다. -->
+    <select id="selectAdminReportRecentActivities" resultMap="adminReportActivityMap">
+        select
+            activity_type as type,
+            activity_text as text,
+            date_format(activity_created_at, '%Y-%m-%d %H:%i') as time
+        from (
+            select
+                '게시글' as activity_type,
+                coalesce(nullif(p.title, ''), '제목 없는 게시글') as activity_text,
+                p.created_at as activity_created_at
+            from post_tbl p
+            where p.member_id = #{memberId}
+
+            union all
+
+            select
+                '댓글' as activity_type,
+                coalesce(nullif(c.content, ''), '내용 없는 댓글') as activity_text,
+                c.created_at as activity_created_at
+            from comment_tbl c
+            where c.member_id = #{memberId}
+
+            union all
+
+            select
+                '제재' as activity_type,
+                coalesce(nullif(log.action_detail, ''), log.action_type) as activity_text,
+                log.created_at as activity_created_at
+            from admin_action_logs log
+            where log.target_type = 'USER'
+              and log.target_id = #{memberId}
+              and log.action_type in ('SUSPEND', 'RESTORE')
+        ) recent_activity
+        order by activity_created_at desc
+        limit 50
+    </select>
+
+    <!-- selectAdminReportReporters 조회 쿼리입니다. 같은 게시글/댓글을 신고한 신고자 목록을 조회합니다. -->
+    <select id="selectAdminReportReporters" resultMap="adminReportReporterMap">
+        select
+            reporter.member_id,
+            reporter.name,
+            reporter.nickname,
+            reporter.email,
+            count(*) as report_count,
+            date_format(min(same_report.created_at), '%Y-%m-%d %H:%i') as first_reported_at,
+            date_format(max(same_report.created_at), '%Y-%m-%d %H:%i') as latest_reported_at
+        from report base_report
+        join report same_report
+          on (
+                base_report.post_id is not null
+                and same_report.post_id = base_report.post_id
+             )
+          or (
+                base_report.comment_id is not null
+                and same_report.comment_id = base_report.comment_id
+             )
+        left join members reporter on reporter.member_id = same_report.reporter_member_id
+        where base_report.report_id = #{reportId}
+        group by
+            reporter.member_id,
+            reporter.name,
+            reporter.nickname,
+            reporter.email
+        order by max(same_report.created_at) desc, max(same_report.report_id) desc
+    </select>
+
+    <!-- markAdminReportReviewing 수정 쿼리입니다. 처음 확인한 신고를 검토 중으로 전환합니다. -->
+    <update id="markAdminReportReviewing">
+        update report
+        set report_status = 'REVIEWING',
+            reviewed_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        where report_id = #{reportId}
+          and report_status in ('PENDING', 'REVIEWING')
+    </update>
+
+    <!-- processAdminReport 수정 쿼리입니다. 신고를 처리 완료 상태로 저장합니다. -->
+    <update id="processAdminReport">
+        update report
+        set report_status = 'DONE',
+            process_result = #{processResult},
+            handled_memo = #{handledMemo},
+            handled_by_member_id = #{adminId},
+            handled_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        where report_id = #{reportId}
+          and report_status in ('PENDING', 'REVIEWING')
+    </update>
+
+    <!-- selectDashboardSummary 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
+    <select id="selectDashboardSummary" resultMap="adminDashboardSummaryMap">
+        select
+            (select count(*)
+             from members) as total_member_count,
+            (select count(*)
+             from members
+             where created_at >= date(CONVERT_TZ(NOW(6), '+00:00', '+09:00'))
+               and created_at &lt; date_add(date(CONVERT_TZ(NOW(6), '+00:00', '+09:00')), interval 1 day)) as today_new_member_count,
+            (select count(*)
+             from post_tbl
+             where deleted_yn = 'N') as post_count,
+            (select count(*)
+             from report
+             where report_status in ('PENDING', 'REVIEWING')) as pending_report_count
+    </select>
+
+    <!-- selectDashboardEmotionActivity 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
+    <select id="selectDashboardEmotionActivity" resultMap="adminEmotionActivityMap">
+        select
+            p.emotion_id,
+            count(*) as activity_count
+        from post_tbl p
+        where p.deleted_yn = 'N'
+          and p.emotion_id is not null
+          and p.created_at &gt;= #{startDate}
+          and p.created_at &lt; date_add(#{endDate}, interval 1 day)
+        group by p.emotion_id
+        order by p.emotion_id
+    </select>
+
+    <!-- selectDashboardActiveUsers 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
+    <select id="selectDashboardActiveUsers" resultMap="adminActiveUserStatMap">
+        <choose>
+            <when test="period == 'week'">
+                with recursive day_numbers(day_index) as (
+                    select 0
+                    union all
+                    select day_index + 1
+                    from day_numbers
+                    where day_index &lt; 6
+                ),
+                day_slots as (
+                    select
+                        day_index,
+                        date_add(#{startDate}, interval day_index day) as slot_date
+                    from day_numbers d
+                )
+                select
+                    elt(s.day_index + 1, '월', '화', '수', '목', '금', '토', '일') as label,
+                    cast(count(distinct l.member_id) as decimal(10, 1)) as active_user_count
+                from day_slots s
+                left join login_audit_logs l
+                  on l.success = 1
+                 and l.member_id is not null
+                 and CONVERT_TZ(l.created_at, '+00:00', '+09:00') &gt;= s.slot_date
+                 and CONVERT_TZ(l.created_at, '+00:00', '+09:00') &lt; date_add(s.slot_date, interval 1 day)
+                group by s.day_index
+                order by s.day_index
+            </when>
+            <when test="period == 'month'">
+                with recursive month_numbers(month_index) as (
+                    select 1
+                    union all
+                    select month_index + 1
+                    from month_numbers
+                    where month_index &lt; 12
+                ),
+                month_slots as (
+                    select
+                        month_index,
+                        str_to_date(concat(year(#{startDate}), '-', lpad(month_index, 2, '0'), '-01'), '%Y-%m-%d') as month_start
+                    from month_numbers
+                )
+                select
+                    concat(s.month_index, '월') as label,
+                    cast(count(distinct l.member_id) as decimal(10, 1)) as active_user_count
+                from month_slots s
+                left join login_audit_logs l
+                  on l.success = 1
+                 and l.member_id is not null
+                 and CONVERT_TZ(l.created_at, '+00:00', '+09:00') &gt;= s.month_start
+                 and CONVERT_TZ(l.created_at, '+00:00', '+09:00') &lt; date_add(s.month_start, interval 1 month)
+                group by s.month_index
+                order by s.month_index
+            </when>
+            <otherwise>
+                with recursive hour_numbers(hour_index) as (
+                    select 0
+                    union all
+                    select hour_index + 1
+                    from hour_numbers
+                    where hour_index &lt; 23
+                )
+                select
+                    concat(lpad(h.hour_index, 2, '0'), '시') as label,
+                    cast(count(distinct l.member_id) as decimal(10, 1)) as active_user_count
+                from hour_numbers h
+                left join login_audit_logs l
+                  on l.success = 1
+                 and l.member_id is not null
+                 and CONVERT_TZ(l.created_at, '+00:00', '+09:00') &gt;= date_add(#{startDate}, interval h.hour_index hour)
+                 and CONVERT_TZ(l.created_at, '+00:00', '+09:00') &lt; date_add(#{startDate}, interval (h.hour_index + 1) hour)
+                group by h.hour_index
+                order by h.hour_index
+            </otherwise>
+        </choose>
+    </select>
+    <!-- selectRecentDashboardActivities 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
+    <select id="selectRecentDashboardActivities" resultMap="adminRecentActivityMap">
+        select *
+        from (
+            select
+                'JOINED' as activity_type,
+                m.member_id,
+                m.name as member_name,
+                m.nickname as member_nickname,
+                m.email as member_email,
+                null as admin_id,
+                null as admin_name,
+                null as admin_nickname,
+                CHAR(54924, 50896, 32, 44032, 51077 USING utf8mb4) as activity_detail,
+                m.created_at
+            from members m
+            where m.created_at is not null
+
+            union all
+
+            select
+                'DELETED' as activity_type,
+                m.member_id,
+                m.name as member_name,
+                m.nickname as member_nickname,
+                m.email as member_email,
+                null as admin_id,
+                null as admin_name,
+                null as admin_nickname,
+                CHAR(54924, 50896, 32, 53448, 53748 USING utf8mb4) as activity_detail,
+                m.deleted_at as created_at
+            from members m
+            where m.deleted_at is not null
+
+            union all
+
+            select
+                case
+                    when log.action_type = 'SUSPEND' then 'SUSPENDED'
+                    else 'RESTORED'
+                end as activity_type,
+                coalesce(target_member.member_id, log.target_id) as member_id,
+                target_member.name as member_name,
+                target_member.nickname as member_nickname,
+                target_member.email as member_email,
+                log.admin_id,
+                admin_member.name as admin_name,
+                admin_member.nickname as admin_nickname,
+                log.action_detail,
+                log.created_at
+            from admin_action_logs log
+            left join members target_member on target_member.member_id = log.target_id
+            left join members admin_member on admin_member.member_id = log.admin_id
+            where log.target_type = 'USER'
+              and log.action_type in ('SUSPEND', 'RESTORE')
+
+            union all
+
+            select
+                'ROLE_CHANGED' as activity_type,
+                coalesce(target_member.member_id, log.target_id) as member_id,
+                target_member.name as member_name,
+                target_member.nickname as member_nickname,
+                target_member.email as member_email,
+                log.admin_id,
+                admin_member.name as admin_name,
+                admin_member.nickname as admin_nickname,
+                log.action_detail,
+                log.created_at
+            from admin_action_logs log
+            left join members target_member on target_member.member_id = log.target_id
+            left join members admin_member on admin_member.member_id = log.admin_id
+            where log.target_type = 'USER'
+              and log.action_type = 'UPDATE_ADMIN_ROLE'
+
+            union all
+
+            select
+                case
+                    when log.action_type = 'CREATE' then 'NOTICE_CREATED'
+                    when log.action_type = 'UPDATE' then 'NOTICE_UPDATED'
+                    else 'NOTICE_DELETED'
+                end as activity_type,
+                log.admin_id as member_id,
+                admin_member.name as member_name,
+                admin_member.nickname as member_nickname,
+                admin_member.email as member_email,
+                log.admin_id,
+                admin_member.name as admin_name,
+                admin_member.nickname as admin_nickname,
+                log.action_detail,
+                log.created_at
+            from admin_action_logs log
+            left join members admin_member on admin_member.member_id = log.admin_id
+            where log.target_type = 'NOTICE'
+              and log.action_type in ('CREATE', 'UPDATE', 'DELETE')
+        ) recent_activity
+        where created_at is not null
+        order by created_at desc
+        limit 10
+    </select>
+
+    <!-- selectAllDashboardActivities 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
+    <select id="selectAllDashboardActivities" resultMap="adminRecentActivityMap">
+        select *
+        from (
+            select
+                'JOINED' as activity_type,
+                m.member_id,
+                m.name as member_name,
+                m.nickname as member_nickname,
+                m.email as member_email,
+                null as admin_id,
+                null as admin_name,
+                null as admin_nickname,
+                CHAR(54924, 50896, 32, 44032, 51077 USING utf8mb4) as activity_detail,
+                m.created_at
+            from members m
+            where m.created_at is not null
+
+            union all
+
+            select
+                'DELETED' as activity_type,
+                m.member_id,
+                m.name as member_name,
+                m.nickname as member_nickname,
+                m.email as member_email,
+                null as admin_id,
+                null as admin_name,
+                null as admin_nickname,
+                CHAR(54924, 50896, 32, 53448, 53748 USING utf8mb4) as activity_detail,
+                m.deleted_at as created_at
+            from members m
+            where m.deleted_at is not null
+
+            union all
+
+            select
+                case
+                    when log.action_type = 'SUSPEND' then 'SUSPENDED'
+                    else 'RESTORED'
+                end as activity_type,
+                coalesce(target_member.member_id, log.target_id) as member_id,
+                target_member.name as member_name,
+                target_member.nickname as member_nickname,
+                target_member.email as member_email,
+                log.admin_id,
+                admin_member.name as admin_name,
+                admin_member.nickname as admin_nickname,
+                log.action_detail,
+                log.created_at
+            from admin_action_logs log
+            left join members target_member on target_member.member_id = log.target_id
+            left join members admin_member on admin_member.member_id = log.admin_id
+            where log.target_type = 'USER'
+              and log.action_type in ('SUSPEND', 'RESTORE')
+
+            union all
+
+            select
+                'ROLE_CHANGED' as activity_type,
+                coalesce(target_member.member_id, log.target_id) as member_id,
+                target_member.name as member_name,
+                target_member.nickname as member_nickname,
+                target_member.email as member_email,
+                log.admin_id,
+                admin_member.name as admin_name,
+                admin_member.nickname as admin_nickname,
+                log.action_detail,
+                log.created_at
+            from admin_action_logs log
+            left join members target_member on target_member.member_id = log.target_id
+            left join members admin_member on admin_member.member_id = log.admin_id
+            where log.target_type = 'USER'
+              and log.action_type = 'UPDATE_ADMIN_ROLE'
+
+            union all
+
+            select
+                case
+                    when log.action_type = 'CREATE' then 'NOTICE_CREATED'
+                    when log.action_type = 'UPDATE' then 'NOTICE_UPDATED'
+                    else 'NOTICE_DELETED'
+                end as activity_type,
+                log.admin_id as member_id,
+                admin_member.name as member_name,
+                admin_member.nickname as member_nickname,
+                admin_member.email as member_email,
+                log.admin_id,
+                admin_member.name as admin_name,
+                admin_member.nickname as admin_nickname,
+                log.action_detail,
+                log.created_at
+            from admin_action_logs log
+            left join members admin_member on admin_member.member_id = log.admin_id
+            where log.target_type = 'NOTICE'
+              and log.action_type in ('CREATE', 'UPDATE', 'DELETE')
+        ) recent_activity
+        where created_at is not null
+        order by created_at desc
+    </select>
+
+    <!-- selectStatisticsSummary 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
+    <select id="selectStatisticsSummary" resultMap="adminStatisticsSummaryMap">
+        select
+            (select count(*)
+             from members) as total_member_count,
+            (select count(*)
+             from members m
+             where m.created_at is not null
+               and m.created_at &gt;= #{startDate}
+               and m.created_at &lt; date_add(#{endDate}, interval 1 day)) as new_member_count,
+            (select count(distinct l.member_id)
+             from login_audit_logs l
+             where l.success = 1
+               and l.member_id is not null
+               and CONVERT_TZ(l.created_at, '+00:00', '+09:00') &gt;= #{startDate}
+               and CONVERT_TZ(l.created_at, '+00:00', '+09:00') &lt; date_add(#{endDate}, interval 1 day)) as active_user_count,
+            (select count(*)
+             from post_tbl p
+             where p.deleted_yn = 'N'
+               and p.created_at &gt;= #{startDate}
+               and p.created_at &lt; date_add(#{endDate}, interval 1 day)) as post_count,
+            (select count(*)
+             from comment_tbl c
+             join post_tbl p on p.post_id = c.post_id
+             where c.deleted_yn = 'N'
+               and p.deleted_yn = 'N'
+               and c.created_at &gt;= #{startDate}
+               and c.created_at &lt; date_add(#{endDate}, interval 1 day)) as comment_count,
+            (select count(*)
+             from user_post_like l
+             join post_tbl p on p.post_id = l.post_id
+             where p.deleted_yn = 'N'
+               and l.created_at &gt;= #{startDate}
+               and l.created_at &lt; date_add(#{endDate}, interval 1 day)) as empathy_count
+    </select>
+
+    <!-- selectStatisticsSubscriberTrend 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
+    <select id="selectStatisticsSubscriberTrend" resultMap="adminStatisticsTrendMap">
+        <choose>
+            <when test="period == 'week'">
+                with recursive day_numbers(day_index) as (
+                    select 0
+                    union all
+                    select day_index + 1
+                    from day_numbers
+                    where day_index &lt; 6
+                )
+                select
+                    elt(d.day_index + 1, '월', '화', '수', '목', '금', '토', '일') as label,
+                    count(m.member_id) as value
+                from day_numbers d
+                left join members m
+                  on m.created_at &gt;= date_add(#{startDate}, interval d.day_index day)
+                 and m.created_at &lt; date_add(#{startDate}, interval (d.day_index + 1) day)
+                group by d.day_index
+                order by d.day_index
+            </when>
+            <when test="period == 'month'">
+                with recursive month_numbers(month_index) as (
+                    select 1
+                    union all
+                    select month_index + 1
+                    from month_numbers
+                    where month_index &lt; 12
+                ),
+                month_slots as (
+                    select
+                        month_index,
+                        str_to_date(concat(year(#{startDate}), '-', lpad(month_index, 2, '0'), '-01'), '%Y-%m-%d') as month_start
+                    from month_numbers
+                )
+                select
+                    concat(s.month_index, '월') as label,
+                    count(m.member_id) as value
+                from month_slots s
+                left join members m
+                  on m.created_at &gt;= s.month_start
+                 and m.created_at &lt; date_add(s.month_start, interval 1 month)
+                group by s.month_index
+                order by s.month_index
+            </when>
+            <otherwise>
+                with recursive hour_numbers(hour_index) as (
+                    select 0
+                    union all
+                    select hour_index + 1
+                    from hour_numbers
+                    where hour_index &lt; 23
+                )
+                select
+                    concat(lpad(h.hour_index, 2, '0'), '시') as label,
+                    count(m.member_id) as value
+                from hour_numbers h
+                left join members m
+                  on m.created_at &gt;= date_add(#{startDate}, interval h.hour_index hour)
+                 and m.created_at &lt; date_add(#{startDate}, interval (h.hour_index + 1) hour)
+                group by h.hour_index
+                order by h.hour_index
+            </otherwise>
+        </choose>
+    </select>
+
+    <!-- selectStatisticsContentActivity 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
+    <select id="selectStatisticsContentActivity" resultMap="adminStatisticsTrendMap">
+        select
+            CHAR(44172, 49884, 44544 USING utf8mb4) as label,
+            count(*) as value
+        from post_tbl p
+        where p.deleted_yn = 'N'
+          and p.created_at &gt;= #{startDate}
+          and p.created_at &lt; date_add(#{endDate}, interval 1 day)
+        union all
+        select
+            CHAR(45843, 44544 USING utf8mb4) as label,
+            count(*) as value
+        from comment_tbl c
+        join post_tbl p on p.post_id = c.post_id
+        where c.deleted_yn = 'N'
+          and p.deleted_yn = 'N'
+          and c.created_at &gt;= #{startDate}
+          and c.created_at &lt; date_add(#{endDate}, interval 1 day)
+        union all
+        select
+            CHAR(44277, 44048 USING utf8mb4) as label,
+            count(*) as value
+        from user_post_like l
+        join post_tbl p on p.post_id = l.post_id
+        where p.deleted_yn = 'N'
+          and l.created_at &gt;= #{startDate}
+          and l.created_at &lt; date_add(#{endDate}, interval 1 day)
+    </select>
+
+    <!-- selectAdminProfile 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
+    <select id="selectAdminProfile" resultMap="adminProfileMap">
+        select
+            member_id,
+            name,
+            nickname,
+            phone
+        from members
+        where member_id = #{memberId}
+        limit 1
+    </select>
+
+    <!-- 관리자 계정의 프로필 이미지를 기본 이미지 상태로 되돌립니다. -->
+    <update id="resetAdminProfileImagesToDefault">
+        update members
+        set profile_image_url = null,
+            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        where upper(role) = 'SUPER_ADMIN'
+          and profile_image_url is not null
+    </update>
+
+    <!-- updateAdminProfile 수정 쿼리입니다. 관리자 기능에서 상태나 정보를 변경할 때 사용합니다. -->
+    <update id="updateAdminProfile">
+        update members
+        set name = #{name},
+            nickname = #{nickname},
+            phone = #{phone},
+            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        where member_id = #{memberId}
+    </update>
+
+    <select id="selectAdminNotices" resultMap="noticeMap">
+        select
+            notice.notice_id,
+            notice.title,
+            notice.content,
+            notice.notice_type,
+            notice.created_by_admin_id,
+            created_admin.name as created_by_admin_name,
+            created_admin.nickname as created_by_admin_nickname,
+            created_admin.email as created_by_admin_email,
+            created_admin.name as admin_name,
+            created_admin.nickname as admin_nickname,
+            created_admin.email as admin_email,
+            notice.updated_by_admin_id,
+            notice.created_at,
+            notice.updated_at,
+            notice.deleted_at
+        from notices_tbl notice
+        left join members created_admin
+          on created_admin.member_id = notice.created_by_admin_id
+        <where>
+            <choose>
+                <when test="status == 'active'">
+                    notice.deleted_at is null
+                </when>
+                <when test="status == 'deleted'">
+                    notice.deleted_at is not null
+                </when>
+            </choose>
+        </where>
+        order by notice.created_at desc, notice.notice_id desc
+        limit 500
+    </select>
+
+    <select id="selectAdminNoticeById" resultMap="noticeMap">
+        select
+            notice.notice_id,
+            notice.title,
+            notice.content,
+            notice.notice_type,
+            notice.created_by_admin_id,
+            created_admin.name as created_by_admin_name,
+            created_admin.nickname as created_by_admin_nickname,
+            created_admin.email as created_by_admin_email,
+            created_admin.name as admin_name,
+            created_admin.nickname as admin_nickname,
+            created_admin.email as admin_email,
+            notice.updated_by_admin_id,
+            notice.created_at,
+            notice.updated_at,
+            notice.deleted_at
+        from notices_tbl notice
+        left join members created_admin
+          on created_admin.member_id = notice.created_by_admin_id
+        where notice.notice_id = #{noticeId}
+        limit 1
+    </select>
+
+    <select id="selectLatestActiveNotice" resultMap="noticeMap">
+        select
+            notice.notice_id,
+            notice.title,
+            notice.content,
+            notice.notice_type,
+            notice.created_by_admin_id,
+            created_admin.name as created_by_admin_name,
+            created_admin.nickname as created_by_admin_nickname,
+            created_admin.email as created_by_admin_email,
+            created_admin.name as admin_name,
+            created_admin.nickname as admin_nickname,
+            created_admin.email as admin_email,
+            notice.updated_by_admin_id,
+            notice.created_at,
+            notice.updated_at,
+            notice.deleted_at
+        from notices_tbl notice
+        left join members created_admin
+          on created_admin.member_id = notice.created_by_admin_id
+        where notice.deleted_at is null
+          and notice.created_at >= date_sub(CONVERT_TZ(NOW(6), '+00:00', '+09:00'), interval 7 day)
+        order by notice.created_at desc, notice.notice_id desc
+        limit 1
+    </select>
+
+    <insert id="insertAdminNotice">
+        insert into notices_tbl (
+            title,
+            content,
+            notice_type,
+            created_by_admin_id,
+            updated_by_admin_id,
+            created_at,
+            updated_at
+        ) values (
+            #{title},
+            #{content},
+            #{noticeType},
+            #{adminId},
+            #{adminId},
+            CONVERT_TZ(NOW(6), '+00:00', '+09:00'),
+            CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        )
+    </insert>
+
+    <update id="updateAdminNotice">
+        update notices_tbl
+        set title = #{title},
+            content = #{content},
+            notice_type = #{noticeType},
+            updated_by_admin_id = #{adminId},
+            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        where notice_id = #{noticeId}
+          and deleted_at is null
+    </update>
+
+    <update id="softDeleteAdminNotice">
+        update notices_tbl
+        set updated_by_admin_id = #{adminId},
+            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00'),
+            deleted_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        where notice_id = #{noticeId}
+          and deleted_at is null
+    </update>
+
+</mapper>
+

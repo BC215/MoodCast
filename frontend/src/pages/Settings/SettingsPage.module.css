@@ -1,0 +1,403 @@
+.wrap {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+
+.hero,
+.card {
+  min-width: 0;
+  padding: 22px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(17, 24, 39, 0.085);
+  box-shadow: 0 1px 3px rgba(17, 24, 39, 0.055);
+}
+
+.hero strong,
+.card h2 {
+  overflow-wrap: anywhere;
+  color: #111827;
+}
+
+.hero p {
+  margin: 8px 0 0;
+  overflow-wrap: anywhere;
+  color: #667085;
+}
+
+.cardText {
+  margin: 8px 0 0;
+  overflow-wrap: anywhere;
+  color: #667085;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.grid {
+  display: grid;
+  gap: 14px;
+}
+
+.card button {
+  min-height: 42px;
+  margin-top: 12px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 14px;
+  background: rgba(124, 77, 255, 0.09);
+  color: #7c4dff;
+  font-weight: 800;
+  line-height: 1.25;
+  white-space: normal;
+}
+
+.card button:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.providerList {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.accountStatusPanel {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid rgba(17, 24, 39, 0.075);
+  border-radius: 14px;
+  background: rgba(248, 250, 252, 0.72);
+}
+
+.statusBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.statusBadges span {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 9px;
+  border: 1px solid rgba(124, 77, 255, 0.12);
+  border-radius: 999px;
+  background: #fff;
+  color: #48336f;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.2;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.accountStatusPanel p {
+  margin: 0;
+  color: #667085;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.providerRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid rgba(17, 24, 39, 0.07);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.providerMeta {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.providerMeta strong {
+  overflow-wrap: anywhere;
+  color: #111827;
+  font-size: 14px;
+  font-weight: 1000;
+}
+
+.providerMeta span {
+  overflow-wrap: anywhere;
+  color: #667085;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.card .providerRow button {
+  min-width: 76px;
+  margin-top: 0;
+}
+
+.card .providerRow .unlinkButton {
+  background: rgba(217, 45, 32, 0.08);
+  color: #b42318;
+}
+
+.passwordForm {
+  display: grid;
+  gap: 12px;
+}
+
+.passwordNotice {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px solid rgba(124, 77, 255, 0.12);
+  border-radius: 16px;
+  background: rgba(124, 77, 255, 0.07);
+}
+
+.passwordNotice strong {
+  color: #181331;
+  font-size: 14px;
+  font-weight: 1000;
+}
+
+.passwordNotice p {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: #667085;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.securityActionPanel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+  padding: 14px;
+  border: 1px solid rgba(217, 45, 32, 0.12);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.48);
+}
+
+.securityActionPanel div {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.securityActionPanel strong {
+  overflow-wrap: anywhere;
+  color: #111827;
+  font-size: 14px;
+  font-weight: 1000;
+}
+
+.securityActionPanel p {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: #667085;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.card .securityActionPanel .outlineDangerButton {
+  min-width: 136px;
+  margin-top: 0;
+  background: rgba(217, 45, 32, 0.08);
+  color: #b42318;
+}
+
+.passwordForm label,
+.withdrawForm label {
+  display: grid;
+  gap: 7px;
+}
+
+.passwordForm span,
+.withdrawForm span {
+  color: #344054;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.passwordForm input,
+.withdrawForm input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 13px;
+  border: 1px solid rgba(17, 24, 39, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.78);
+  color: #111827;
+  font-size: 15px;
+  outline: none;
+}
+
+.passwordForm input:focus,
+.withdrawForm input:focus {
+  border-color: rgba(124, 77, 255, 0.55);
+  box-shadow: 0 0 0 4px rgba(124, 77, 255, 0.1);
+}
+
+.helperText {
+  margin: -2px 0 0;
+  overflow-wrap: anywhere;
+  color: #7b8191;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.timerText,
+.dangerText {
+  margin: -2px 0 0;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.timerText {
+  color: #7c4dff;
+}
+
+.dangerText {
+  color: #b42318;
+}
+
+.dangerZone {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(17, 24, 39, 0.06);
+}
+
+.card .textDangerButton {
+  min-height: auto;
+  margin-top: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #667085;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: left;
+}
+
+.card .textDangerButton:hover {
+  color: #b42318;
+}
+
+.withdrawForm {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.dangerHeader {
+  display: grid;
+  gap: 4px;
+}
+
+.dangerHeader strong {
+  color: #b42318;
+  font-size: 15px;
+  font-weight: 1000;
+}
+
+.dangerHeader p {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: #7b8191;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.emailVerifyBox {
+  display: grid;
+  gap: 10px;
+}
+
+.emailVerifyBox p {
+  margin: 0;
+  color: #667085;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+  word-break: break-all;
+}
+
+.inlineAction {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  min-width: 0;
+}
+
+.card .secondaryButton {
+  min-height: 44px;
+  margin-top: 0;
+  white-space: nowrap;
+}
+
+.card .dangerButton {
+  background: rgba(217, 45, 32, 0.08);
+  color: #b42318;
+}
+
+@media (max-width: 640px) {
+  .wrap {
+    gap: 14px;
+  }
+
+  .hero,
+  .card {
+    padding: 16px;
+    border-radius: 20px;
+  }
+
+  .card button,
+  .passwordForm input,
+  .withdrawForm input {
+    min-height: 46px;
+  }
+
+  .card .textDangerButton {
+    min-height: auto;
+  }
+
+  .inlineAction,
+  .securityActionPanel {
+    grid-template-columns: 1fr;
+  }
+
+  .card .securityActionPanel .outlineDangerButton {
+    width: 100%;
+  }
+
+  .accountStatusPanel {
+    padding: 11px 12px;
+  }
+
+  .emailVerifyBox .secondaryButton {
+    width: 100%;
+  }
+
+  .providerRow {
+    grid-template-columns: 1fr;
+  }
+
+  .card .providerRow button {
+    width: 100%;
+  }
+}

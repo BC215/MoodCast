@@ -1,0 +1,55 @@
+.statusTabs strong,
+.typeTabs strong {
+  min-width: 28px;
+  height: 24px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+/* 신고 대상 유형 탭 ----------------------------------
+ * 전체 / 유저 / 게시글 / 댓글 필터 탭 디자인입니다.
+ */
+.typeTabs {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(102, 112, 133, 0.14);
+}
+
+.typeTabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 12px;
+  color: #111827;
+  font-weight: 900;
+  background: transparent;
+  transition:
+    transform 0.16s ease,
+    color 0.16s ease,
+    background 0.16s ease;
+}
+
+.typeTabs svg {
+  width: 20px;
+  height: 20px;
+  color: #633df2;
+}
+
+.typeTabs button:hover,
+.activeTypeTab {
+  color: #633df2;
+  background: #f3f0ff;
+}
+
+.activeTypeTab {
+  box-shadow: inset 0 -3px 0 #7c4dff;
+}

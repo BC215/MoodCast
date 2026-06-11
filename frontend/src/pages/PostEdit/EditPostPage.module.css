@@ -1,0 +1,329 @@
+.wrap {
+  display: grid;
+  gap: 18px;
+}
+
+.hero,
+.card {
+  padding: 22px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(17, 24, 39, 0.085);
+  box-shadow: 0 1px 3px rgba(17, 24, 39, 0.055);
+}
+
+.hero strong,
+.card p {
+  color: #111827;
+}
+
+.hero p {
+  margin: 8px 0 0;
+  color: #667085;
+}
+
+.card {
+  display: grid;
+  gap: 18px;
+}
+
+.field {
+  display: grid;
+  gap: 12px;
+}
+
+.mentionField {
+  position: relative;
+  display: grid;
+  gap: 8px;
+}
+
+.field label {
+  color: #475569;
+  font-weight: 700;
+}
+
+.card input,
+.card textarea,
+.editor {
+  width: 100%;
+  border: 1px solid #e6e8f3;
+  border-radius: 16px;
+  padding: 14px 16px;
+  color: #111827;
+  background: #fcfdff;
+  font-weight: 700;
+}
+
+.editor {
+  min-height: 300px;
+  word-break: break-word;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+.editor[data-placeholder]:empty:before {
+  content: attr(data-placeholder);
+  color: #999;
+  pointer-events: none;
+}
+
+.emotionGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 8px;
+}
+
+.emotionButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.emotionButton:hover {
+  background: #f0f4ff;
+}
+
+.emotionSelected {
+  border-color: currentColor !important;
+}
+
+.emotionEmoji {
+  font-size: 32px;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.emotionName {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.uploadSection {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border: 2px dashed #e6e8f3;
+  border-radius: 16px;
+  background: #f8fafc;
+}
+
+.uploadGroup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.uploadButton {
+  padding: 10px 16px;
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.uploadButton:hover {
+  background: #4338ca;
+}
+
+.uploadDescription {
+  font-size: 0.85rem;
+  color: #667085;
+}
+
+.imageList {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.imageGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.imageItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.imageThumbWrap {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f0f2ff;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+}
+
+.imageThumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.imageRemoveButton {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(239, 68, 68, 0.88);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.2s ease;
+}
+
+.imageRemoveButton:hover {
+  background: rgba(220, 38, 38, 0.95);
+}
+
+.imageName {
+  color: #94a3b8;
+  font-size: 0.72rem;
+  text-align: center;
+  word-break: break-all;
+  max-width: 64px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.tagContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.tagChip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #f0f2ff;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  color: #4f46e5;
+  font-weight: 600;
+}
+
+.tagChipButton {
+  background: none;
+  border: none;
+  color: #4f46e5;
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.tagHelpText {
+  display: block;
+  margin-top: 8px;
+  color: #667085;
+  font-size: 0.8rem;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.submitButton,
+.cancelButton {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.submitButton {
+  background: #4f46e5;
+  color: #fff;
+}
+
+.submitButton:hover {
+  background: #4338ca;
+}
+
+.cancelButton {
+  background: #e6e8f3;
+  color: #475569;
+}
+
+.cancelButton:hover {
+  background: #d4d9e6;
+}
+
+.message {
+  padding: 12px;
+  text-align: center;
+  color: #4f46e5;
+  font-weight: 600;
+}
+
+.editorImage {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 8px 0;
+}
+
+.mentionBox {
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border: 1px solid #e6e8f3;
+  border-radius: 16px;
+  background: #fff;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 9999;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.16);
+}
+
+.mentionItem {
+  width: 100%;
+  border: 0;
+  border-radius: 12px;
+  background: #f8fafc;
+  padding: 10px 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mentionItem:hover {
+  background: #eef2ff;
+}
+
+.mentionText {
+  color: #7c4dff;
+  font-weight: 800;
+  word-break: break-word;
+}

@@ -1,0 +1,24 @@
+.emptyState {
+  position: relative;
+  z-index: 1;
+  max-width: min(100%, 420px);
+  margin: auto;
+  padding: 22px;
+  text-align: center;
+  border-radius: 15px;
+  color: #667085;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.emptyState strong {
+  display: block;
+  color: #111827;
+  font-size: 0.96rem;
+  white-space: nowrap;
+}
+
+.emptyState p {
+  margin: 8px 0 0;
+  font-size: 0.86rem;
+  white-space: nowrap;
+}

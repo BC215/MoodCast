@@ -1,0 +1,93 @@
+server:
+  port: ${PORT:8080}
+
+solapi:
+  api-key: ${SOLAPI_API_KEY:}
+  api-secret: ${SOLAPI_API_SECRET:}
+  sender-number: ${SOLAPI_SENDER_NUMBER:}
+
+jwt:
+  secret: ${JWT_SECRET:moodcast-local-jwt-secret-key-2026-change-this-value}
+  issuer: ${JWT_ISSUER:moodcast}
+  access-token-expire-minutes: ${JWT_ACCESS_TOKEN_EXPIRE_MINUTES:30}
+  refresh-token-expire-days: ${JWT_REFRESH_TOKEN_EXPIRE_DAYS:14}
+  refresh-cookie-name: ${JWT_REFRESH_COOKIE_NAME:moodcast_refresh_token}
+  refresh-cookie-same-site: ${JWT_REFRESH_COOKIE_SAME_SITE:Lax}
+  refresh-cookie-secure: ${JWT_REFRESH_COOKIE_SECURE:false}
+
+oauth:
+  kakao:
+    client-id: ${KAKAO_CLIENT_ID:}
+    client-secret: ${KAKAO_CLIENT_SECRET:}
+    allowed-redirect-uris: "${KAKAO_ALLOWED_REDIRECT_URIS:http://localhost:5173/auth/kakao/callback,http://moodcast-frontend-s3-qqqq.s3-website.ap-northeast-2.amazonaws.com/auth/kakao/callback}"
+  google:
+    client-id: ${GOOGLE_CLIENT_ID:}
+    client-secret: ${GOOGLE_CLIENT_SECRET:}
+    allowed-redirect-uris: "${GOOGLE_ALLOWED_REDIRECT_URIS:http://localhost:5173/auth/google/callback,http://moodcast-frontend-s3-qqqq.s3-website.ap-northeast-2.amazonaws.com/auth/google/callback}"
+  naver:
+    client-id: ${NAVER_CLIENT_ID:}
+    client-secret: ${NAVER_CLIENT_SECRET:}
+    allowed-redirect-uris: "${NAVER_ALLOWED_REDIRECT_URIS:http://localhost:5173/auth/naver/callback,http://moodcast-frontend-s3-qqqq.s3-website.ap-northeast-2.amazonaws.com/auth/naver/callback}"
+
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  application:
+    name: moodcast-backend
+  sql:
+    init:
+      mode: ${SQL_INIT_MODE:never}
+      schema-locations:
+        - classpath:schema-posts.sql
+        - classpath:schema-group-chat.sql
+        - classpath:schema-report.sql
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+# 업로드 디렉토리 (상대경로: JAR 실행위치 기준 / 절대경로 그대로 사용)
+# Mac/Windows 둘다 동작 - 절대경로 예: /Users/leebc/moodcast-uploads
+app:
+  upload-dir: uploads
+  local-upload-resource-enabled: ${APP_LOCAL_UPLOAD_RESOURCE_ENABLED:false}
+  public-base-url: ${APP_PUBLIC_BASE_URL:}
+  dev-return-auth-code: ${APP_DEV_RETURN_AUTH_CODE:false}
+  trust-forwarded-headers: ${APP_TRUST_FORWARDED_HEADERS:false}
+
+cloud:
+  aws:
+    region: ${AWS_REGION:ap-northeast-2}
+    credentials:
+      access-key: ${AWS_ACCESS_KEY_ID:}
+      secret-key: ${AWS_SECRET_ACCESS_KEY:}
+      session-token: ${AWS_SESSION_TOKEN:}
+    s3:
+      upload-bucket: ${AWS_UPLOAD_BUCKET_NAME}
+
+mybatis:
+  mapper-locations: classpath:/mappers/**/*.xml
+  type-aliases-package: com.moodcast.member.vo
+  configuration:
+    map-underscore-to-camel-case: true

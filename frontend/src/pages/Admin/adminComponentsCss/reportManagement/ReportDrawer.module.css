@@ -1,0 +1,111 @@
+/* 신고 처리 오른쪽 사이드 패널 전체 레이어입니다. */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  justify-content: flex-end;
+  overflow: hidden;
+  animation: drawerLayerFadeIn 0.18s ease-out;
+}
+
+.overlayClosing {
+  animation: drawerLayerFadeOut 0.22s ease-in forwards;
+}
+
+.dimmedArea {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(15, 23, 42, 0.48);
+  backdrop-filter: blur(2px);
+  cursor: default;
+  animation: drawerDimFadeIn 0.18s ease-out;
+}
+
+.dimmedAreaClosing {
+  animation: drawerDimFadeOut 0.22s ease-in forwards;
+}
+
+/* 사용자 관리의 관리 패널과 같은 방향과 속도로 열리는 신고 처리 패널입니다. */
+.drawer {
+  position: relative;
+  z-index: 1;
+  width: min(520px, 100vw);
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  background: #fff;
+  box-shadow: -26px 0 60px rgba(15, 23, 42, 0.18);
+  overflow: hidden;
+  overscroll-behavior: contain;
+  animation: drawerSlideIn 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.drawerClosing {
+  animation: drawerSlideOut 0.22s ease-in forwards;
+}
+
+@keyframes drawerLayerFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes drawerLayerFadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes drawerDimFadeIn {
+  from {
+    background: rgba(15, 23, 42, 0);
+    backdrop-filter: blur(0);
+  }
+
+  to {
+    background: rgba(15, 23, 42, 0.48);
+    backdrop-filter: blur(2px);
+  }
+}
+
+@keyframes drawerDimFadeOut {
+  from {
+    background: rgba(15, 23, 42, 0.48);
+    backdrop-filter: blur(2px);
+  }
+
+  to {
+    background: rgba(15, 23, 42, 0);
+    backdrop-filter: blur(0);
+  }
+}
+
+@keyframes drawerSlideIn {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes drawerSlideOut {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(100%);
+  }
+}

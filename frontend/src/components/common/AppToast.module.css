@@ -1,0 +1,116 @@
+.toast {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  z-index: 9999;
+  transform: translateX(-50%);
+
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+
+  width: 390px;
+  max-width: calc(100% - 32px);
+  min-height: 58px;
+  padding: 13px 15px 14px;
+
+  overflow: hidden;
+  border: 1px solid rgba(124, 77, 255, 0.12);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 18px 48px rgba(35, 22, 84, 0.16), 0 2px 10px rgba(35, 22, 84, 0.06);
+  backdrop-filter: blur(10px);
+
+  color: #27233f;
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.icon {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  margin-top: 1px;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 0.86rem;
+  font-weight: 1000;
+  line-height: 1;
+}
+
+.message {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.progress {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  transform-origin: left center;
+  animation: toastProgress var(--toast-duration, 2800ms) linear forwards;
+}
+
+.success {
+  color: #1f8d55;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 255, 250, 0.98));
+}
+
+.success .progress {
+  background: #2fb56d;
+}
+
+.success .icon {
+  background: #2fb56d;
+}
+
+.error {
+  color: #dc3b56;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 247, 249, 0.98));
+}
+
+.error .progress {
+  background: #ed5570;
+}
+
+.error .icon {
+  background: #ed5570;
+}
+
+.info {
+  color: #7b3ff2;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(250, 247, 255, 0.98));
+}
+
+.info .progress {
+  background: #8d58ff;
+}
+
+.info .icon {
+  background: #8d58ff;
+}
+
+@keyframes toastProgress {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
+  }
+}
+
+@media (max-width: 520px) {
+  .toast {
+    top: 14px;
+    min-height: 50px;
+    padding: 10px 12px;
+    font-size: 0.82rem;
+  }
+}

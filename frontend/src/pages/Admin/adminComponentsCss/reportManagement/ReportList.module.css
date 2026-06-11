@@ -1,0 +1,30 @@
+/* 신고 목록 카드 ----------------------------------
+ * 신고 목록 전체와 신고 1건 카드의 그리드 레이아웃입니다.
+ */
+.reportList {
+  display: grid;
+}
+
+.emptyReportList {
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  min-height: 260px;
+  padding: 24px;
+  border: 1px dashed rgba(124, 77, 255, 0.24);
+  border-radius: 18px;
+  color: #667085;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.emptyReportList strong {
+  color: #111827;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.emptyReportList span {
+  font-size: 0.9rem;
+  font-weight: 800;
+}

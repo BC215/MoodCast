@@ -1,0 +1,70 @@
+.popover {
+  position: absolute;
+  left: 16px;
+  bottom: calc(100% + 10px);
+  width: min(320px, calc(100vw - 32px));
+  padding: 12px;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 18px 42px rgba(17, 24, 39, 0.18);
+  z-index: 20;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: #111827;
+  font-size: 0.92rem;
+}
+
+.closeButton {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.06);
+  color: #111827;
+  cursor: pointer;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.emojiButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 12px;
+  background: rgba(124, 77, 255, 0.08);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.emojiButton:hover {
+  background: rgba(124, 77, 255, 0.16);
+}
+
+@media (max-width: 640px) {
+  .popover {
+    left: 8px;
+    width: min(288px, calc(100vw - 16px));
+  }
+
+  .grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .emojiButton {
+    width: 38px;
+    height: 38px;
+  }
+}

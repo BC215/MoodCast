@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MoodCast - 모바일 피드</title>
+  <style>
+    :root{
+      --bg:#f8f7ff;
+      --surface:rgba(255,255,255,.9);
+      --line:#e4e0f3;
+      --text:#15142b;
+      --text-2:#5f6377;
+      --text-3:#8f94a7;
+      --brand:#6e55ff;
+      --brand-soft:#ebe4ff;
+      --shadow:0 18px 40px rgba(61,52,120,.08),0 2px 10px rgba(61,52,120,.04);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;font-family:Inter,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:var(--text);background:radial-gradient(circle at left top, rgba(138,99,255,.18), transparent 18%),var(--bg)}
+    body{min-width:390px}
+    .canvas{width:390px;min-height:844px;margin:0 auto;padding:10px 6px 96px;background:linear-gradient(180deg,#faf9ff 0%,#f6f2ff 100%)}
+    .app{min-height:100%;position:relative}
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 6px 12px}
+    .brand{font-size:18px;font-weight:900;color:#121525}
+    .top-icons{display:flex;align-items:center;gap:18px}
+    .icon{width:22px;height:22px;border:2px solid #15142b;border-radius:50%;position:relative}
+    .icon.search::after{content:"";position:absolute;right:-4px;bottom:-4px;width:8px;height:2px;border-radius:999px;background:#15142b;transform:rotate(45deg)}
+    .bell{width:18px;height:22px;border:2px solid #15142b;border-top-left-radius:999px;border-top-right-radius:999px;border-bottom:none;position:relative}
+    .bell::after{content:"";position:absolute;left:50%;bottom:-6px;width:6px;height:6px;border-radius:50%;background:#15142b;transform:translateX(-50%)}
+    .avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#b697ff,#6f7cff);border:2px solid #fff;box-shadow:0 0 0 1px rgba(110,85,255,.2)}
+    .composer{margin:2px 0 10px;padding:10px;border:1px solid var(--line);border-radius:26px;background:#fff;box-shadow:var(--shadow)}
+    .composer-inner{height:68px;border-radius:22px;background:#f8f8ff;display:flex;align-items:center;gap:14px;padding:0 14px}
+    .composer-badge{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#f4a0cb,#6f7cff)}
+    .composer-text{color:#79819a;font-size:14px;font-weight:600}
+    .tabs{display:flex;gap:10px;overflow:auto;padding:0 2px 10px;margin-bottom:2px}
+    .tab{height:34px;padding:0 14px;border-radius:999px;border:1px solid #d9ddef;background:#fff;color:#54617d;font-size:13px;font-weight:800;display:flex;align-items:center;flex:0 0 auto}
+    .tab.active{color:#6e55ff;border-color:#6e55ff;box-shadow:inset 0 0 0 1px rgba(110,85,255,.08)}
+    .feed{min-height:346px;padding:10px 4px 0}
+    .empty{font-size:18px;font-weight:500;color:#15142b}
+    .bottom-nav{
+      position:fixed;left:50%;bottom:12px;transform:translateX(-50%);
+      width:360px;height:68px;padding:8px 10px;border-radius:24px;background:#fff;border:1px solid var(--line);box-shadow:0 18px 32px rgba(84,67,144,.10);display:grid;grid-template-columns:repeat(5,1fr);align-items:center;z-index:10
+    }
+    .nav-item{display:grid;place-items:center;gap:4px;color:#737990;font-size:12px;font-weight:700}
+    .nav-item.active{color:#6e55ff}
+    .nav-icon{width:20px;height:20px;border:2px solid currentColor;border-radius:5px;position:relative}
+    .nav-icon.plus{border-radius:50%;background:linear-gradient(135deg,#6f8eff,#6e55ff 55%,#56c1ff);border:0;width:52px;height:52px;box-shadow:0 16px 28px rgba(110,85,255,.28)}
+    .nav-icon.plus::before,.nav-icon.plus::after{content:"";position:absolute;left:50%;top:50%;background:#fff;border-radius:999px;transform:translate(-50%,-50%)}
+    .nav-icon.plus::before{width:18px;height:3px}
+    .nav-icon.plus::after{width:3px;height:18px}
+    .nav-label{white-space:nowrap}
+    .nav-item.center{transform:translateY(-22px)}
+  </style>
+</head>
+<body>
+  <div class="canvas">
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">MoodCast</div>
+        <div class="top-icons">
+          <div class="icon search" aria-hidden="true"></div>
+          <div class="bell" aria-hidden="true"></div>
+          <div class="avatar" aria-hidden="true"></div>
+        </div>
+      </header>
+
+      <section class="composer">
+        <div class="composer-inner">
+          <div class="composer-badge" aria-hidden="true"></div>
+          <div class="composer-text">무슨 생각을 하고 계신가요?</div>
+        </div>
+      </section>
+
+      <div class="tabs">
+        <div class="tab active">전체</div>
+        <div class="tab" style="color:#ff9e00;border-color:#ffcb62">행복해요</div>
+        <div class="tab" style="color:#2e79ff;border-color:#7fb0ff">슬퍼요</div>
+        <div class="tab" style="color:#9a7a4a;border-color:#d7c5a7">차분해요</div>
+        <div class="tab" style="color:#ff5555;border-color:#ffa1a1">화가나요</div>
+      </div>
+
+      <main class="feed">
+        <div class="empty">게시물이 없습니다.</div>
+      </main>
+
+      <nav class="bottom-nav" aria-label="모바일 하단 탭">
+        <div class="nav-item active">
+          <div class="nav-icon" aria-hidden="true"></div>
+          <div class="nav-label">홈</div>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon" aria-hidden="true"></div>
+          <div class="nav-label">저장</div>
+        </div>
+        <div class="nav-item center">
+          <div class="nav-icon plus" aria-hidden="true"></div>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon" aria-hidden="true"></div>
+          <div class="nav-label">채팅</div>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon" aria-hidden="true"></div>
+          <div class="nav-label">프로필</div>
+        </div>
+      </nav>
+    </div>
+  </div>
+</body>
+</html>

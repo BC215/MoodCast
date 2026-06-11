@@ -1,0 +1,687 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moodcast.post.dao.PostDao">
+
+    <resultMap id="postMentionMap" type="com.moodcast.post.vo.PostMention">
+        <id property="postMentionId" column="postMentionId"/>
+        <result property="commentId" column="commentId"/>
+        <result property="postId" column="postId"/>
+        <result property="userId" column="userId"/>
+        <result property="nickname" column="nickname"/>
+        <result property="mentionText" column="mentionText"/>
+        <result property="startIndex" column="startIndex"/>
+        <result property="endIndex" column="endIndex"/>
+        <result property="createdAt" column="createdAt"/>
+    </resultMap>
+
+    <resultMap id="commentSummaryMap" type="com.moodcast.post.vo.CommentSummary">
+        <id property="commentId" column="commentId"/>
+        <result property="postId" column="postId"/>
+        <result property="memberId" column="memberId"/>
+        <result property="author" column="author"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="createdAt"/>
+        <result property="profileImageUrl" column="profileImageUrl"/>
+        <result property="parentCommentId" column="parentCommentId"/>
+        <collection property="mentions" ofType="com.moodcast.post.vo.PostMention" column="commentId" select="selectCommentMentionsByCommentId"/>
+    </resultMap>
+
+    <resultMap id="postSummaryMap" type="com.moodcast.post.vo.PostSummary">
+        <id property="postId" column="postId"/>
+        <result property="memberId" column="memberId"/>
+        <result property="author" column="author"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="emotionId" column="emotionId"/>
+        <result property="createdAt" column="createdAt"/>
+        <result property="tags" column="tags"/>
+        <result property="likes" column="likes"/>
+        <result property="comments" column="comments"/>
+        <result property="likedByMe" column="likedByMe"/>
+        <result property="savedByMe" column="savedByMe"/>
+        <result property="profileImageUrl" column="profileImageUrl"/>
+        <collection property="mentions" ofType="com.moodcast.post.vo.PostMention" column="postId" select="selectMentionsByPostId"/>
+    </resultMap>
+
+    <resultMap id="postDetailMap" type="com.moodcast.post.vo.PostDetail">
+        <id property="postId" column="postId"/>
+        <result property="memberId" column="memberId"/>
+        <result property="author" column="author"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="emotionId" column="emotionId"/>
+        <result property="createdAt" column="createdAt"/>
+        <result property="tags" column="tags"/>
+        <result property="likes" column="likes"/>
+        <result property="comments" column="comments"/>
+        <result property="saves" column="saves"/>
+        <result property="likedByMe" column="likedByMe"/>
+        <result property="savedByMe" column="savedByMe"/>
+        <result property="profileImageUrl" column="profileImageUrl"/>
+        <collection property="mentions" ofType="com.moodcast.post.vo.PostMention" column="postId" select="selectMentionsByPostId"/>
+    </resultMap>
+
+    <insert id="insertPost" parameterType="com.moodcast.post.vo.Post" useGeneratedKeys="true" keyProperty="postId">
+        insert into post_tbl (
+            member_id,
+            title,
+            content,
+            visibility,
+            emotion_id,
+            created_at,
+            deleted_yn
+        ) values (
+            #{memberId},
+            #{title},
+            #{content},
+            #{visibility},
+            #{emotionId},
+            CONVERT_TZ(NOW(6), '+00:00', '+09:00'),
+            'N'
+        )
+    </insert>
+
+    <select id="findHashtagIdByText" parameterType="string" resultType="long">
+        select hashtag_id
+        from hashtag
+        where hashtag = #{hashtag}
+        limit 1
+    </select>
+
+    <insert id="insertHashtag" parameterType="com.moodcast.post.vo.Hashtag" useGeneratedKeys="true" keyProperty="hashtagId">
+        insert into hashtag (
+            hashtag,
+            use_count
+        ) values (
+            #{hashtag},
+            1
+        )
+    </insert>
+
+    <update id="incrementHashtagUseCount" parameterType="long">
+        update hashtag
+        set use_count = use_count + 1
+        where hashtag_id = #{hashtagId}
+    </update>
+
+    <update id="decrementHashtagUseCount" parameterType="long">
+        update hashtag
+        set use_count = greatest(use_count - 1, 0)
+        where hashtag_id = #{hashtagId}
+    </update>
+
+    <insert id="insertPostHashtag" parameterType="map">
+        insert into post_hashtag (
+            post_id,
+            hashtag_id
+        ) values (
+            #{postId},
+            #{hashtagId}
+        )
+    </insert>
+
+    <insert id="insertPostMention" parameterType="com.moodcast.post.vo.PostMention" useGeneratedKeys="true" keyProperty="postMentionId">
+        insert into post_mention_tbl (
+            post_id,
+            mentioned_user_id,
+            mention_text,
+            start_index,
+            end_index,
+            created_at
+        ) values (
+            #{postId},
+            #{userId},
+            #{mentionText},
+            #{startIndex},
+            #{endIndex},
+            CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        )
+    </insert>
+
+    <delete id="deletePostMentionsByPostId" parameterType="long">
+        delete from post_mention_tbl
+        where post_id = #{postId}
+    </delete>
+
+    <select id="selectPostById" parameterType="map" resultMap="postDetailMap">
+        select
+            p.post_id as postId,
+            p.member_id as memberId,
+            coalesce(m.nickname, m.name) as author,
+            p.title as title,
+            p.content as content,
+            p.emotion_id as emotionId,
+            date_format(p.created_at, '%Y-%m-%d %H:%i') as createdAt,
+            coalesce(m.profile_image_url, '') as profileImageUrl,
+            <!-- post_hashtag_id(연결 테이블 PK) 순으로 합치면 사용자가 입력한 해시태그 순서가 유지됨 -->
+            coalesce((
+                select group_concat(concat('#', h.hashtag) order by ph.post_hashtag_id separator ' ')
+                from post_hashtag ph
+                         join hashtag h on ph.hashtag_id = h.hashtag_id
+                where ph.post_id = p.post_id
+            ), '') as tags,
+            coalesce((select count(*) from user_post_like where post_id = p.post_id), 0) as likes,
+            coalesce((
+                select count(*)
+                from comment_tbl c
+                where c.post_id = p.post_id
+                  and c.deleted_yn = 'N'
+                  and not exists (
+                      select 1
+                      from admin_action_logs log
+                      where log.target_type = 'COMMENT'
+                        and log.target_id = c.comment_id
+                        and log.action_type = 'HIDE'
+                        and log.log_id = (
+                            select max(log_id)
+                            from admin_action_logs
+                            where target_type = 'COMMENT'
+                              and target_id = c.comment_id
+                              and action_type in ('HIDE', 'RESTORE')
+                        )
+                  )
+            ), 0) as comments,
+            coalesce((select count(*) from saved_post where post_id = p.post_id), 0) as saves,
+            exists(select 1 from user_post_like where post_id = p.post_id and member_id = #{viewerId}) as likedByMe,
+            exists(select 1 from saved_post where post_id = p.post_id and member_id = #{viewerId}) as savedByMe
+        from post_tbl p
+                 join members m on p.member_id = m.member_id
+        where p.post_id = #{postId}
+          and p.deleted_yn = 'N'
+          and p.visibility = 'PUBLIC'
+        limit 1
+    </select>
+
+    <update id="updatePost" parameterType="com.moodcast.post.vo.Post">
+        update post_tbl
+        set
+            title = #{title},
+            content = #{content},
+            emotion_id = #{emotionId},
+            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        where post_id = #{postId}
+          and deleted_yn = 'N'
+    </update>
+
+    <delete id="deletePostHashtagsByPostId" parameterType="long">
+        delete from post_hashtag
+        where post_id = #{postId}
+    </delete>
+
+    <update id="softDeletePost" parameterType="long">
+        update post_tbl
+        set deleted_yn = 'Y',
+            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        where post_id = #{postId}
+    </update>
+
+    <select id="selectRecentPosts" parameterType="map" resultMap="postSummaryMap">
+        select
+            p.post_id as postId,
+            p.member_id as memberId,
+            coalesce(m.nickname, m.name) as author,
+            p.title as title,
+            p.content as content,
+            p.emotion_id as emotionId,
+            date_format(p.created_at, '%Y-%m-%d %H:%i') as createdAt,
+            coalesce(m.profile_image_url, '') as profileImageUrl,
+            <!-- 해시태그를 이름순이 아니라 입력 순서대로 보여주기 위한 정렬 기준임 -->
+            coalesce((
+                select group_concat(concat('#', h.hashtag) order by ph.post_hashtag_id separator ' ')
+                from post_hashtag ph join hashtag h on ph.hashtag_id = h.hashtag_id
+                where ph.post_id = p.post_id
+            ), '') as tags,
+            coalesce((select count(*) from user_post_like where post_id = p.post_id), 0) as likes,
+            coalesce((
+                select count(*)
+                from comment_tbl c
+                where c.post_id = p.post_id
+                  and c.deleted_yn = 'N'
+                  and not exists (
+                      select 1
+                      from admin_action_logs log
+                      where log.target_type = 'COMMENT'
+                        and log.target_id = c.comment_id
+                        and log.action_type = 'HIDE'
+                        and log.log_id = (
+                            select max(log_id)
+                            from admin_action_logs
+                            where target_type = 'COMMENT'
+                              and target_id = c.comment_id
+                              and action_type in ('HIDE', 'RESTORE')
+                        )
+                  )
+            ), 0) as comments,
+            exists(select 1 from user_post_like where post_id = p.post_id and member_id = #{viewerId}) as likedByMe,
+            exists(select 1 from saved_post where post_id = p.post_id and member_id = #{viewerId}) as savedByMe
+        from post_tbl p
+                 join members m on p.member_id = m.member_id
+        where p.deleted_yn = 'N'
+          and p.visibility = 'PUBLIC'
+        order by p.created_at desc
+        limit 50
+    </select>
+
+    <select id="selectPopularPosts" parameterType="map" resultMap="postSummaryMap">
+        select
+            p.post_id as postId,
+            p.member_id as memberId,
+            coalesce(m.nickname, m.name) as author,
+            p.title as title,
+            p.content as content,
+            p.emotion_id as emotionId,
+            date_format(p.created_at, '%Y-%m-%d %H:%i') as createdAt,
+            coalesce(m.profile_image_url, '') as profileImageUrl,
+            <!-- 인기글 조회에서도 같은 순서 규칙을 써야 화면마다 태그 순서가 일관됨 -->
+            coalesce((
+                select group_concat(concat('#', h.hashtag) order by ph.post_hashtag_id separator ' ')
+                from post_hashtag ph join hashtag h on ph.hashtag_id = h.hashtag_id
+                where ph.post_id = p.post_id
+            ), '') as tags,
+            coalesce((select count(*) from user_post_like where post_id = p.post_id), 0) as likes,
+            coalesce((
+                select count(*)
+                from comment_tbl c
+                where c.post_id = p.post_id
+                  and c.deleted_yn = 'N'
+                  and not exists (
+                      select 1
+                      from admin_action_logs log
+                      where log.target_type = 'COMMENT'
+                        and log.target_id = c.comment_id
+                        and log.action_type = 'HIDE'
+                        and log.log_id = (
+                            select max(log_id)
+                            from admin_action_logs
+                            where target_type = 'COMMENT'
+                              and target_id = c.comment_id
+                              and action_type in ('HIDE', 'RESTORE')
+                        )
+                  )
+            ), 0) as comments,
+            exists(select 1 from user_post_like where post_id = p.post_id and member_id = #{viewerId}) as likedByMe,
+            exists(select 1 from saved_post where post_id = p.post_id and member_id = #{viewerId}) as savedByMe
+        from post_tbl p
+                 join members m on p.member_id = m.member_id
+        where p.deleted_yn = 'N'
+          and p.visibility = 'PUBLIC'
+        order by (coalesce((select count(*) from user_post_like where post_id = p.post_id), 0) + coalesce((
+                     select count(*)
+                     from comment_tbl c
+                     where c.post_id = p.post_id
+                       and c.deleted_yn = 'N'
+                       and not exists (
+                           select 1
+                           from admin_action_logs log
+                           where log.target_type = 'COMMENT'
+                             and log.target_id = c.comment_id
+                             and log.action_type = 'HIDE'
+                             and log.log_id = (
+                                 select max(log_id)
+                                 from admin_action_logs
+                                 where target_type = 'COMMENT'
+                                   and target_id = c.comment_id
+                                   and action_type in ('HIDE', 'RESTORE')
+                             )
+                       )
+                 ), 0)) desc,
+                 p.created_at desc
+        limit #{limit}
+    </select>
+
+    <select id="selectPostsByMember" parameterType="map" resultMap="postSummaryMap">
+        select
+            p.post_id as postId,
+            p.member_id as memberId,
+            coalesce(m.nickname, m.name) as author,
+            p.title as title,
+            p.content as content,
+            p.emotion_id as emotionId,
+            date_format(p.created_at, '%Y-%m-%d %H:%i') as createdAt,
+            coalesce(m.profile_image_url, '') as profileImageUrl,
+            <!-- 마이페이지 글 목록도 입력 순서로 노출되도록 동일하게 처리함 -->
+            coalesce((
+                select group_concat(concat('#', h.hashtag) order by ph.post_hashtag_id separator ' ')
+                from post_hashtag ph join hashtag h on ph.hashtag_id = h.hashtag_id
+                where ph.post_id = p.post_id
+            ), '') as tags,
+            coalesce((select count(*) from user_post_like where post_id = p.post_id), 0) as likes,
+            coalesce((
+                select count(*)
+                from comment_tbl c
+                where c.post_id = p.post_id
+                  and c.deleted_yn = 'N'
+                  and not exists (
+                      select 1
+                      from admin_action_logs log
+                      where log.target_type = 'COMMENT'
+                        and log.target_id = c.comment_id
+                        and log.action_type = 'HIDE'
+                        and log.log_id = (
+                            select max(log_id)
+                            from admin_action_logs
+                            where target_type = 'COMMENT'
+                              and target_id = c.comment_id
+                              and action_type in ('HIDE', 'RESTORE')
+                        )
+                  )
+            ), 0) as comments,
+            exists(select 1 from user_post_like where post_id = p.post_id and member_id = #{viewerId}) as likedByMe,
+            exists(select 1 from saved_post where post_id = p.post_id and member_id = #{viewerId}) as savedByMe
+        from post_tbl p
+                 join members m on p.member_id = m.member_id
+        where p.deleted_yn = 'N'
+          and p.visibility = 'PUBLIC'
+          and p.member_id = #{memberId}
+        order by p.created_at desc
+        limit 50
+    </select>
+
+    <select id="selectMentionsByPostId" parameterType="long" resultMap="postMentionMap">
+        select
+            pm.post_mention_id as postMentionId,
+            pm.post_id as postId,
+            pm.mentioned_user_id as userId,
+            coalesce(m.nickname, m.name) as nickname,
+            pm.mention_text as mentionText,
+            pm.start_index as startIndex,
+            pm.end_index as endIndex,
+            date_format(pm.created_at, '%Y-%m-%d %H:%i:%s') as createdAt
+        from post_mention_tbl pm
+                 join members m on pm.mentioned_user_id = m.member_id
+        where pm.post_id = #{postId}
+        order by pm.start_index asc, pm.post_mention_id asc
+    </select>
+
+    <select id="selectCommentsByPostId" parameterType="long" resultMap="commentSummaryMap">
+        select
+            c.comment_id as commentId,
+            c.post_id as postId,
+            c.member_id as memberId,
+            coalesce(m.nickname, m.name) as author,
+            c.content as content,
+            date_format(c.created_at, '%Y-%m-%d %H:%i') as createdAt,
+            coalesce(m.profile_image_url, '') as profileImageUrl,
+            c.parent_id as parentCommentId
+        from comment_tbl c
+                 join post_tbl p on p.post_id = c.post_id
+                 join members m on c.member_id = m.member_id
+                 left join (
+                    select log.target_id, log.action_type
+                    from admin_action_logs log
+                    inner join (
+                        select target_id, max(log_id) as latest_log_id
+                        from admin_action_logs
+                        where target_type = 'COMMENT'
+                          and action_type in ('HIDE', 'RESTORE')
+                        group by target_id
+                    ) latest on latest.latest_log_id = log.log_id
+                 ) latest_log on latest_log.target_id = c.comment_id
+        where c.post_id = #{postId}
+          and p.deleted_yn = 'N'
+          and p.visibility = 'PUBLIC'
+          and c.deleted_yn = 'N'
+          and c.parent_id is null
+          and (latest_log.action_type is null or latest_log.action_type != 'HIDE')
+        order by c.created_at asc
+    </select>
+
+    <select id="selectRepliesByPostId" parameterType="long" resultMap="commentSummaryMap">
+        select
+            c.comment_id as commentId,
+            c.post_id as postId,
+            c.member_id as memberId,
+            coalesce(m.nickname, m.name) as author,
+            c.content as content,
+            date_format(c.created_at, '%Y-%m-%d %H:%i') as createdAt,
+            coalesce(m.profile_image_url, '') as profileImageUrl,
+            c.parent_id as parentCommentId
+        from comment_tbl c
+                 join post_tbl p on p.post_id = c.post_id
+                 join members m on c.member_id = m.member_id
+                 left join (
+                    select log.target_id, log.action_type
+                    from admin_action_logs log
+                    inner join (
+                        select target_id, max(log_id) as latest_log_id
+                        from admin_action_logs
+                        where target_type = 'COMMENT'
+                          and action_type in ('HIDE', 'RESTORE')
+                        group by target_id
+                    ) latest on latest.latest_log_id = log.log_id
+                 ) latest_log on latest_log.target_id = c.comment_id
+        where c.post_id = #{postId}
+          and p.deleted_yn = 'N'
+          and p.visibility = 'PUBLIC'
+          and c.deleted_yn = 'N'
+          and c.parent_id is not null
+          and (latest_log.action_type is null or latest_log.action_type != 'HIDE')
+        order by c.parent_id asc, c.created_at asc
+    </select>
+
+    <select id="selectEmotionStats" parameterType="map" resultType="com.moodcast.post.vo.EmotionStat">
+        select
+            p.emotion_id as emotionId,
+            count(*) as count
+        from post_tbl p
+        where p.member_id = #{memberId}
+          and p.deleted_yn = 'N'
+          and p.visibility = 'PUBLIC'
+          <if test="period == 'week'">
+            and p.created_at >= date_sub(convert_tz(now(6), '+00:00', '+09:00'), interval 7 day)
+          </if>
+          <if test="period == 'month'">
+            and p.created_at >= date_sub(convert_tz(now(6), '+00:00', '+09:00'), interval 30 day)
+          </if>
+        group by p.emotion_id
+        order by p.emotion_id asc
+    </select>
+
+    <insert id="insertComment" parameterType="com.moodcast.post.vo.CommentSummary" useGeneratedKeys="true" keyProperty="commentId">
+        insert into comment_tbl (
+            post_id,
+            member_id,
+            content,
+            parent_id,
+            created_at,
+            deleted_yn
+        ) values (
+            #{postId},
+            #{memberId},
+            #{content},
+            #{parentCommentId},
+            CONVERT_TZ(NOW(6), '+00:00', '+09:00'),
+            'N'
+        )
+    </insert>
+
+    <insert id="insertCommentMention" parameterType="com.moodcast.post.vo.PostMention" useGeneratedKeys="true" keyProperty="postMentionId">
+        insert into comment_mention_tbl (
+            comment_id,
+            mentioned_user_id,
+            mention_text,
+            start_index,
+            end_index,
+            created_at
+        ) values (
+            #{commentId},
+            #{userId},
+            #{mentionText},
+            #{startIndex},
+            #{endIndex},
+            CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        )
+    </insert>
+
+    <delete id="deleteCommentMentionsByCommentId" parameterType="long">
+        delete from comment_mention_tbl
+        where comment_id = #{commentId}
+    </delete>
+
+    <select id="selectCommentMentionsByCommentId" parameterType="long" resultMap="postMentionMap">
+        select
+            cm.comment_mention_id as postMentionId,
+            cm.comment_id as commentId,
+            null as postId,
+            cm.mentioned_user_id as userId,
+            coalesce(m.nickname, m.name) as nickname,
+            cm.mention_text as mentionText,
+            cm.start_index as startIndex,
+            cm.end_index as endIndex,
+            date_format(cm.created_at, '%Y-%m-%d %H:%i:%s') as createdAt
+        from comment_mention_tbl cm
+                 join members m on cm.mentioned_user_id = m.member_id
+        where cm.comment_id = #{commentId}
+        order by cm.start_index asc, cm.comment_mention_id asc
+    </select>
+
+    <select id="selectCommentById" parameterType="long" resultMap="commentSummaryMap">
+        select
+            c.comment_id as commentId,
+            c.post_id as postId,
+            c.member_id as memberId,
+            coalesce(m.nickname, m.name) as author,
+            c.content as content,
+            date_format(c.created_at, '%Y-%m-%d %H:%i') as createdAt,
+            coalesce(m.profile_image_url, '') as profileImageUrl,
+            c.parent_id as parentCommentId
+        from comment_tbl c
+                 join post_tbl p on p.post_id = c.post_id
+                 join members m on c.member_id = m.member_id
+                 left join (
+                    select log.target_id, log.action_type
+                    from admin_action_logs log
+                    inner join (
+                        select target_id, max(log_id) as latest_log_id
+                        from admin_action_logs
+                        where target_type = 'COMMENT'
+                          and action_type in ('HIDE', 'RESTORE')
+                        group by target_id
+                    ) latest on latest.latest_log_id = log.log_id
+                 ) latest_log on latest_log.target_id = c.comment_id
+        where c.comment_id = #{commentId}
+          and p.deleted_yn = 'N'
+          and p.visibility = 'PUBLIC'
+          and c.deleted_yn = 'N'
+          and (latest_log.action_type is null or latest_log.action_type != 'HIDE')
+        limit 1
+    </select>
+
+    <update id="updateComment" parameterType="map">
+        update comment_tbl
+        set content = #{content}
+        where comment_id = #{commentId}
+          and deleted_yn = 'N'
+    </update>
+
+    <update id="deleteComment" parameterType="long">
+        update comment_tbl
+        set deleted_yn = 'Y'
+        where comment_id = #{commentId}
+    </update>
+
+    <select id="selectChildCommentIds" parameterType="long" resultType="long">
+        select comment_id from comment_tbl
+        where parent_id = #{commentId}
+          and deleted_yn = 'N'
+    </select>
+
+    <select id="selectPostLikeByPostAndMember" parameterType="map" resultType="int">
+        select count(*)
+        from user_post_like
+        where post_id = #{postId}
+          and member_id = #{memberId}
+    </select>
+
+    <insert id="insertPostLike" parameterType="map">
+        insert into user_post_like (
+            post_id,
+            member_id,
+            created_at
+        ) values (
+            #{postId},
+            #{memberId},
+            CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        )
+    </insert>
+
+    <delete id="deletePostLike" parameterType="map">
+        delete from user_post_like
+        where post_id = #{postId}
+          and member_id = #{memberId}
+    </delete>
+
+    <select id="selectSavedPostByPostAndMember" parameterType="map" resultType="int">
+        select count(*)
+        from saved_post
+        where post_id = #{postId}
+          and member_id = #{memberId}
+    </select>
+
+    <insert id="insertSavedPost" parameterType="map">
+        insert into saved_post (
+            post_id,
+            member_id,
+            created_at
+        ) values (
+            #{postId},
+            #{memberId},
+            CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        )
+    </insert>
+
+    <delete id="deleteSavedPost" parameterType="map">
+        delete from saved_post
+        where post_id = #{postId}
+          and member_id = #{memberId}
+    </delete>
+
+    <select id="selectSavedPostsByMember" parameterType="map" resultMap="postSummaryMap">
+        select
+            p.post_id as postId,
+            coalesce(m.nickname, m.name) as author,
+            coalesce(m.profile_image_url, '') as profileImageUrl,
+            p.title as title,
+            p.content as content,
+            p.emotion_id as emotionId,
+            date_format(p.created_at, '%Y-%m-%d %H:%i') as createdAt,
+            <!-- 저장한 글 목록도 같은 기준으로 맞춰야 태그 순서가 뒤바뀌지 않음 -->
+            coalesce((
+                select group_concat(concat('#', h.hashtag) order by ph.post_hashtag_id separator ' ')
+                from post_hashtag ph join hashtag h on ph.hashtag_id = h.hashtag_id
+                where ph.post_id = p.post_id
+            ), '') as tags,
+            coalesce((select count(*) from user_post_like where post_id = p.post_id), 0) as likes,
+            coalesce((
+                select count(*)
+                from comment_tbl c
+                where c.post_id = p.post_id
+                  and c.deleted_yn = 'N'
+                  and not exists (
+                      select 1
+                      from admin_action_logs log
+                      where log.target_type = 'COMMENT'
+                        and log.target_id = c.comment_id
+                        and log.action_type = 'HIDE'
+                        and log.log_id = (
+                            select max(log_id)
+                            from admin_action_logs
+                            where target_type = 'COMMENT'
+                              and target_id = c.comment_id
+                              and action_type in ('HIDE', 'RESTORE')
+                        )
+                  )
+            ), 0) as comments,
+            exists(select 1 from user_post_like where post_id = p.post_id and member_id = #{viewerId}) as likedByMe,
+            exists(select 1 from saved_post where post_id = p.post_id and member_id = #{viewerId}) as savedByMe
+        from saved_post s
+                 join post_tbl p on s.post_id = p.post_id
+                 join members m on p.member_id = m.member_id
+        where s.member_id = #{memberId}
+          and p.deleted_yn = 'N'
+          and p.visibility = 'PUBLIC'
+        order by s.created_at desc
+        limit 50
+    </select>
+
+</mapper>

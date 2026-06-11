@@ -1,0 +1,26 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MoodCast 로고">
+  <defs>
+    <linearGradient id="metal" x1="251" y1="191" x2="770" y2="770" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F4F5F7"/>
+      <stop offset="0.5" stop-color="#B5B7BC"/>
+      <stop offset="1" stop-color="#F5F6F8"/>
+    </linearGradient>
+    <linearGradient id="wave" x1="0" y1="0" x2="1024" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#27E1F5"/>
+      <stop offset="0.5" stop-color="#5B7CF7"/>
+      <stop offset="1" stop-color="#FF2EDB"/>
+    </linearGradient>
+    <filter id="shadow" x="180" y="160" width="664" height="704" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#000000" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <rect width="1024" height="1024" fill="transparent"/>
+
+  <g filter="url(#shadow)">
+    <path d="M286 214L512 466L738 214V724L646 632V411L512 551L378 411V632L286 724V214Z" fill="url(#metal)" stroke="#FFFFFF" stroke-width="6" stroke-linejoin="round"/>
+  </g>
+
+  <path d="M38 748H210L279 748L330 861L420 585L512 748L605 585L695 861L746 748H986" stroke="url(#wave)" stroke-width="56" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M38 748H210L279 748L330 861L420 585L512 748L605 585L695 861L746 748H986" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

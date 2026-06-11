@@ -1,0 +1,218 @@
+.modalLayer {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.modalDim {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(17, 24, 39, 0.44);
+  cursor: pointer;
+}
+
+.modalPanel {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 16px;
+  width: min(820px, 100%);
+  max-height: min(820px, 88vh);
+  overflow: auto;
+  padding: 22px;
+  border: 1px solid rgba(124, 77, 255, 0.16);
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 28px 80px rgba(17, 24, 39, 0.24);
+}
+
+.modalHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.modalHead h2 {
+  margin: 5px 0 0;
+  color: #111827;
+  font-size: 1.25rem;
+  font-weight: 950;
+  line-height: 1.4;
+}
+
+.postId {
+  color: #667085;
+  font-size: 0.84rem;
+  font-weight: 950;
+}
+
+.closeButton {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid rgba(102, 112, 133, 0.18);
+  border-radius: 9px;
+  color: #344054;
+  font-weight: 900;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.badgeRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.statusBadge,
+.emotionBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.emotionBadge {
+  border: 1px solid currentColor;
+}
+
+.emotionIcon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+}
+
+.metaGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.metaGrid div {
+  min-width: 0;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(102, 112, 133, 0.07);
+}
+
+.metaGrid span {
+  display: block;
+  color: #667085;
+  font-size: 0.74rem;
+  font-weight: 900;
+}
+
+.metaGrid strong {
+  display: block;
+  margin-top: 5px;
+  overflow: hidden;
+  color: #111827;
+  font-size: 0.9rem;
+  font-weight: 950;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.imageBox {
+  display: grid;
+  place-items: center;
+  min-height: 260px;
+  overflow: hidden;
+  border: 1px solid rgba(124, 77, 255, 0.14);
+  border-radius: 14px;
+  background: #f3f4f6;
+}
+
+.noImageBox {
+  background: #f6f7fb;
+}
+
+.imageBox img {
+  display: block;
+  width: 100%;
+  max-height: 440px;
+  object-fit: contain;
+  object-position: center;
+}
+
+.contentBox {
+  display: grid;
+  gap: 8px;
+}
+
+.contentBox h3 {
+  margin: 0;
+  color: #111827;
+  font-size: 0.96rem;
+  font-weight: 950;
+}
+
+.contentBox p {
+  margin: 0;
+  white-space: pre-wrap;
+  color: #344054;
+  font-size: 0.94rem;
+  font-weight: 750;
+  line-height: 1.7;
+}
+
+.tagBox {
+  display: grid;
+  gap: 8px;
+}
+
+.tagBox h3 {
+  margin: 0;
+  color: #111827;
+  font-size: 0.96rem;
+  font-weight: 950;
+}
+
+.hashtagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 6px 0 12px;
+}
+
+.hashtagChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border: none;
+  border-radius: 20px;
+  color: #6366f1;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  background: #eef2ff;
+}
+
+@media (max-width: 760px) {
+  .modalLayer {
+    padding: 14px;
+  }
+
+  .modalPanel {
+    padding: 18px;
+  }
+
+  .modalHead,
+  .metaGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .modalHead {
+    flex-direction: column;
+  }
+}

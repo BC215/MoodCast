@@ -1,0 +1,377 @@
+.panel {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid rgba(124, 77, 255, 0.1);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.83);
+  box-shadow: 0 22px 52px rgba(17, 24, 39, 0.055);
+}
+
+.formPanel {
+  width: 100%;
+}
+
+.panelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.panelHead h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.secondaryLinkButton {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  border-radius: 12px;
+  color: #633df2;
+  font-size: 0.88rem;
+  font-weight: 900;
+  text-decoration: none;
+  white-space: nowrap;
+  background: rgba(124, 77, 255, 0.09);
+  transition: transform 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
+}
+
+.secondaryLinkButton:hover {
+  background: rgba(124, 77, 255, 0.15);
+  box-shadow: 0 10px 22px rgba(124, 77, 255, 0.14);
+  transform: translateY(-1px);
+}
+
+.secondaryLinkButton:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.secondaryLinkButton:focus-visible {
+  outline: 3px solid rgba(124, 77, 255, 0.28);
+  outline-offset: 2px;
+}
+
+.adminForm {
+  display: grid;
+  gap: 16px;
+}
+
+.searchForm {
+  display: grid;
+  grid-template-columns: minmax(118px, 144px) minmax(260px, 1fr) auto;
+  gap: 12px;
+  align-items: end;
+  margin-bottom: 16px;
+}
+
+.searchForm label {
+  display: grid;
+  gap: 8px;
+  color: #111827;
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.searchForm input,
+.searchForm select {
+  min-height: 44px;
+  width: 100%;
+  border: 1px solid rgba(102, 112, 133, 0.16);
+  border-radius: 12px;
+  padding: 0 14px;
+  outline: 0;
+  color: #111827;
+  background: #fff;
+}
+
+.searchForm select {
+  cursor: pointer;
+  padding: 0 10px;
+}
+
+.searchForm button {
+  min-height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 12px;
+  color: #fff;
+  font-weight: 900;
+  white-space: nowrap;
+  background: #7c4dff;
+  cursor: pointer;
+  box-shadow: 0 14px 28px rgba(124, 77, 255, 0.22);
+  transition: transform 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
+}
+
+.searchForm button:hover {
+  background: #6d3df0;
+  box-shadow: 0 18px 34px rgba(124, 77, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.searchForm button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.searchForm button:focus-visible {
+  outline: 3px solid rgba(124, 77, 255, 0.28);
+  outline-offset: 2px;
+}
+
+.searchForm button:disabled,
+.formActions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
+  box-shadow: none;
+}
+
+.errorText {
+  margin: 0 0 14px;
+  color: #ef4444;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.successText {
+  margin: 0 0 14px;
+  color: #009966;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.memberNickname {
+  display: block;
+  margin-top: 4px;
+  color: #667085;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.selectMemberLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #633df2;
+  font-size: 0.86rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.selectMemberLabel input {
+  width: 16px;
+  height: 16px;
+  accent-color: #7c4dff;
+}
+
+.adminForm label {
+  display: grid;
+  gap: 8px;
+  color: #111827;
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.adminForm input {
+  min-height: 44px;
+  width: 100%;
+  border: 1px solid rgba(102, 112, 133, 0.16);
+  border-radius: 12px;
+  padding: 0 14px;
+  outline: 0;
+  color: #111827;
+  background: #fff;
+}
+
+.adminForm fieldset {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid rgba(102, 112, 133, 0.16);
+  border-radius: 14px;
+}
+
+.adminForm legend {
+  padding: 0 6px;
+  color: #111827;
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.adminForm fieldset label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 16px;
+}
+
+.adminForm input[type="radio"] {
+  width: 16px;
+  min-height: 16px;
+}
+
+.roleGuide {
+  padding: 14px 16px;
+  border: 1px solid rgba(124, 77, 255, 0.14);
+  border-radius: 14px;
+  background: rgba(124, 77, 255, 0.07);
+}
+
+.roleGuide strong {
+  display: block;
+  color: #111827;
+  font-size: 0.92rem;
+  font-weight: 900;
+}
+
+.roleGuide p {
+  margin: 6px 0 0;
+  color: #667085;
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.formActions button {
+  min-height: 42px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 12px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
+}
+
+.formActions button:first-child {
+  color: #633df2;
+  background: rgba(124, 77, 255, 0.09);
+}
+
+.formActions button:last-child {
+  color: #fff;
+  background: #7c4dff;
+  box-shadow: 0 14px 28px rgba(124, 77, 255, 0.22);
+}
+
+.formActions button:hover {
+  transform: translateY(-1px);
+}
+
+.formActions button:first-child:hover {
+  background: rgba(124, 77, 255, 0.15);
+  box-shadow: 0 10px 22px rgba(124, 77, 255, 0.12);
+}
+
+.formActions button:last-child:hover {
+  background: #6d3df0;
+  box-shadow: 0 18px 34px rgba(124, 77, 255, 0.3);
+}
+
+.formActions button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.formActions button:focus-visible {
+  outline: 3px solid rgba(124, 77, 255, 0.28);
+  outline-offset: 2px;
+}
+
+.roleResultLayer {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.roleResultDim {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(17, 24, 39, 0.42);
+  cursor: pointer;
+}
+
+.roleResultPopup {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  width: min(360px, 100%);
+  padding: 24px;
+  border: 1px solid rgba(102, 112, 133, 0.14);
+  border-radius: 18px;
+  text-align: center;
+  background: #ffffff;
+  box-shadow: 0 24px 70px rgba(17, 24, 39, 0.24);
+}
+
+.roleResultBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 0 12px;
+  border-radius: 999px;
+  color: #027a48;
+  font-size: 0.78rem;
+  font-weight: 950;
+  background: rgba(236, 253, 243, 0.96);
+}
+
+.roleResultError {
+  color: #b42318;
+  background: rgba(254, 242, 242, 0.96);
+}
+
+.roleResultPopup h3 {
+  margin: 2px 0 0;
+  color: #111827;
+  font-size: 1.04rem;
+  font-weight: 950;
+}
+
+.roleResultPopup p {
+  margin: 0;
+  color: #475467;
+  font-size: 0.9rem;
+  font-weight: 750;
+  line-height: 1.55;
+}
+
+.roleResultPopup button {
+  min-width: 96px;
+  min-height: 36px;
+  margin-top: 6px;
+  border: 0;
+  border-radius: 10px;
+  color: #ffffff;
+  font-weight: 900;
+  background: #7c4dff;
+  cursor: pointer;
+}
+
+@media (max-width: 760px) {
+  .searchForm {
+    grid-template-columns: minmax(108px, 128px) minmax(0, 1fr);
+  }
+
+  .searchForm button {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+}
