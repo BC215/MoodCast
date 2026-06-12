@@ -318,4 +318,4 @@ WebSocket / STOMP 구조를 추가해 실시간 송수신이 가능하도록 개
 | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Frontend | [http://moodcast-frontend-s3-qqqq.s3-website.ap-northeast-2.amazonaws.com](http://moodcast-frontend-s3-qqqq.s3-website.ap-northeast-2.amazonaws.com) |
 | Backend  | [https://your-backend-url.com](https://your-backend-url.com)                                                                                         |
-| GitHub   | [https://github.com/damso99/MoodCast](https://github.com/damso99/MoodCast)                                                                           |
+| GitHub   | [https://github.com/BC215/MoodCast.git](https://github.com/BC215/MoodCast.git)                                                                       |
