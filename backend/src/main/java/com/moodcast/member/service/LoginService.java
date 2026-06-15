@@ -1,6 +1,7 @@
 package com.moodcast.member.service;
 
 import com.moodcast.common.exception.AuthException;
+import com.moodcast.common.exception.BusinessException; // Assuming a generic business exception
 import com.moodcast.common.exception.AccountSuspendedException;
 import com.moodcast.member.dao.LoginDao;
 import com.moodcast.member.dao.PasswordHistoryDao;
@@ -19,6 +20,8 @@ import com.moodcast.member.dto.withdraw.WithdrawRequest;
 import com.moodcast.member.vo.Member;
 import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -44,36 +47,32 @@ public class LoginService {
     private static final Pattern PASSWORD_PATTERN =
             Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[?!@#$%^&*])[A-Za-z\\d?!@#$%^&*]{8,20}$");
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
-
-    @Autowired
-    private LoginDao loginDao;
-
-    @Autowired
-    private PasswordHistoryDao passwordHistoryDao;
-
-    @Autowired
-    private MemberValidationService memberValidationService;
-
-    @Autowired
-    private RefreshTokenRedisService refreshTokenRedisService;
-
-    @Autowired
-    private LoginAttemptRedisService loginAttemptRedisService;
-
-    @Autowired
-    private AuthCodeRedisService authCodeRedisService;
-
-    @Autowired
-    private EmailService emailService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private JwtService jwtService;
+    private final LoginDao loginDao;
+    private final PasswordHistoryDao passwordHistoryDao;
+    private final MemberValidationService memberValidationService;
+    private final RefreshTokenRedisService refreshTokenRedisService;
+    private final LoginAttemptRedisService loginAttemptRedisService;
+    private final AuthCodeRedisService authCodeRedisService;
+    private final EmailService emailService;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final MessageSource messageSource;
 
     @Value("${app.dev-return-auth-code:false}")
     private boolean devReturnAuthCode;
+
+    public LoginService(LoginDao loginDao, PasswordHistoryDao passwordHistoryDao, MemberValidationService memberValidationService, RefreshTokenRedisService refreshTokenRedisService, LoginAttemptRedisService loginAttemptRedisService, AuthCodeRedisService authCodeRedisService, EmailService emailService, PasswordEncoder passwordEncoder, JwtService jwtService, MessageSource messageSource) {
+        this.loginDao = loginDao;
+        this.passwordHistoryDao = passwordHistoryDao;
+        this.memberValidationService = memberValidationService;
+        this.refreshTokenRedisService = refreshTokenRedisService;
+        this.loginAttemptRedisService = loginAttemptRedisService;
+        this.authCodeRedisService = authCodeRedisService;
+        this.emailService = emailService;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
+        this.messageSource = messageSource;
+    }
 
     private String createAuthCode() {
         int number = SECURE_RANDOM.nextInt(900000) + 100000;
@@ -81,26 +80,26 @@ public class LoginService {
     }
     private String checkPasswordInput(String password) {
         if (password == null || password.trim().isEmpty()) {
-            throw new IllegalArgumentException("\uBE44\uBC00\uBC88\uD638\uB97C \uC785\uB825\uD574\uC8FC\uC138\uC694.");
+            throw new IllegalArgumentException(messageSource.getMessage("password.input.required", null, LocaleContextHolder.getLocale()));
         }
 
         return password;
     }
     private void checkNewPassword(String newPassword, String newPasswordConfirm) {
         if (newPassword == null || newPassword.trim().isEmpty()) {
-            throw new IllegalArgumentException("\uC0C8 \uBE44\uBC00\uBC88\uD638\uB97C \uC785\uB825\uD574\uC8FC\uC138\uC694.");
+            throw new IllegalArgumentException(messageSource.getMessage("new.password.input.required", null, LocaleContextHolder.getLocale()));
         }
 
         if (!PASSWORD_PATTERN.matcher(newPassword).matches()) {
-            throw new IllegalArgumentException("\uBE44\uBC00\uBC88\uD638\uB294 \uC601\uBB38, \uC22B\uC790, \uD2B9\uC218\uBB38\uC790\uB97C \uD3EC\uD568\uD55C 8~20\uC790\uC785\uB2C8\uB2E4.");
+            throw new IllegalArgumentException(messageSource.getMessage("password.format.invalid", null, LocaleContextHolder.getLocale()));
         }
 
         if (newPasswordConfirm == null || newPasswordConfirm.trim().isEmpty()) {
-            throw new IllegalArgumentException("\uC0C8 \uBE44\uBC00\uBC88\uD638 \uD655\uC778\uC744 \uC785\uB825\uD574\uC8FC\uC138\uC694.");
+            throw new IllegalArgumentException(messageSource.getMessage("new.password.confirm.required", null, LocaleContextHolder.getLocale()));
         }
 
         if (!newPassword.equals(newPasswordConfirm)) {
-            throw new IllegalArgumentException("\uC0C8 \uBE44\uBC00\uBC88\uD638\uAC00 \uC77C\uCE58\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.");
+            throw new IllegalArgumentException(messageSource.getMessage("new.password.mismatch", null, LocaleContextHolder.getLocale()));
         }
     }
     public void checkLoginAllowed(Member member) {
@@ -109,11 +108,11 @@ public class LoginService {
         }
 
         if ("WITHDRAW".equals(member.getStatus()) || member.getDeletedAt() != null) {
-            throw new IllegalArgumentException("\uD0C8\uD1F4 \uCC98\uB9AC\uB41C \uACC4\uC815\uC785\uB2C8\uB2E4. \uB2E4\uB978 \uACC4\uC815\uC73C\uB85C \uB85C\uADF8\uC778\uD574\uC8FC\uC138\uC694.");
+            throw new IllegalArgumentException(messageSource.getMessage("account.withdrawn", null, LocaleContextHolder.getLocale()));
         }
 
         if (!Integer.valueOf(1).equals(member.getEmailVerified())) {
-            throw new IllegalArgumentException("\uC774\uBA54\uC77C \uC778\uC99D\uC774 \uC644\uB8CC\uB418\uC9C0 \uC54A\uC740 \uACC4\uC815\uC785\uB2C8\uB2E4.");
+            throw new IllegalArgumentException(messageSource.getMessage("email.not.verified", null, LocaleContextHolder.getLocale()));
         }
 
     }
@@ -149,29 +148,29 @@ public class LoginService {
         Long memberId = getMemberIdFromHeader(authorizationHeader);
         Member member = loginDao.findMemberById(memberId);
 
-        if (member == null) {
-            throw new AuthException("\uB85C\uADF8\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+        if (member == null || member.getMemberId() == null) { // Added null check for memberId
+            throw new AuthException(messageSource.getMessage("auth.required", null, LocaleContextHolder.getLocale()));
         }
 
         checkLoginAllowed(member);
 
         return memberValidationService.normalizeEmail(member.getEmail());
     }
-
     private void checkWithdrawAuthCode(String email, String authCode) {
         if (authCode == null || authCode.trim().isEmpty()) {
-            throw new IllegalArgumentException("\uC778\uC99D\uBC88\uD638\uB97C \uC785\uB825\uD574\uC8FC\uC138\uC694.");
+            throw new IllegalArgumentException(messageSource.getMessage("auth.code.input.required", null, LocaleContextHolder.getLocale()));
         }
 
         authCode = authCode.trim();
         if (!authCode.matches("^[0-9]{6}$")) {
-            throw new IllegalArgumentException("\uC778\uC99D\uBC88\uD638\uB294 6\uC790\uB9AC \uC22B\uC790\uC785\uB2C8\uB2E4.");
+            throw new IllegalArgumentException(messageSource.getMessage("auth.code.format.invalid", null, LocaleContextHolder.getLocale()));
         }
 
         String savedHashCode = authCodeRedisService.getAuthCodeHash(WITHDRAW_PURPOSE, EMAIL_TARGET_TYPE, email);
         if (savedHashCode == null || savedHashCode.trim().isEmpty()) {
-            throw new IllegalArgumentException("\uC778\uC99D\uBC88\uD638 \uC2DC\uAC04\uC774 \uB9CC\uB8CC\uB418\uC5C8\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uC694\uCCAD\uD574\uC8FC\uC138\uC694.");
+            throw new IllegalArgumentException(messageSource.getMessage("auth.code.expired", null, LocaleContextHolder.getLocale()));
         }
+
 
         long currentAttemptCount = authCodeRedisService.getAttemptCount(WITHDRAW_PURPOSE, EMAIL_TARGET_TYPE, email);
         if (currentAttemptCount >= 5) {
@@ -180,8 +179,8 @@ public class LoginService {
 
         if (!passwordEncoder.matches(authCode, savedHashCode)) {
             Long attemptCount = authCodeRedisService.increaseAttempt(WITHDRAW_PURPOSE, EMAIL_TARGET_TYPE, email);
-            long remainingCount = Math.max(0, 5 - attemptCount);
-            throw new IllegalArgumentException("\uC778\uC99D\uBC88\uD638\uAC00 \uC62C\uBC14\uB974\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uB0A8\uC740 \uC2DC\uB3C4 \uD69F\uC218: " + remainingCount + "\uD68C");
+            long remainingCount = Math.max(0, 5 - (attemptCount != null ? attemptCount : 0));
+            throw new IllegalArgumentException(messageSource.getMessage("auth.code.mismatch", new Object[]{remainingCount}, LocaleContextHolder.getLocale()));
         }
 
         authCodeRedisService.markVerified(WITHDRAW_PURPOSE, EMAIL_TARGET_TYPE, email);
@@ -200,11 +199,11 @@ public class LoginService {
         );
     }
     private void failLogin(String email) {
-        loginAttemptRedisService.recordFailure(email);
-
-        throw new IllegalArgumentException("\uC774\uBA54\uC77C \uB610\uB294 \uBE44\uBC00\uBC88\uD638\uAC00 \uC62C\uBC14\uB974\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.");
+        // The recordFailure method itself throws an exception if the account gets locked.
+        // So, we only throw a generic message here if it doesn't lock the account.
+        loginAttemptRedisService.recordFailure(email); // This might throw an exception
+        throw new IllegalArgumentException(messageSource.getMessage("login.credentials.invalid", null, LocaleContextHolder.getLocale()));
     }
-
     @Transactional
     public LoginResult login(LoginRequest request) {
         if (request == null) {
@@ -234,7 +233,7 @@ public class LoginService {
 
         int result = loginDao.updateLastLoginAt(member.getMemberId());
         if (result <= 0) {
-            throw new IllegalStateException("\uB85C\uADF8\uC778 \uCC98\uB9AC\uC5D0 \uC2E4\uD328\uD588\uC2B5\uB2C8\uB2E4.");
+            throw new IllegalStateException(messageSource.getMessage("login.process.failed", null, LocaleContextHolder.getLocale()));
         }
 
         return issueLoginTokens(member, Boolean.TRUE.equals(request.getRemember()));
@@ -246,7 +245,7 @@ public class LoginService {
 
     public LoginResult issueLoginTokens(Member member, boolean remember) {
         if (member == null || member.getMemberId() == null) {
-            throw new IllegalArgumentException("\uB85C\uADF8\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+            throw new IllegalArgumentException(messageSource.getMessage("auth.required", null, LocaleContextHolder.getLocale()));
         }
 
         String accessToken = jwtService.createAccessToken(member);
@@ -299,11 +298,11 @@ public class LoginService {
     public void changePassword(String authorizationHeader, PasswordChangeRequest request) {
         Long memberId = getMemberIdFromHeader(authorizationHeader);
         Member member = loginDao.findMemberById(memberId);
-
-        if (member == null) {
-            throw new AuthException("\uB85C\uADF8\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+        if (member == null || member.getMemberId() == null) {
+            throw new AuthException(messageSource.getMessage("auth.required", null, LocaleContextHolder.getLocale()));
         }
 
+        // Check if member is allowed to login (e.g., not suspended)
         checkLoginAllowed(member);
 
         if (request == null) {
@@ -316,24 +315,23 @@ public class LoginService {
         String currentPasswordHash = loginDao.findPasswordHashByMemberId(memberId);
 
         if (currentPasswordHash == null || currentPasswordHash.trim().isEmpty()) {
-            throw new IllegalArgumentException("\uC694\uCCAD \uC815\uBCF4\uB97C \uD655\uC778\uD574\uC8FC\uC138\uC694.");
+            throw new IllegalArgumentException(messageSource.getMessage("request.info.invalid", null, LocaleContextHolder.getLocale()));
         }
 
         if (!passwordEncoder.matches(currentPassword, currentPasswordHash)) {
-            throw new IllegalArgumentException("\uC694\uCCAD \uC815\uBCF4\uB97C \uD655\uC778\uD574\uC8FC\uC138\uC694.");
+            throw new IllegalArgumentException(messageSource.getMessage("request.info.invalid", null, LocaleContextHolder.getLocale()));
         }
 
         if (passwordEncoder.matches(request.getNewPassword(), currentPasswordHash)) {
-            throw new IllegalArgumentException("\uC694\uCCAD \uC815\uBCF4\uB97C \uD655\uC778\uD574\uC8FC\uC138\uC694.");
+            throw new IllegalArgumentException(messageSource.getMessage("password.new.same.as.current", null, LocaleContextHolder.getLocale()));
         }
 
         List<String> recentPasswordHashes = passwordHistoryDao.findRecentPasswordHashes(memberId, 3);
         for (String recentPasswordHash : recentPasswordHashes) {
             if (passwordEncoder.matches(request.getNewPassword(), recentPasswordHash)) {
-                throw new IllegalArgumentException("\uC694\uCCAD \uC815\uBCF4\uB97C \uD655\uC778\uD574\uC8FC\uC138\uC694.");
+                throw new IllegalArgumentException(messageSource.getMessage("password.new.used.recently", null, LocaleContextHolder.getLocale()));
             }
         }
-
         String newPasswordHash = passwordEncoder.encode(request.getNewPassword());
 
         int updateResult = loginDao.updatePasswordHash(memberId, newPasswordHash);
@@ -349,11 +347,11 @@ public class LoginService {
     public void setupPassword(String authorizationHeader, PasswordChangeRequest request) {
         Long memberId = getMemberIdFromHeader(authorizationHeader);
         Member member = loginDao.findMemberById(memberId);
-
-        if (member == null) {
-            throw new AuthException("\uB85C\uADF8\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+        if (member == null || member.getMemberId() == null) {
+            throw new AuthException(messageSource.getMessage("auth.required", null, LocaleContextHolder.getLocale()));
         }
 
+        // Check if member is allowed to login (e.g., not suspended)
         checkLoginAllowed(member);
 
         if (request == null) {
@@ -364,13 +362,13 @@ public class LoginService {
 
         String currentPasswordHash = loginDao.findPasswordHashByMemberId(memberId);
         if (currentPasswordHash != null && !currentPasswordHash.trim().isEmpty()) {
-            throw new IllegalArgumentException("\uC774\uBBF8 \uBE44\uBC00\uBC88\uD638\uAC00 \uC124\uC815\uB41C \uACC4\uC815\uC785\uB2C8\uB2E4. \uBE44\uBC00\uBC88\uD638 \uBCC0\uACBD\uC744 \uC774\uC6A9\uD574\uC8FC\uC138\uC694.");
+            throw new IllegalArgumentException(messageSource.getMessage("password.already.set", null, LocaleContextHolder.getLocale()));
         }
 
         String newPasswordHash = passwordEncoder.encode(request.getNewPassword());
         int updateResult = loginDao.updatePasswordHash(memberId, newPasswordHash);
         if (updateResult != 1) {
-            throw new IllegalStateException("\uBE44\uBC00\uBC88\uD638 \uC124\uC815\uC5D0 \uC2E4\uD328\uD588\uC2B5\uB2C8\uB2E4.");
+            throw new IllegalStateException(messageSource.getMessage("password.setup.failed", null, LocaleContextHolder.getLocale()));
         }
 
         refreshTokenRedisService.deleteAllRefreshTokens(memberId);
@@ -389,8 +387,8 @@ public class LoginService {
         try {
             emailService.sendWithdrawAuthCode(email, authCode);
         } catch (MailException e) {
-            authCodeRedisService.clearAuth(WITHDRAW_PURPOSE, EMAIL_TARGET_TYPE, email);
-            throw new IllegalStateException("\uC694\uCCAD \uCC98\uB9AC\uC5D0 \uC2E4\uD328\uD588\uC2B5\uB2C8\uB2E4.");
+            authCodeRedisService.clearAuth(WITHDRAW_PURPOSE, EMAIL_TARGET_TYPE, email); // Clear Redis state on mail failure
+            throw new IllegalStateException(messageSource.getMessage("email.send.failed", null, LocaleContextHolder.getLocale()));
         }
 
         if (devReturnAuthCode) {
@@ -409,29 +407,29 @@ public class LoginService {
     public void withdraw(String authorizationHeader, WithdrawRequest request) {
         Long memberId = getMemberIdFromHeader(authorizationHeader);
         Member member = loginDao.findMemberById(memberId);
-
-        if (member == null) {
-            throw new AuthException("\uB85C\uADF8\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+        if (member == null || member.getMemberId() == null) {
+            throw new AuthException(messageSource.getMessage("auth.required", null, LocaleContextHolder.getLocale()));
         }
 
+        // Check if member is allowed to login (e.g., not suspended)
         checkLoginAllowed(member);
 
         if (request == null) {
-            throw new IllegalArgumentException("\uD68C\uC6D0 \uD0C8\uD1F4 \uC815\uBCF4\uB97C \uC785\uB825\uD574\uC8FC\uC138\uC694.");
+            throw new IllegalArgumentException(messageSource.getMessage("withdraw.request.info.required", null, LocaleContextHolder.getLocale()));
         }
 
         if (!"\uD0C8\uD1F4\uD569\uB2C8\uB2E4.".equals(request.getConfirmText())) {
-            throw new IllegalArgumentException("\uD0C8\uD1F4 \uD655\uC778 \uBB38\uAD6C\uB97C '\uD0C8\uD1F4\uD569\uB2C8\uB2E4.'\uB85C \uC815\uD655\uD788 \uC785\uB825\uD574\uC8FC\uC138\uC694.");
+            throw new IllegalArgumentException(messageSource.getMessage("withdraw.confirm.text.mismatch", null, LocaleContextHolder.getLocale()));
         }
 
         String email = memberValidationService.normalizeEmail(member.getEmail());
         if (!authCodeRedisService.isVerified(WITHDRAW_PURPOSE, EMAIL_TARGET_TYPE, email)) {
-            throw new IllegalArgumentException("\uC774\uBA54\uC77C \uC778\uC99D\uC774 \uD544\uC694\uD569\uB2C8\uB2E4. \uC778\uC99D\uBC88\uD638 \uD655\uC778 \uD6C4 \uB2E4\uC2DC \uC2DC\uB3C4\uD574\uC8FC\uC138\uC694.");
+            throw new IllegalArgumentException(messageSource.getMessage("email.auth.required", null, LocaleContextHolder.getLocale()));
         }
 
         int result = loginDao.withdrawMember(memberId);
         if (result != 1) {
-            throw new IllegalStateException("\uD68C\uC6D0 \uD0C8\uD1F4 \uCC98\uB9AC\uC5D0 \uC2E4\uD328\uD588\uC2B5\uB2C8\uB2E4.");
+            throw new IllegalStateException(messageSource.getMessage("withdraw.process.failed", null, LocaleContextHolder.getLocale()));
         }
 
         authCodeRedisService.clearAuth(WITHDRAW_PURPOSE, EMAIL_TARGET_TYPE, email);
@@ -441,7 +439,7 @@ public class LoginService {
     public LoginMemberResponse getMemberById(Long memberId) {
         Member member = loginDao.findMemberById(memberId);
         if (member == null) {
-            throw new IllegalArgumentException("\uC694\uCCAD \uC815\uBCF4\uB97C \uD655\uC778\uD574\uC8FC\uC138\uC694.");
+            throw new IllegalArgumentException(messageSource.getMessage("request.info.invalid", null, LocaleContextHolder.getLocale()));
         }
         return toLoginMemberResponse(member);
     }
@@ -466,25 +464,26 @@ public class LoginService {
     @Transactional
     public LoginMemberResponse updateProfile(String authorizationHeader, UpdateProfileRequest request) {
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            throw new AuthException("\uB85C\uADF8\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+            throw new AuthException(messageSource.getMessage("auth.required", null, LocaleContextHolder.getLocale()));
         }
 
         String accessToken = authorizationHeader.substring(7).trim();
         if (accessToken.isEmpty()) {
-            throw new AuthException("\uB85C\uADF8\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+            throw new AuthException(messageSource.getMessage("auth.required", null, LocaleContextHolder.getLocale()));
         }
 
         if (request == null || request.getNickname() == null || request.getNickname().trim().isEmpty()) {
-            throw new IllegalArgumentException("\uC694\uCCAD \uC815\uBCF4\uB97C \uD655\uC778\uD574\uC8FC\uC138\uC694.");
+            throw new IllegalArgumentException(messageSource.getMessage("request.info.invalid", null, LocaleContextHolder.getLocale()));
         }
 
         Long memberId = jwtService.getMemberIdFromAccessToken(accessToken);
         Member member = loginDao.findMemberById(memberId);
 
-        if (member == null) {
-            throw new AuthException("\uB85C\uADF8\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+        if (member == null || member.getMemberId() == null) {
+            throw new AuthException(messageSource.getMessage("auth.required", null, LocaleContextHolder.getLocale()));
         }
 
+        // Check if member is allowed to login (e.g., not suspended)
         checkLoginAllowed(member);
 
         loginDao.updateMemberProfile(memberId, request.getNickname().trim(), request.getBio(), request.getProfileImageUrl());
@@ -492,11 +491,11 @@ public class LoginService {
         Member updated = loginDao.findMemberById(memberId);
         if (updated == null) {
             throw new IllegalStateException("\uC694\uCCAD \uCC98\uB9AC\uC5D0 \uC2E4\uD328\uD588\uC2B5\uB2C8\uB2E4.");
+            // This message is for an internal server error, so it's fine to keep as is or externalize.
         }
 
         return toLoginMemberResponse(updated);
     }
-
     @Transactional
     public FollowResponse toggleFollow(String authHeader, Long followingId) {
         Long followerId = getMemberIdFromHeader(authHeader);
@@ -563,19 +562,19 @@ public class LoginService {
 
     public List<MentionCandidateResponse> getMentionCandidates(Long memberId, String keyword) {
         if (memberId == null) {
-            throw new IllegalArgumentException("\uC694\uCCAD \uC815\uBCF4\uB97C \uD655\uC778\uD574\uC8FC\uC138\uC694.");
+            throw new IllegalArgumentException(messageSource.getMessage("request.info.invalid", null, LocaleContextHolder.getLocale()));
         }
 
         String normalizedKeyword = keyword == null ? null : keyword.trim();
         if (normalizedKeyword != null && normalizedKeyword.isEmpty()) {
             normalizedKeyword = null;
         }
-
         return loginDao.getMentionCandidates(memberId, normalizedKeyword);
     }
 
     private Long getMemberIdFromHeader(String authHeader) {
         String token = extractAccessToken(authHeader);
+        // JwtService.getMemberIdFromAccessToken already throws AuthException
 
         return jwtService.getMemberIdFromAccessToken(token);
     }
@@ -597,12 +596,14 @@ public class LoginService {
         Long memberId = refreshTokenInfo.getMemberId();
         String tokenId = refreshTokenInfo.getTokenId();
         boolean remember = refreshTokenInfo.isRemember();
+
         if (!refreshTokenRedisService.matchesRefreshToken(memberId, tokenId, refreshToken)) {
-            throw new AuthException("\uB85C\uADF8\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+            throw new AuthException(messageSource.getMessage("auth.required", null, LocaleContextHolder.getLocale()));
         }
+
         Member member = loginDao.findMemberById(memberId);
         if (member == null) {
-            throw new AuthException("\uB85C\uADF8\uC778\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.");
+            throw new AuthException(messageSource.getMessage("auth.required", null, LocaleContextHolder.getLocale()));
         }
         checkLoginAllowed(member);
 

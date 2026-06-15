@@ -2,6 +2,8 @@ package com.moodcast.member.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import com.moodcast.member.dto.oauth.PendingSocialSignup;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -15,10 +17,12 @@ public class SocialPendingSignupRedisService {
 
     private final StringRedisTemplate redisTemplate;
     private final ObjectMapper objectMapper;
+    private final MessageSource messageSource;
 
-    public SocialPendingSignupRedisService(StringRedisTemplate redisTemplate, ObjectMapper objectMapper) {
+    public SocialPendingSignupRedisService(StringRedisTemplate redisTemplate, ObjectMapper objectMapper, MessageSource messageSource) {
         this.redisTemplate = redisTemplate;
         this.objectMapper = objectMapper;
+        this.messageSource = messageSource;
     }
 
     private String key(String pendingToken) {
@@ -36,7 +40,7 @@ public class SocialPendingSignupRedisService {
                     PENDING_TTL
             );
         } catch (JsonProcessingException e) {
-            throw new IllegalStateException("소셜 가입 정보를 저장하지 못했습니다.");
+            throw new IllegalStateException(messageSource.getMessage("social.signup.save.failed", null, LocaleContextHolder.getLocale()));
         }
 
         return pendingToken;
@@ -45,18 +49,18 @@ public class SocialPendingSignupRedisService {
     // pendingToken으로 추가가입에 필요한 소셜 정보를 꺼냄
     public PendingSocialSignup get(String pendingToken) {
         if (pendingToken == null || pendingToken.trim().isEmpty()) {
-            throw new IllegalArgumentException("소셜 가입 정보가 없습니다.");
+            throw new IllegalArgumentException(messageSource.getMessage("social.signup.info.missing", null, LocaleContextHolder.getLocale()));
         }
 
         String value = redisTemplate.opsForValue().get(key(pendingToken));
         if (value == null || value.trim().isEmpty()) {
-            throw new IllegalArgumentException("소셜 가입 시간이 만료되었습니다. 다시 시도해주세요.");
+            throw new IllegalArgumentException(messageSource.getMessage("social.signup.expired", null, LocaleContextHolder.getLocale()));
         }
 
         try {
             return objectMapper.readValue(value, PendingSocialSignup.class);
         } catch (JsonProcessingException e) {
-            throw new IllegalStateException("소셜 가입 정보를 읽지 못했습니다.");
+            throw new IllegalStateException(messageSource.getMessage("social.signup.read.failed", null, LocaleContextHolder.getLocale()));
         }
     }
 

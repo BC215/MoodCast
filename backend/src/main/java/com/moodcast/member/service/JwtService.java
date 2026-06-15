@@ -6,6 +6,8 @@ import com.moodcast.member.vo.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
@@ -40,6 +42,12 @@ public class JwtService {
 
     @Value("${jwt.refresh-cookie-secure:false}")
     private boolean refreshCookieSecure;
+
+    private final MessageSource messageSource;
+
+    public JwtService(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
@@ -85,7 +93,7 @@ public class JwtService {
 
     public Long getMemberIdFromAccessToken(String accessToken) {
         if (accessToken == null || accessToken.trim().isEmpty()) {
-            throw new AuthException("로그인이 필요합니다.");
+            throw new AuthException(messageSource.getMessage("auth.required", null, LocaleContextHolder.getLocale()));
         }
 
         try {
@@ -93,12 +101,12 @@ public class JwtService {
             String tokenType = claims.get("type", String.class);
 
             if (!"ACCESS".equals(tokenType)) {
-                throw new AuthException("로그인이 필요합니다.");
+                throw new AuthException(messageSource.getMessage("auth.required", null, LocaleContextHolder.getLocale()));
             }
 
             return Long.parseLong(claims.getSubject());
-        } catch (JwtException | NumberFormatException e) {
-            throw new AuthException("로그인이 필요합니다.");
+        } catch (JwtException | NumberFormatException e) { // Catching JwtException and NumberFormatException
+            throw new AuthException(messageSource.getMessage("auth.required", null, LocaleContextHolder.getLocale()));
         }
     }
 
@@ -168,7 +176,7 @@ public class JwtService {
     // refresh 토큰을 한 번만 파싱해서 공통 검증을 처리함
     private Claims parseRefreshToken(String refreshToken) {
         if (refreshToken == null || refreshToken.trim().isEmpty()) {
-            throw new AuthException("로그인이 필요합니다.");
+            throw new AuthException(messageSource.getMessage("auth.required", null, LocaleContextHolder.getLocale()));
         }
 
         try {
@@ -176,12 +184,12 @@ public class JwtService {
             String tokenType = claims.get("type", String.class);
 
             if (!"REFRESH".equals(tokenType)) {
-                throw new AuthException("로그인이 필요합니다.");
+                throw new AuthException(messageSource.getMessage("auth.required", null, LocaleContextHolder.getLocale()));
             }
 
             return claims;
         } catch (JwtException | IllegalArgumentException e) {
-            throw new AuthException("로그인이 필요합니다.");
+            throw new AuthException(messageSource.getMessage("auth.required", null, LocaleContextHolder.getLocale()));
         }
     }
 
@@ -190,15 +198,14 @@ public class JwtService {
         Claims claims = parseRefreshToken(refreshToken);
         String tokenId = claims.get("tokenId", String.class);
         Boolean remember = claims.get("remember", Boolean.class);
-
         if (tokenId == null || tokenId.trim().isEmpty()) {
-            throw new AuthException("로그인이 필요합니다.");
+            throw new AuthException(messageSource.getMessage("auth.required", null, LocaleContextHolder.getLocale()));
         }
 
         try {
-            return new RefreshTokenInfo(Long.parseLong(claims.getSubject()), tokenId, remember == null || remember);
-        } catch (NumberFormatException e) {
-            throw new AuthException("로그인이 필요합니다.");
+            return new RefreshTokenInfo(Long.parseLong(claims.getSubject()), tokenId, remember != null && remember); // Fixed potential NPE if remember is null
+        } catch (NumberFormatException e) { // Catching NumberFormatException
+            throw new AuthException(messageSource.getMessage("auth.required", null, LocaleContextHolder.getLocale()));
         }
     }
 

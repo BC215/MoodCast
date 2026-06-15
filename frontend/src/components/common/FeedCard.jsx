@@ -167,9 +167,7 @@ export function FeedCard({
   const navigate = useNavigate();
   const { member, accessToken: storeToken } = useAuthStore();
   const BACKSERVER = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
-  // Zustand store가 초기화 전일 경우 sessionStorage에서 직접 읽음
-  const accessToken =
-    storeToken || window.sessionStorage.getItem("moodcast-access-token");
+  const accessToken = storeToken; // Rely on Zustand store for accessToken
 
   // member.nickname으로 비교 (post.author는 nickname 값)
   const currentUser = member?.nickname || "";

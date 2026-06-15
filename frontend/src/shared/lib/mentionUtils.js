@@ -1,14 +1,14 @@
 export function getPlainTextFromHtml(html) {
   if (!html) {
-    return '';
+    return "";
   }
 
   try {
     const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    return doc.body.textContent || '';
+    const doc = parser.parseFromString(html, "text/html");
+    return doc.body.textContent || "";
   } catch (error) {
-    const textarea = document.createElement('textarea');
+    const textarea = document.createElement("textarea");
     textarea.innerHTML = html;
     return textarea.value;
   }
@@ -45,9 +45,9 @@ export function getActiveMentionState(editor) {
     return null;
   }
 
-  const plainText = editor?.innerText?.replace(/\u00a0/g, ' ') ?? '';
+  const plainText = editor?.innerText?.replace(/\u00a0/g, " ") ?? "";
   const textBeforeCaret = plainText.slice(0, caretIndex);
-  const atIndex = textBeforeCaret.lastIndexOf('@');
+  const atIndex = textBeforeCaret.lastIndexOf("@");
 
   if (atIndex < 0) {
     return null;
@@ -71,18 +71,16 @@ export function getActiveMentionState(editor) {
 }
 
 export function createMentionSpan(candidate) {
-  const span = document.createElement('span');
-  span.dataset.mentionUserId = String(candidate?.memberId ?? candidate?.userId ?? '');
-  span.dataset.mentionNickname = candidate?.nickname || candidate?.name || '';
-  span.dataset.mentionText = candidate?.mentionText || `@${candidate?.nickname || candidate?.name || ''}`;
-  span.contentEditable = 'false';
-  span.style.color = '#7c4dff';
-  span.style.fontWeight = '800';
-  span.style.background = 'rgba(124, 77, 255, 0.09)';
-  span.style.borderRadius = '8px';
-  span.style.padding = '0 4px';
-  span.style.display = 'inline-block';
-  span.style.cursor = 'pointer';
+  const span = document.createElement("span");
+  span.dataset.mentionUserId = String(
+    candidate?.memberId ?? candidate?.userId ?? "",
+  );
+  span.dataset.mentionNickname = candidate?.nickname || candidate?.name || "";
+  span.dataset.mentionText =
+    candidate?.mentionText ||
+    `@${candidate?.nickname || candidate?.name || ""}`;
+  span.contentEditable = "false"; // This is a functional attribute, keep it.
+  span.className = "mention-span"; // Add a class for styling
   span.textContent = span.dataset.mentionText;
   return span;
 }
@@ -114,7 +112,10 @@ export function insertMentionIntoEditor(editor, candidate) {
       return false;
     }
 
-    const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+    const walker = document.createTreeWalker(
+      editor,
+      NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
+    );
     let currentIndex = 0;
     let startContainer = null;
     let startOffset = 0;
@@ -126,24 +127,41 @@ export function insertMentionIntoEditor(editor, candidate) {
 
       if (node.nodeType === Node.TEXT_NODE) {
         const nextIndex = currentIndex + (node.textContent?.length || 0);
-        if (startContainer === null && replacementStart >= currentIndex && replacementStart <= nextIndex) {
+        if (
+          startContainer === null &&
+          replacementStart >= currentIndex &&
+          replacementStart <= nextIndex
+        ) {
           startContainer = node;
           startOffset = replacementStart - currentIndex;
         }
-        if (currentCaretIndex >= currentIndex && currentCaretIndex <= nextIndex) {
+        if (
+          currentCaretIndex >= currentIndex &&
+          currentCaretIndex <= nextIndex
+        ) {
           endContainer = node;
           endOffset = currentCaretIndex - currentIndex;
           break;
         }
         currentIndex = nextIndex;
-      } else if (node.nodeType === Node.ELEMENT_NODE && node.dataset?.mentionUserId) {
-        const mentionLength = (node.textContent || '').length;
+      } else if (
+        node.nodeType === Node.ELEMENT_NODE &&
+        node.dataset?.mentionUserId
+      ) {
+        const mentionLength = (node.textContent || "").length;
         const nextIndex = currentIndex + mentionLength;
-        if (startContainer === null && replacementStart >= currentIndex && replacementStart <= nextIndex) {
+        if (
+          startContainer === null &&
+          replacementStart >= currentIndex &&
+          replacementStart <= nextIndex
+        ) {
           startContainer = node;
           startOffset = 0;
         }
-        if (currentCaretIndex >= currentIndex && currentCaretIndex <= nextIndex) {
+        if (
+          currentCaretIndex >= currentIndex &&
+          currentCaretIndex <= nextIndex
+        ) {
           endContainer = node;
           endOffset = mentionLength;
           break;
@@ -162,7 +180,7 @@ export function insertMentionIntoEditor(editor, candidate) {
     replaceRange.deleteContents();
 
     const mentionSpan = createMentionSpan(candidate);
-    const trailingSpace = document.createTextNode(' ');
+    const trailingSpace = document.createTextNode(" ");
     const fragment = document.createDocumentFragment();
     fragment.appendChild(mentionSpan);
     fragment.appendChild(trailingSpace);
@@ -204,12 +222,12 @@ export function extractMentionsFromEditor(editor) {
 
     const mentionUserId = node.dataset?.mentionUserId;
     if (mentionUserId) {
-      const mentionText = node.dataset?.mentionText || node.textContent || '';
+      const mentionText = node.dataset?.mentionText || node.textContent || "";
       const startIndex = cursorIndex;
       const endIndex = cursorIndex + mentionText.length;
       mentions.push({
         userId: Number(mentionUserId),
-        nickname: node.dataset?.mentionNickname || '',
+        nickname: node.dataset?.mentionNickname || "",
         mentionText,
         startIndex,
         endIndex,
@@ -228,38 +246,44 @@ export function extractMentionsFromEditor(editor) {
 export function serializeEditorContent(editor) {
   if (!editor) {
     return {
-      content: '',
+      content: "",
       mentions: [],
-      plainText: '',
+      plainText: "",
     };
   }
 
   return {
     content: editor.innerHTML,
     mentions: extractMentionsFromEditor(editor),
-    plainText: editor.innerText?.replace(/\u00a0/g, ' ') ?? '',
+    plainText: editor.innerText?.replace(/\u00a0/g, " ") ?? "",
   };
 }
 
 export function normalizeMentionCandidate(candidate) {
-  const userId = candidate?.userId ?? candidate?.memberId ?? candidate?.mentionedUserId;
-  const nickname = candidate?.nickname ?? candidate?.memberNick ?? candidate?.name ?? '';
+  const userId =
+    candidate?.userId ?? candidate?.memberId ?? candidate?.mentionedUserId;
+  const nickname =
+    candidate?.nickname ?? candidate?.memberNick ?? candidate?.name ?? "";
 
   return {
     ...candidate,
     userId: userId ? Number(userId) : null,
     nickname,
-    profileImage: candidate?.profileImage ?? candidate?.profileImageUrl ?? candidate?.profile_image_url ?? '',
+    profileImage:
+      candidate?.profileImage ??
+      candidate?.profileImageUrl ??
+      candidate?.profile_image_url ??
+      "",
   };
 }
 
 export function getActiveMentionStateFromText(value, caretIndex) {
-  if (typeof value !== 'string' || caretIndex < 0) {
+  if (typeof value !== "string" || caretIndex < 0) {
     return null;
   }
 
   const textBeforeCaret = value.slice(0, caretIndex);
-  const atIndex = textBeforeCaret.lastIndexOf('@');
+  const atIndex = textBeforeCaret.lastIndexOf("@");
   if (atIndex < 0) {
     return null;
   }
@@ -281,23 +305,41 @@ export function getActiveMentionStateFromText(value, caretIndex) {
   };
 }
 
-export function reconcileMentionsAfterTextChange(previousValue, nextValue, mentions = []) {
-  const previous = previousValue ?? '';
-  const next = nextValue ?? '';
+export function reconcileMentionsAfterTextChange(
+  previousValue,
+  nextValue,
+  mentions = [],
+) {
+  const previous = previousValue ?? "";
+  const next = nextValue ?? "";
   const lengthDelta = next.length - previous.length;
 
   return mentions
     .map((mention) => {
-      const mentionText = mention?.mentionText ?? '';
+      const mentionText = mention?.mentionText ?? "";
       if (!mentionText) {
         return null;
       }
 
-      const expectedStart = Math.max(0, Number(mention.startIndex) + lengthDelta);
-      const nearbyStart = Math.max(0, expectedStart - Math.abs(lengthDelta) - mentionText.length);
-      const nearbyEnd = Math.min(next.length, expectedStart + Math.abs(lengthDelta) + mentionText.length);
-      const nearbyIndex = next.slice(nearbyStart, nearbyEnd).indexOf(mentionText);
-      const foundIndex = nearbyIndex >= 0 ? nearbyStart + nearbyIndex : next.indexOf(mentionText);
+      const expectedStart = Math.max(
+        0,
+        Number(mention.startIndex) + lengthDelta,
+      );
+      const nearbyStart = Math.max(
+        0,
+        expectedStart - Math.abs(lengthDelta) - mentionText.length,
+      );
+      const nearbyEnd = Math.min(
+        next.length,
+        expectedStart + Math.abs(lengthDelta) + mentionText.length,
+      );
+      const nearbyIndex = next
+        .slice(nearbyStart, nearbyEnd)
+        .indexOf(mentionText);
+      const foundIndex =
+        nearbyIndex >= 0
+          ? nearbyStart + nearbyIndex
+          : next.indexOf(mentionText);
 
       if (foundIndex < 0) {
         return null;
@@ -313,7 +355,12 @@ export function reconcileMentionsAfterTextChange(previousValue, nextValue, menti
     .sort((left, right) => Number(left.startIndex) - Number(right.startIndex));
 }
 
-export function insertMentionIntoText(value, mentionRange, candidate, mentions = []) {
+export function insertMentionIntoText(
+  value,
+  mentionRange,
+  candidate,
+  mentions = [],
+) {
   const normalizedCandidate = normalizeMentionCandidate(candidate);
   const nickname = normalizedCandidate.nickname;
   const userId = normalizedCandidate.userId;
@@ -325,12 +372,16 @@ export function insertMentionIntoText(value, mentionRange, candidate, mentions =
   const mentionText = `@${nickname}`;
   const startIndex = Number(mentionRange.startIndex);
   const endIndex = Number(mentionRange.endIndex);
-  const previousValue = value ?? '';
+  const previousValue = value ?? "";
   const nextValue = `${previousValue.slice(0, startIndex)}${mentionText} ${previousValue.slice(endIndex)}`;
   const delta = mentionText.length + 1 - (endIndex - startIndex);
 
   const nextMentions = mentions
-    .filter((mention) => Number(mention.endIndex) <= startIndex || Number(mention.startIndex) >= endIndex)
+    .filter(
+      (mention) =>
+        Number(mention.endIndex) <= startIndex ||
+        Number(mention.startIndex) >= endIndex,
+    )
     .map((mention) => {
       if (Number(mention.startIndex) >= endIndex) {
         return {
@@ -354,6 +405,8 @@ export function insertMentionIntoText(value, mentionRange, candidate, mentions =
   return {
     content: nextValue,
     caretIndex: startIndex + mentionText.length + 1,
-    mentions: nextMentions.sort((left, right) => Number(left.startIndex) - Number(right.startIndex)),
+    mentions: nextMentions.sort(
+      (left, right) => Number(left.startIndex) - Number(right.startIndex),
+    ),
   };
 }

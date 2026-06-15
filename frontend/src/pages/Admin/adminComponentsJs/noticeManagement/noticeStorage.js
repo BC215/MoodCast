@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const BACKSERVER = "http://localhost:8080".replace(/\/$/, ""); // (import.meta.env.VITE_BACKSERVER || "http://localhost:8080").replace(/\/$/, "");
+const BACKSERVER = (
+  import.meta.env.VITE_BACKSERVER || "http://localhost:8080"
+).replace(/\/$/, "");
 const NOTICE_VISIBLE_DAYS = 7;
 const NOTICE_VISIBLE_MS = NOTICE_VISIBLE_DAYS * 24 * 60 * 60 * 1000;
 

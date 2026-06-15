@@ -1,6 +1,8 @@
 package com.moodcast.member.service;
 
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -12,9 +14,11 @@ public class LoginAttemptRedisService {
     private static final Duration LOCK_TTL = Duration.ofMinutes(30);
 
     private final StringRedisTemplate redisTemplate;
+    private final MessageSource messageSource;
 
-    public LoginAttemptRedisService(StringRedisTemplate redisTemplate) {
+    public LoginAttemptRedisService(StringRedisTemplate redisTemplate, MessageSource messageSource) {
         this.redisTemplate = redisTemplate;
+        this.messageSource = messageSource;
     }
 
     private String failKey(String email) {
@@ -30,7 +34,7 @@ public class LoginAttemptRedisService {
         String locked = redisTemplate.opsForValue().get(lockKey(email));
 
         if (locked != null) {
-            throw new IllegalArgumentException("비밀번호 입력 실패가 5회를 초과했습니다. 30분 후 다시 시도해주세요.");
+            throw new IllegalArgumentException(messageSource.getMessage("login.locked.exceeded.attempts", null, LocaleContextHolder.getLocale()));
         }
     }
 
@@ -46,7 +50,7 @@ public class LoginAttemptRedisService {
             redisTemplate.opsForValue().set(lockKey(email), "LOCKED", LOCK_TTL);
             redisTemplate.delete(failKey(email));
 
-            throw new IllegalArgumentException("비밀번호 입력 실패가 5회를 초과했습니다. 30분 후 다시 시도해주세요.");
+            throw new IllegalArgumentException(messageSource.getMessage("login.locked.exceeded.attempts", null, LocaleContextHolder.getLocale()));
         }
     }
 

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import styles from "./DesktopShell.module.css";
@@ -6,32 +6,6 @@ import { Sidebar } from "./Sidebar";
 import { TopUtilityIcons } from "./TopUtilityIcons";
 import { RightRail } from "./RightRail";
 import { SearchModal } from "../common/SearchModal";
-
-// 데스크톱 레이아웃에서는 우측 사이드바에 피드 관련 추천 게시물을 띄웁니다.
-// 이 데이터를 캐시해서 같은 세션 동안 중복 요청을 줄입니다.
-let cachedPosts = null;
-let cachedPostsPromise = null;
-
-async function fetchPosts(backserver) {
-  if (cachedPosts) {
-    return cachedPosts;
-  }
-
-  if (!cachedPostsPromise) {
-    cachedPostsPromise = axios
-      .get(`${backserver}/posts`)
-      .then((response) => {
-        const nextPosts = response.data?.results || [];
-        cachedPosts = nextPosts;
-        return nextPosts;
-      })
-      .finally(() => {
-        cachedPostsPromise = null;
-      });
-  }
-
-  return cachedPostsPromise;
-}
 
 function DesktopShell({
   children,
@@ -43,8 +17,10 @@ function DesktopShell({
   onHashtagFilterChange,
 }) {
   const [searchOpen, setSearchOpen] = useState(false);
-  const [posts, setPosts] = useState(() => cachedPosts || []);
-  const [loadingPosts, setLoadingPosts] = useState(() => !cachedPosts);
+  const [posts, setPosts] = useState([]);
+  const [loadingPosts, setLoadingPosts] = useState(true);
+  const cachedPostsRef = useRef(null); // Use useRef for mutable cache
+  const cachedPostsPromiseRef = useRef(null); // Use useRef for mutable promise
   const BACKSERVER = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
   const navigate = useNavigate();
   const location = useLocation();
@@ -136,21 +112,39 @@ function DesktopShell({
   useEffect(() => {
     let isMounted = true;
 
+    const fetchPosts = async () => {
+      if (cachedPostsRef.current) {
+        return cachedPostsRef.current;
+      }
+
+      if (!cachedPostsPromiseRef.current) {
+        cachedPostsPromiseRef.current = axios
+          .get(`${BACKSERVER}/posts`)
+          .then((response) => {
+            const nextPosts = response.data?.results || [];
+            cachedPostsRef.current = nextPosts; // Update ref
+            return nextPosts;
+          })
+          .finally(() => {
+            cachedPostsPromiseRef.current = null; // Clear promise ref
+          });
+      }
+      return cachedPostsPromiseRef.current;
+    };
+
     const loadPosts = async () => {
-      if (!cachedPosts) {
+      if (!cachedPostsRef.current) {
         setLoadingPosts(true);
       }
 
       try {
         const nextPosts = await fetchPosts(BACKSERVER);
-
         if (!isMounted) return;
-
         setPosts(nextPosts);
       } catch (error) {
         console.error("게시물 목록을 불러오지 못했습니다.", error);
         if (!isMounted) return;
-        setPosts(cachedPosts || []);
+        setPosts(cachedPostsRef.current || []); // Use ref for fallback
       } finally {
         if (isMounted) {
           setLoadingPosts(false);
@@ -172,7 +166,10 @@ function DesktopShell({
         <Sidebar />
       </aside>
       <section className={styles.center}>
-        <div className={styles.centerInner} data-dashboard-scroll-container="center">
+        <div
+          className={styles.centerInner}
+          data-dashboard-scroll-container="center"
+        >
           {children}
         </div>
       </section>
