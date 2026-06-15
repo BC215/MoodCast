@@ -3,7 +3,11 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { SignupView } from "./components/SignupView";
 import { getApiMessage, getToastDuration } from "./authFeedback";
-import { startGoogleLogin, startKakaoLogin, startNaverLogin } from "./socialAuth";
+import {
+  startGoogleLogin,
+  startKakaoLogin,
+  startNaverLogin,
+} from "./socialAuth";
 
 const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 const nameRegex = /^[가-힣]{2,10}$/;
@@ -530,7 +534,14 @@ export const SignupPage = () => {
         setEmailAuth(1);
         setEmailCooldown(60);
         setEmailExpireTime(180);
-        showToast("success", res.data?.message || "이메일 인증번호를 발송했습니다. 3분 안에 입력해주세요.");
+        showToast(
+          "success",
+          res.data?.message ||
+            "이메일 인증번호를 발송했습니다. 3분 안에 입력해주세요.",
+        );
+        if (res.data?.authCode) {
+          console.log("개발용 회원가입 이메일 인증번호:", res.data.authCode);
+        }
       })
       .catch((err) => {
         setEmailAuth(0);
@@ -568,7 +579,10 @@ export const SignupPage = () => {
       .then((res) => {
         setEmailAuth(3);
         setEmailExpireTime(0);
-        showToast("success", res.data?.message || "이메일 인증이 완료되었습니다.");
+        showToast(
+          "success",
+          res.data?.message || "이메일 인증이 완료되었습니다.",
+        );
       })
       .catch((err) => {
         setEmailAuth(1);
@@ -745,7 +759,10 @@ export const SignupPage = () => {
   };
 
   const showReadyMessage = (label) => {
-    showToast("info", `${label}은 아직 준비 중입니다. 현재는 카카오, Google, 네이버 간편가입을 이용해주세요.`);
+    showToast(
+      "info",
+      `${label}은 아직 준비 중입니다. 현재는 카카오, Google, 네이버 간편가입을 이용해주세요.`,
+    );
   };
 
   const handleKakaoLogin = () => {

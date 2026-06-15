@@ -22,7 +22,8 @@ const formatAuthTime = (seconds) => {
 export const AccountRecoveryPage = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialMode = searchParams.get("mode") === "password" ? "password" : "email";
+  const initialMode =
+    searchParams.get("mode") === "password" ? "password" : "email";
   const BACKSERVER = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
 
   const [mode, setMode] = useState(initialMode);
@@ -77,7 +78,10 @@ export const AccountRecoveryPage = () => {
       return;
     }
 
-    const timer = setTimeout(() => setFindEmailCooldown((value) => value - 1), 1000);
+    const timer = setTimeout(
+      () => setFindEmailCooldown((value) => value - 1),
+      1000,
+    );
     return () => clearTimeout(timer);
   }, [findEmailCooldown]);
 
@@ -86,7 +90,10 @@ export const AccountRecoveryPage = () => {
       return;
     }
 
-    const timer = setTimeout(() => setFindEmailExpireTime((value) => value - 1), 1000);
+    const timer = setTimeout(
+      () => setFindEmailExpireTime((value) => value - 1),
+      1000,
+    );
     return () => clearTimeout(timer);
   }, [findEmailExpireTime]);
 
@@ -95,7 +102,10 @@ export const AccountRecoveryPage = () => {
       return;
     }
 
-    const timer = setTimeout(() => setPasswordCooldown((value) => value - 1), 1000);
+    const timer = setTimeout(
+      () => setPasswordCooldown((value) => value - 1),
+      1000,
+    );
     return () => clearTimeout(timer);
   }, [passwordCooldown]);
 
@@ -104,7 +114,10 @@ export const AccountRecoveryPage = () => {
       return;
     }
 
-    const timer = setTimeout(() => setPasswordExpireTime((value) => value - 1), 1000);
+    const timer = setTimeout(
+      () => setPasswordExpireTime((value) => value - 1),
+      1000,
+    );
     return () => clearTimeout(timer);
   }, [passwordExpireTime]);
 
@@ -117,7 +130,8 @@ export const AccountRecoveryPage = () => {
 
   const inputFindEmail = (e) => {
     const { name } = e.target;
-    const value = name === "authCode" ? normalizeAuthCode(e.target.value) : e.target.value;
+    const value =
+      name === "authCode" ? normalizeAuthCode(e.target.value) : e.target.value;
     const identityChanged = ["name", "email"].includes(name);
 
     setFindEmailForm({
@@ -137,7 +151,8 @@ export const AccountRecoveryPage = () => {
   const inputPassword = (e) => {
     const { name } = e.target;
     const shouldResetVerification = ["email", "authCode"].includes(name);
-    const nextValue = name === "authCode" ? normalizeAuthCode(e.target.value) : e.target.value;
+    const nextValue =
+      name === "authCode" ? normalizeAuthCode(e.target.value) : e.target.value;
     const emailChanged = name === "email";
     const nextPasswordForm = {
       ...passwordForm,
@@ -189,10 +204,20 @@ export const AccountRecoveryPage = () => {
         setFindEmailCodeSent(true);
         setFindEmailCooldown(AUTH_CODE_COOLDOWN);
         setFindEmailExpireTime(AUTH_CODE_TTL);
-        showToast("success", res.data.message || "가입 이메일로 인증번호를 발송했습니다. 3분 안에 입력해주세요.");
+        showToast(
+          "success",
+          res.data.message ||
+            "가입 이메일로 인증번호를 발송했습니다. 3분 안에 입력해주세요.",
+        );
+        if (res.data?.authCode) {
+          console.log("개발용 아이디 찾기 인증번호:", res.data.authCode);
+        }
       })
       .catch((err) => {
-        showToast("error", getApiMessage(err, "이름과 이메일을 다시 확인해주세요."));
+        showToast(
+          "error",
+          getApiMessage(err, "이름과 이메일을 다시 확인해주세요."),
+        );
       })
       .finally(() => {
         setIsLoading(false);
@@ -269,10 +294,20 @@ export const AccountRecoveryPage = () => {
         setPasswordCodeSent(true);
         setPasswordCooldown(AUTH_CODE_COOLDOWN);
         setPasswordExpireTime(AUTH_CODE_TTL);
-        showToast("success", res.data.message || "비밀번호 재설정 이메일 인증번호를 발송했습니다. 3분 안에 입력해주세요.");
+        showToast(
+          "success",
+          res.data.message ||
+            "비밀번호 재설정 이메일 인증번호를 발송했습니다. 3분 안에 입력해주세요.",
+        );
+        if (res.data?.authCode) {
+          console.log("개발용 비밀번호 재설정 인증번호:", res.data.authCode);
+        }
       })
       .catch((err) => {
-        showToast("error", getApiMessage(err, "가입 이메일을 다시 확인해주세요."));
+        showToast(
+          "error",
+          getApiMessage(err, "가입 이메일을 다시 확인해주세요."),
+        );
       })
       .finally(() => {
         setIsLoading(false);
@@ -305,7 +340,10 @@ export const AccountRecoveryPage = () => {
       .then((res) => {
         setPasswordExpireTime(0);
         setPasswordCodeVerified(true);
-        showToast("success", res.data.message || "이메일 인증이 완료되었습니다.");
+        showToast(
+          "success",
+          res.data.message || "이메일 인증이 완료되었습니다.",
+        );
       })
       .catch((err) => {
         setPasswordCodeVerified(false);
@@ -346,11 +384,17 @@ export const AccountRecoveryPage = () => {
     axios
       .post(`${BACKSERVER}/auth/recovery/password/reset`, resetPayload)
       .then((res) => {
-        showToast("success", res.data.message || "비밀번호가 재설정되었습니다.");
+        showToast(
+          "success",
+          res.data.message || "비밀번호가 재설정되었습니다.",
+        );
         setResetSuccessModalOpen(true);
       })
       .catch((err) => {
-        showToast("error", getApiMessage(err, "새 비밀번호 조건을 확인해주세요."));
+        showToast(
+          "error",
+          getApiMessage(err, "새 비밀번호 조건을 확인해주세요."),
+        );
       })
       .finally(() => {
         setIsLoading(false);
@@ -458,7 +502,13 @@ export const AccountRecoveryPage = () => {
                   autoComplete="one-time-code"
                 />
                 {findEmailCodeSent ? (
-                  <p className={findEmailExpireTime > 0 ? styles.timerText : styles.messageDanger}>
+                  <p
+                    className={
+                      findEmailExpireTime > 0
+                        ? styles.timerText
+                        : styles.messageDanger
+                    }
+                  >
                     {findEmailExpireTime > 0
                       ? `남은 시간 ${formatAuthTime(findEmailExpireTime)}`
                       : "인증번호가 만료되었습니다. 다시 요청해주세요."}
@@ -482,12 +532,17 @@ export const AccountRecoveryPage = () => {
             {foundAccount ? (
               <p className={styles.resultBox}>
                 가입 이메일: {foundAccount.email}
-                {foundAccount.kakaoLinked ? <span>카카오 연동 계정입니다.</span> : null}
-                {foundAccount.googleLinked ? <span>Google 연동 계정입니다.</span> : null}
-                {foundAccount.naverLinked ? <span>네이버 연동 계정입니다.</span> : null}
+                {foundAccount.kakaoLinked ? (
+                  <span>카카오 연동 계정입니다.</span>
+                ) : null}
+                {foundAccount.googleLinked ? (
+                  <span>Google 연동 계정입니다.</span>
+                ) : null}
+                {foundAccount.naverLinked ? (
+                  <span>네이버 연동 계정입니다.</span>
+                ) : null}
               </p>
             ) : null}
-
           </form>
         ) : (
           <form className={styles.form} onSubmit={resetPassword}>
@@ -510,7 +565,9 @@ export const AccountRecoveryPage = () => {
               type="button"
               className={styles.secondary}
               onClick={sendPasswordCode}
-              disabled={isLoading || passwordCooldown > 0 || passwordCodeVerified}
+              disabled={
+                isLoading || passwordCooldown > 0 || passwordCodeVerified
+              }
             >
               {passwordCodeVerified
                 ? "이메일 인증완료"
@@ -541,7 +598,13 @@ export const AccountRecoveryPage = () => {
                   readOnly={passwordCodeVerified}
                 />
                 {passwordCodeSent && !passwordCodeVerified ? (
-                  <p className={passwordExpireTime > 0 ? styles.timerText : styles.messageDanger}>
+                  <p
+                    className={
+                      passwordExpireTime > 0
+                        ? styles.timerText
+                        : styles.messageDanger
+                    }
+                  >
                     {passwordExpireTime > 0
                       ? `남은 시간 ${formatAuthTime(passwordExpireTime)}`
                       : "인증번호가 만료되었습니다. 다시 요청해주세요."}
@@ -564,7 +627,9 @@ export const AccountRecoveryPage = () => {
               </button>
             </div>
 
-            {passwordCodeVerified ? <p className={styles.message}>이메일 인증이 완료되었습니다.</p> : null}
+            {passwordCodeVerified ? (
+              <p className={styles.message}>이메일 인증이 완료되었습니다.</p>
+            ) : null}
 
             <div className={styles.field}>
               <label htmlFor="newPassword">
@@ -596,7 +661,11 @@ export const AccountRecoveryPage = () => {
               />
             </div>
 
-            <button type="submit" className={styles.primary} disabled={isLoading || !passwordCodeVerified}>
+            <button
+              type="submit"
+              className={styles.primary}
+              disabled={isLoading || !passwordCodeVerified}
+            >
               {isLoading ? "변경 중..." : "비밀번호 재설정"}
             </button>
           </form>
