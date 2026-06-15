@@ -1,7 +1,7 @@
-import axios from 'axios';
-import { useAuthStore, logoutAndRedirect } from '../../stores/useAuthStore';
+import axios from "axios";
+import { useAuthStore, logoutAndRedirect } from "../../stores/useAuthStore";
 
-const BACKSERVER = import.meta.env.VITE_BACKSERVER || 'http://localhost:8080';
+const BACKSERVER = "http://localhost:8080"; // import.meta.env.VITE_BACKSERVER || 'http://localhost:8080';
 axios.defaults.baseURL = BACKSERVER;
 
 let refreshPromise = null;
@@ -11,7 +11,9 @@ axios.interceptors.request.use(
     // 요청을 보낼 때마다 현재 저장된 토큰을 가져옴
     // 토큰이 있으면 Authorization 헤더에 붙여서 보냄
     const state = useAuthStore.getState ? useAuthStore.getState() : null;
-    const token = state?.accessToken || window.sessionStorage.getItem('moodcast-access-token');
+    const token =
+      state?.accessToken ||
+      window.sessionStorage.getItem("moodcast-access-token");
     if (token) {
       config.headers = {
         ...config.headers,
@@ -28,9 +30,9 @@ axios.interceptors.response.use(
   async (error) => {
     const status = error?.response?.status;
     const originalRequest = error?.config;
-    const requestUrl = originalRequest?.url || '';
-    const isLoginRequest = requestUrl.includes('/auth/login');
-    const isRefreshRequest = requestUrl.includes('/auth/refresh');
+    const requestUrl = originalRequest?.url || "";
+    const isLoginRequest = requestUrl.includes("/auth/login");
+    const isRefreshRequest = requestUrl.includes("/auth/refresh");
     const shouldTryRefresh =
       (status === 401 || status === 403) &&
       originalRequest &&
@@ -49,7 +51,7 @@ axios.interceptors.response.use(
       if (!refreshPromise) {
         refreshPromise = axios
           .post(
-            '/auth/refresh',
+            "/auth/refresh",
             {},
             {
               withCredentials: true,

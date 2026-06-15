@@ -27,8 +27,8 @@ export const SocialCallbackPage = () => {
   const [searchParams] = useSearchParams();
   const { accessToken, setAuthData } = useAuthStore();
   const calledRef = useRef(false);
-  const [toast, setToast] = useState({ show: false, type: "", message: "" });
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+  const [toast, setToast] = useState({ show: false, type: "", message: "" }); // import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+  const BACKSERVER = "http://localhost:8080";
   const pathname = window.location.pathname;
   const provider = pathname.includes("/auth/google/")
     ? "google"
@@ -77,7 +77,10 @@ export const SocialCallbackPage = () => {
       return `이미 MoodCast 계정으로 가입된 이메일입니다. 기존 계정으로 로그인한 뒤 설정에서 ${providerLabel} 계정을 연결해주세요.`;
     }
 
-    return getApiMessage(error, error.message || `${providerLabel} 로그인 설정을 확인해주세요.`);
+    return getApiMessage(
+      error,
+      error.message || `${providerLabel} 로그인 설정을 확인해주세요.`,
+    );
   };
 
   useEffect(() => {
@@ -102,7 +105,10 @@ export const SocialCallbackPage = () => {
     }
 
     if (!savedState || savedState !== state) {
-      showToast("error", `${providerLabel} 로그인 요청 정보가 올바르지 않습니다.`);
+      showToast(
+        "error",
+        `${providerLabel} 로그인 요청 정보가 올바르지 않습니다.`,
+      );
       setTimeout(() => navigate("/auth/login", { replace: true }), 1200);
       return;
     }
@@ -129,13 +135,19 @@ export const SocialCallbackPage = () => {
           },
         )
         .then((res) => {
-          showToast("success", res.data?.message || `${providerLabel} 계정이 연결되었습니다.`);
+          showToast(
+            "success",
+            res.data?.message || `${providerLabel} 계정이 연결되었습니다.`,
+          );
           setTimeout(() => navigate("/app/settings", { replace: true }), 900);
         })
         .catch((err) => {
           showToast(
             "error",
-            getApiMessage(err, err.message || `${providerLabel} 계정 연결 정보를 확인해주세요.`),
+            getApiMessage(
+              err,
+              err.message || `${providerLabel} 계정 연결 정보를 확인해주세요.`,
+            ),
           );
           setTimeout(() => navigate("/app/settings", { replace: true }), 1600);
         });
@@ -177,7 +189,19 @@ export const SocialCallbackPage = () => {
         showToast("error", getSocialLoginErrorMessage(err));
         setTimeout(() => navigate("/auth/login", { replace: true }), 1600);
       });
-  }, [accessToken, linkUrl, loginUrl, modeKey, navigate, providerLabel, redirectUri, rememberKey, searchParams, setAuthData, stateKey]);
+  }, [
+    accessToken,
+    linkUrl,
+    loginUrl,
+    modeKey,
+    navigate,
+    providerLabel,
+    redirectUri,
+    rememberKey,
+    searchParams,
+    setAuthData,
+    stateKey,
+  ]);
 
   return (
     <main className={styles.page}>

@@ -53,11 +53,9 @@ const buildSuspendedLoginMessage = (data, fallbackMessage) => {
   }
 
   if (data?.suspendType === "PERMANENT") {
-    return [
-      "영구 정지된 계정입니다.",
-      "",
-      "서비스 이용이 제한됩니다.",
-    ].join("\n");
+    return ["영구 정지된 계정입니다.", "", "서비스 이용이 제한됩니다."].join(
+      "\n",
+    );
   }
 
   return fallbackMessage;
@@ -84,7 +82,7 @@ export const LoginPage = () => {
     open: false,
     message: "",
   });
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+  const BACKSERVER = "http://localhost:8080"; // import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
 
   useEffect(() => {
     const savedEmail = window.localStorage.getItem(SAVED_EMAIL_KEY);
@@ -183,7 +181,10 @@ export const LoginPage = () => {
       })
       .catch((err) => {
         const errorData = err?.response?.data;
-        const loginErrorMessage = getApiMessage(err, "로그인 정보를 확인해주세요.");
+        const loginErrorMessage = getApiMessage(
+          err,
+          "로그인 정보를 확인해주세요.",
+        );
 
         if (
           errorData?.code === "ACCOUNT_SUSPENDED" ||
@@ -206,7 +207,10 @@ export const LoginPage = () => {
   };
 
   const showReadyMessage = (label) => {
-    showToast("info", `${label}은 아직 준비 중입니다. 현재는 카카오, Google, 네이버 로그인을 이용해주세요.`);
+    showToast(
+      "info",
+      `${label}은 아직 준비 중입니다. 현재는 카카오, Google, 네이버 로그인을 이용해주세요.`,
+    );
   };
 
   const handleKakaoLogin = () => {

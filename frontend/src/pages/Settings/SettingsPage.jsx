@@ -41,8 +41,8 @@ const initialWithdrawForm = {
 export function SettingsPage() {
   const desktop = useIsDesktop();
   const navigate = useNavigate();
-  const { accessToken, member, clearAuthData } = useAuthStore();
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+  const { accessToken, member, clearAuthData } = useAuthStore(); // import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+  const BACKSERVER = "http://localhost:8080";
   const [kakaoLinked, setKakaoLinked] = useState(false);
   const [googleLinked, setGoogleLinked] = useState(false);
   const [naverLinked, setNaverLinked] = useState(false);

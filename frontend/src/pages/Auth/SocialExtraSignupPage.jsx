@@ -14,7 +14,7 @@ const nicknameRegex = /^[가-힣A-Za-z0-9]{2,12}$/;
 export const SocialExtraSignupPage = () => {
   const navigate = useNavigate();
   const { setAuthData } = useAuthStore();
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+  const BACKSERVER = "http://localhost:8080"; // import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
 
   const [pending, setPending] = useState(null);
   const [form, setForm] = useState({
@@ -36,11 +36,16 @@ export const SocialExtraSignupPage = () => {
   const showToast = (type, message) => {
     const duration = getToastDuration(type);
     setToast({ show: true, type, message, duration });
-    setTimeout(() => setToast({ show: false, type: "", message: "" }), duration);
+    setTimeout(
+      () => setToast({ show: false, type: "", message: "" }),
+      duration,
+    );
   };
 
   useEffect(() => {
-    const pendingText = window.sessionStorage.getItem(SOCIAL_SIGNUP_PENDING_KEY);
+    const pendingText = window.sessionStorage.getItem(
+      SOCIAL_SIGNUP_PENDING_KEY,
+    );
     if (!pendingText) {
       navigate("/auth/login", { replace: true });
       return;
@@ -82,7 +87,10 @@ export const SocialExtraSignupPage = () => {
         );
       })
       .catch(() => {
-        showToast("error", "약관 정보를 불러오지 못했습니다. 새로고침 후 다시 시도해주세요.");
+        showToast(
+          "error",
+          "약관 정보를 불러오지 못했습니다. 새로고침 후 다시 시도해주세요.",
+        );
       });
   }, [BACKSERVER, navigate]);
 
@@ -92,7 +100,6 @@ export const SocialExtraSignupPage = () => {
       ...prev,
       [name]: value,
     }));
-
   };
 
   const toggleAgreement = (termsId) => {
@@ -115,7 +122,10 @@ export const SocialExtraSignupPage = () => {
     }
 
     if (form.nickname.trim() && !nicknameRegex.test(form.nickname.trim())) {
-      showToast("error", "닉네임은 한글, 영문, 숫자만 사용해 2~12자로 입력해주세요.");
+      showToast(
+        "error",
+        "닉네임은 한글, 영문, 숫자만 사용해 2~12자로 입력해주세요.",
+      );
       return;
     }
 
@@ -151,7 +161,10 @@ export const SocialExtraSignupPage = () => {
         setSignupCompleteModalOpen(true);
       })
       .catch((err) => {
-        const message = getApiMessage(err, "소셜 회원가입 정보를 다시 확인해주세요.");
+        const message = getApiMessage(
+          err,
+          "소셜 회원가입 정보를 다시 확인해주세요.",
+        );
         showToast("error", message);
 
         if (message.includes("소셜 가입 시간이 만료")) {
@@ -187,7 +200,10 @@ export const SocialExtraSignupPage = () => {
             <strong>MoodCast</strong>
           </div>
           <h1>소셜 회원가입</h1>
-          <p>{pending?.providerEmail || `${providerLabel} 계정`}에 추가 정보를 연결합니다</p>
+          <p>
+            {pending?.providerEmail || `${providerLabel} 계정`}에 추가 정보를
+            연결합니다
+          </p>
         </header>
 
         <form className={styles.form} onSubmit={completeSocialSignup}>

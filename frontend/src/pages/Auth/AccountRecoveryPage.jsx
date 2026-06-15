@@ -642,6 +642,8 @@ export const AccountRecoveryPage = () => {
                 value={passwordForm.newPassword}
                 onChange={inputPassword}
                 placeholder="영문, 숫자, 특수문자 포함 8~20자"
+                ㅣ그
+                autoComplete="new-password"
                 disabled={!passwordCodeVerified}
               />
             </div>
@@ -657,6 +659,7 @@ export const AccountRecoveryPage = () => {
                 value={passwordForm.newPasswordConfirm}
                 onChange={inputPassword}
                 placeholder="새 비밀번호를 다시 입력하세요"
+                autoComplete="new-password"
                 disabled={!passwordCodeVerified}
               />
             </div>

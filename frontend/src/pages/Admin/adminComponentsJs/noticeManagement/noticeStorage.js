@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BACKSERVER = (import.meta.env.VITE_BACKSERVER || "http://localhost:8080").replace(/\/$/, "");
+const BACKSERVER = "http://localhost:8080".replace(/\/$/, ""); // (import.meta.env.VITE_BACKSERVER || "http://localhost:8080").replace(/\/$/, "");
 const NOTICE_VISIBLE_DAYS = 7;
 const NOTICE_VISIBLE_MS = NOTICE_VISIBLE_DAYS * 24 * 60 * 60 * 1000;
 
@@ -129,7 +129,10 @@ export const sanitizeNoticeHtml = (content = "") => {
   }
 
   const parser = new DOMParser();
-  const documentNode = parser.parseFromString(String(content || ""), "text/html");
+  const documentNode = parser.parseFromString(
+    String(content || ""),
+    "text/html",
+  );
   const elements = Array.from(documentNode.body.querySelectorAll("*"));
 
   elements.forEach((element) => {
@@ -171,7 +174,10 @@ export const sanitizeNoticeHtml = (content = "") => {
         return;
       }
 
-      if (["target", "rel"].includes(attributeName) && element.tagName === "A") {
+      if (
+        ["target", "rel"].includes(attributeName) &&
+        element.tagName === "A"
+      ) {
         return;
       }
 
@@ -184,12 +190,17 @@ export const sanitizeNoticeHtml = (content = "") => {
 
 export const stripNoticeAlignWrapper = (content = "") => {
   return content
-    .replace(/^<div data-notice-align="center" style="text-align: center;">/i, "")
+    .replace(
+      /^<div data-notice-align="center" style="text-align: center;">/i,
+      "",
+    )
     .replace(/<\/div>$/i, "");
 };
 
 export const buildNoticeContent = (content, alignCenter) => {
-  const normalizedContent = sanitizeNoticeHtml(stripNoticeAlignWrapper(content));
+  const normalizedContent = sanitizeNoticeHtml(
+    stripNoticeAlignWrapper(content),
+  );
 
   if (!alignCenter) {
     return normalizedContent;
@@ -203,19 +214,28 @@ export const normalizeNotice = (notice) => {
     return null;
   }
 
-  const createdTimestamp = toTimestamp(notice.createdAt, Number(notice.noticeId) || Date.now());
+  const createdTimestamp = toTimestamp(
+    notice.createdAt,
+    Number(notice.noticeId) || Date.now(),
+  );
   const updatedTimestamp = toTimestamp(notice.updatedAt, createdTimestamp);
   const deletedTimestamp = toTimestamp(notice.deletedAt, 0);
   const isDeleted = Boolean(notice.deletedAt);
-  const isExpired = !isDeleted && Date.now() - createdTimestamp >= NOTICE_VISIBLE_MS;
+  const isExpired =
+    !isDeleted && Date.now() - createdTimestamp >= NOTICE_VISIBLE_MS;
   const adminDisplayName =
     notice.createdByAdminName ||
     notice.adminName ||
     notice.createdAdminName ||
-    (notice.createdByAdminNickname ? `@${notice.createdByAdminNickname}` : "") ||
+    (notice.createdByAdminNickname
+      ? `@${notice.createdByAdminNickname}`
+      : "") ||
     "관리자";
   const adminEmail =
-    notice.createdByAdminEmail || notice.adminEmail || notice.createdAdminEmail || "";
+    notice.createdByAdminEmail ||
+    notice.adminEmail ||
+    notice.createdAdminEmail ||
+    "";
 
   return {
     id: notice.noticeId,
@@ -229,7 +249,9 @@ export const normalizeNotice = (notice) => {
     isExpired,
     createdAt: formatDateText(notice.createdAt),
     createdTimestamp,
-    adminName: adminEmail ? `${adminDisplayName} (${adminEmail})` : adminDisplayName,
+    adminName: adminEmail
+      ? `${adminDisplayName} (${adminEmail})`
+      : adminDisplayName,
     adminDisplayName,
     adminEmail,
     updatedAt: formatDateText(notice.updatedAt),
@@ -240,7 +262,10 @@ export const normalizeNotice = (notice) => {
   };
 };
 
-export const toNoticePayload = ({ title, category, content }, alignCenter = false) => ({
+export const toNoticePayload = (
+  { title, category, content },
+  alignCenter = false,
+) => ({
   title,
   content: buildNoticeContent(content, alignCenter),
   noticeType: typeByCategory[category] ?? NOTICE_TYPE.NORMAL,
