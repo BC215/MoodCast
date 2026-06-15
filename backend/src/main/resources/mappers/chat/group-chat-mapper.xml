@@ -32,9 +32,11 @@
             #{roomId},
             #{memberId},
             CURRENT_TIMESTAMP(6),
+            NOW(),
             NULL,
             NULL,
             CURRENT_TIMESTAMP(6),
+            NOW(),
             (
                 SELECT MAX(message_id)
                 FROM chat_message
@@ -42,26 +44,33 @@
                   AND deleted_yn = 'N'
             ),
             1,
+            true,
             COALESCE(#{deletedYn}, 'N')
         )
         ON DUPLICATE KEY UPDATE
             joined_at = CURRENT_TIMESTAMP(6),
+        ON CONFLICT (room_id, member_id) DO UPDATE SET
+            joined_at = NOW(),
             hidden_at = NULL,
             left_at = NULL,
             last_read_at = CURRENT_TIMESTAMP(6),
+            last_read_at = NOW(),
             last_read_message_id = (
                 SELECT MAX(message_id)
                 FROM chat_message
                 WHERE room_id = #{roomId}
+                WHERE room_id = EXCLUDED.room_id
                   AND deleted_yn = 'N'
             ),
             is_active = 1,
+            is_active = true,
             deleted_yn = 'N'
     </insert>
 
     <update id="hideChatRoomMember">
         UPDATE chat_room_member
         SET hidden_at = CURRENT_TIMESTAMP(6)
+        SET hidden_at = NOW()
         WHERE room_id = #{roomId}
           AND member_id = #{memberId}
           AND deleted_yn = 'N'
@@ -71,6 +80,8 @@
         UPDATE chat_room_member
         SET left_at = CURRENT_TIMESTAMP(6),
             is_active = 0
+        SET left_at = NOW(),
+            is_active = false
         WHERE room_id = #{roomId}
           AND member_id = #{memberId}
           AND deleted_yn = 'N'
@@ -88,6 +99,7 @@
                 AND crm.deleted_yn = 'N'
                 AND crm.left_at IS NULL
                 AND crm.is_active = 1
+                AND crm.is_active = true
           )
     </update>
 
@@ -100,6 +112,7 @@
                     ELSE last_read_message_id
                 END,
             last_read_at = CURRENT_TIMESTAMP(6)
+            last_read_at = NOW()
         WHERE room_id = #{roomId}
           AND member_id = #{memberId}
           AND deleted_yn = 'N'
@@ -108,6 +121,7 @@
     <update id="touchRoomReadState">
         UPDATE chat_room_member
         SET last_read_at = CURRENT_TIMESTAMP(6)
+        SET last_read_at = NOW()
         WHERE room_id = #{roomId}
           AND member_id = #{memberId}
           AND deleted_yn = 'N'
@@ -121,6 +135,7 @@
             r.room_description AS roomDescription,
             r.created_by AS createdBy,
             DATE_FORMAT(r.created_at, '%Y-%m-%dT%H:%i:%s') AS createdAt,
+            to_char(r.created_at, 'YYYY-MM-DD"T"HH24:MI:SS') AS createdAt,
             r.deleted_yn AS deletedYn,
             COALESCE(mc.member_count, 0) AS memberCount,
             latest.last_message AS lastMessage,
@@ -135,6 +150,7 @@
             WHERE deleted_yn = 'N'
               AND left_at IS NULL
               AND is_active = 1
+              AND is_active = true
             GROUP BY room_id
         ) mc ON mc.room_id = r.room_id
         LEFT JOIN (
@@ -146,6 +162,8 @@
                     '|||',
                     1
                 ) AS last_message
+                to_char(MAX(created_at), 'YYYY-MM-DD"T"HH24:MI:SS') AS last_message_at,
+                split_part(string_agg(content, '|||' order by created_at DESC, message_id DESC), '|||', 1) AS last_message
             FROM chat_message
             WHERE deleted_yn = 'N'
             GROUP BY room_id
@@ -163,6 +181,7 @@
             r.room_description AS roomDescription,
             r.created_by AS createdBy,
             DATE_FORMAT(r.created_at, '%Y-%m-%dT%H:%i:%s') AS createdAt,
+            to_char(r.created_at, 'YYYY-MM-DD"T"HH24:MI:SS') AS createdAt,
             r.deleted_yn AS deletedYn,
             COALESCE(mc.member_count, 0) AS memberCount,
             latest.last_message AS lastMessage,
@@ -180,6 +199,7 @@
             WHERE deleted_yn = 'N'
               AND left_at IS NULL
               AND is_active = 1
+              AND is_active = true
             GROUP BY room_id
         ) mc ON mc.room_id = r.room_id
         LEFT JOIN (
@@ -191,6 +211,8 @@
                     '|||',
                     1
                 ) AS last_message
+                to_char(MAX(created_at), 'YYYY-MM-DD"T"HH24:MI:SS') AS last_message_at,
+                split_part(string_agg(content, '|||' order by created_at DESC, message_id DESC), '|||', 1) AS last_message
             FROM chat_message
             WHERE deleted_yn = 'N'
             GROUP BY room_id
@@ -232,6 +254,7 @@
             r.room_description AS roomDescription,
             r.created_by AS createdBy,
             DATE_FORMAT(r.created_at, '%Y-%m-%dT%H:%i:%s') AS createdAt,
+            to_char(r.created_at, 'YYYY-MM-DD"T"HH24:MI:SS') AS createdAt,
             r.deleted_yn AS deletedYn,
             COALESCE(mc.member_count, 0) AS memberCount,
             latest.last_message AS lastMessage,
@@ -253,6 +276,7 @@
             WHERE deleted_yn = 'N'
               AND left_at IS NULL
               AND is_active = 1
+              AND is_active = true
             GROUP BY room_id
         ) mc ON mc.room_id = r.room_id
         LEFT JOIN (
@@ -264,6 +288,8 @@
                     '|||',
                     1
                 ) AS last_message
+                to_char(MAX(cm.created_at), 'YYYY-MM-DD"T"HH24:MI:SS') AS last_message_at,
+                split_part(string_agg(cm.content, '|||' order by cm.created_at DESC, cm.message_id DESC), '|||', 1) AS last_message
             FROM chat_message cm
             JOIN chat_room_member visible_rm
               ON visible_rm.room_id = cm.room_id
@@ -272,6 +298,7 @@
             WHERE cm.deleted_yn = 'N'
               AND visible_rm.left_at IS NULL
               AND visible_rm.is_active = 1
+              AND visible_rm.is_active = true
               AND (visible_rm.joined_at IS NULL OR cm.created_at >= visible_rm.joined_at)
               AND (visible_rm.hidden_at IS NULL OR cm.created_at > visible_rm.hidden_at)
             GROUP BY cm.room_id
@@ -287,8 +314,10 @@
              AND reader.deleted_yn = 'N'
             WHERE cm.deleted_yn = 'N'
               AND cm.sender_id &lt;&gt; #{memberId}
+              AND cm.sender_id != #{memberId}
               AND reader.left_at IS NULL
               AND reader.is_active = 1
+              AND reader.is_active = true
               AND (reader.joined_at IS NULL OR cm.created_at >= reader.joined_at)
               AND (reader.hidden_at IS NULL OR cm.created_at > reader.hidden_at)
               AND (reader.last_read_message_id IS NULL OR cm.message_id &gt; reader.last_read_message_id)
@@ -297,6 +326,7 @@
         WHERE r.deleted_yn = 'N'
           AND rm.left_at IS NULL
           AND rm.is_active = 1
+          AND rm.is_active = true
           AND (
               rm.hidden_at IS NULL
               OR EXISTS (
@@ -324,8 +354,12 @@
             DATE_FORMAT(rm.joined_at, '%Y-%m-%dT%H:%i:%s') AS joinedAt,
             DATE_FORMAT(rm.hidden_at, '%Y-%m-%dT%H:%i:%s') AS hiddenAt,
             DATE_FORMAT(rm.left_at, '%Y-%m-%dT%H:%i:%s') AS leftAt,
+            to_char(rm.joined_at, 'YYYY-MM-DD"T"HH24:MI:SS') AS joinedAt,
+            to_char(rm.hidden_at, 'YYYY-MM-DD"T"HH24:MI:SS') AS hiddenAt,
+            to_char(rm.left_at, 'YYYY-MM-DD"T"HH24:MI:SS') AS leftAt,
             rm.last_read_message_id AS lastReadMessageId,
             DATE_FORMAT(rm.last_read_at, '%Y-%m-%dT%H:%i:%s') AS lastReadAt,
+            to_char(rm.last_read_at, 'YYYY-MM-DD"T"HH24:MI:SS') AS lastReadAt,
             rm.is_active AS isActive,
             rm.deleted_yn AS deletedYn
         FROM chat_room_member rm
@@ -348,8 +382,12 @@
             DATE_FORMAT(rm.joined_at, '%Y-%m-%dT%H:%i:%s') AS joinedAt,
             DATE_FORMAT(rm.hidden_at, '%Y-%m-%dT%H:%i:%s') AS hiddenAt,
             DATE_FORMAT(rm.left_at, '%Y-%m-%dT%H:%i:%s') AS leftAt,
+            to_char(rm.joined_at, 'YYYY-MM-DD"T"HH24:MI:SS') AS joinedAt,
+            to_char(rm.hidden_at, 'YYYY-MM-DD"T"HH24:MI:SS') AS hiddenAt,
+            to_char(rm.left_at, 'YYYY-MM-DD"T"HH24:MI:SS') AS leftAt,
             rm.last_read_message_id AS lastReadMessageId,
             DATE_FORMAT(rm.last_read_at, '%Y-%m-%dT%H:%i:%s') AS lastReadAt,
+            to_char(rm.last_read_at, 'YYYY-MM-DD"T"HH24:MI:SS') AS lastReadAt,
             rm.is_active AS isActive,
             rm.deleted_yn AS deletedYn
         FROM chat_room_member rm
@@ -360,6 +398,7 @@
           AND rm.deleted_yn = 'N'
           AND rm.left_at IS NULL
           AND rm.is_active = 1
+          AND rm.is_active = true
         LIMIT 1
     </select>
 
@@ -374,8 +413,12 @@
             DATE_FORMAT(rm.joined_at, '%Y-%m-%dT%H:%i:%s') AS joinedAt,
             DATE_FORMAT(rm.hidden_at, '%Y-%m-%dT%H:%i:%s') AS hiddenAt,
             DATE_FORMAT(rm.left_at, '%Y-%m-%dT%H:%i:%s') AS leftAt,
+            to_char(rm.joined_at, 'YYYY-MM-DD"T"HH24:MI:SS') AS joinedAt,
+            to_char(rm.hidden_at, 'YYYY-MM-DD"T"HH24:MI:SS') AS hiddenAt,
+            to_char(rm.left_at, 'YYYY-MM-DD"T"HH24:MI:SS') AS leftAt,
             rm.last_read_message_id AS lastReadMessageId,
             DATE_FORMAT(rm.last_read_at, '%Y-%m-%dT%H:%i:%s') AS lastReadAt,
+            to_char(rm.last_read_at, 'YYYY-MM-DD"T"HH24:MI:SS') AS lastReadAt,
             rm.is_active AS isActive,
             rm.deleted_yn AS deletedYn
         FROM chat_room_member rm
@@ -385,6 +428,7 @@
           AND rm.deleted_yn = 'N'
           AND rm.left_at IS NULL
           AND rm.is_active = 1
+          AND rm.is_active = true
         ORDER BY rm.joined_at ASC, rm.room_member_id ASC
     </select>
 
@@ -395,6 +439,7 @@
           AND deleted_yn = 'N'
           AND left_at IS NULL
           AND is_active = 1
+          AND is_active = true
     </select>
 
     <insert id="insertChatMessage" parameterType="com.moodcast.chat.vo.ChatMessageVo" useGeneratedKeys="true" keyProperty="messageId">
@@ -449,6 +494,7 @@
             m.profile_image_url AS profileImageUrl,
             cm.content AS content,
             DATE_FORMAT(cm.created_at, '%Y-%m-%dT%H:%i:%s') AS createdAt,
+            to_char(cm.created_at, 'YYYY-MM-DD"T"HH24:MI:SS') AS createdAt,
             cm.deleted_yn AS deletedYn,
             cm.message_type AS messageType,
             CASE
@@ -463,6 +509,8 @@
                   AND crm.left_at IS NULL
                   AND crm.is_active = 1
                   AND crm.member_id &lt;&gt; cm.sender_id
+                  AND crm.is_active = true
+                  AND crm.member_id != cm.sender_id
                   AND (
                         crm.last_read_message_id IS NULL
                         OR crm.last_read_message_id &lt; cm.message_id
@@ -485,6 +533,7 @@
             m.profile_image_url AS profileImageUrl,
             cm.content AS content,
             DATE_FORMAT(cm.created_at, '%Y-%m-%dT%H:%i:%s') AS createdAt,
+            to_char(cm.created_at, 'YYYY-MM-DD"T"HH24:MI:SS') AS createdAt,
             cm.deleted_yn AS deletedYn,
             cm.message_type AS messageType,
             CASE
@@ -499,6 +548,8 @@
                   AND crm.left_at IS NULL
                   AND crm.is_active = 1
                   AND crm.member_id &lt;&gt; cm.sender_id
+                  AND crm.is_active = true
+                  AND crm.member_id != cm.sender_id
                   AND (
                         crm.last_read_message_id IS NULL
                         OR crm.last_read_message_id &lt; cm.message_id
@@ -518,6 +569,7 @@
           <if test="memberId != null">
               AND rm.left_at IS NULL
               AND rm.is_active = 1
+              AND rm.is_active = true
               AND (rm.joined_at IS NULL OR cm.created_at >= rm.joined_at)
               AND (rm.hidden_at IS NULL OR cm.created_at > rm.hidden_at)
           </if>

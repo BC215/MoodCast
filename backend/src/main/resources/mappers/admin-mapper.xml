@@ -301,6 +301,7 @@
             p.deleted_yn,
             p.emotion_id,
             date_format(p.created_at, '%Y-%m-%d %H:%i') as created_at,
+            to_char(p.created_at, 'YYYY-MM-DD HH24:MI') as created_at,
             p.member_id,
             m.name as author_name,
             m.nickname as author_nickname,
@@ -318,6 +319,7 @@
             ), 0) as hashtag_count,
             coalesce((
                 select group_concat(concat('#', h.hashtag) order by h.hashtag separator ' ')
+                select string_agg(concat('#', h.hashtag), ' ' order by h.hashtag)
                 from post_hashtag ph
                 join hashtag h on h.hashtag_id = ph.hashtag_id
                 where ph.post_id = p.post_id
@@ -337,6 +339,7 @@
             c.content,
             c.deleted_yn,
             date_format(c.created_at, '%Y-%m-%d %H:%i') as created_at,
+            to_char(c.created_at, 'YYYY-MM-DD HH24:MI') as created_at,
             c.member_id,
             m.name as author_name,
             m.nickname as author_nickname,
@@ -373,6 +376,7 @@
             c.content,
             c.deleted_yn,
             date_format(c.created_at, '%Y-%m-%d %H:%i') as created_at,
+            to_char(c.created_at, 'YYYY-MM-DD HH24:MI') as created_at,
             c.member_id,
             m.name as author_name,
             m.nickname as author_nickname,
@@ -408,6 +412,7 @@
             coalesce(h.use_count, 0) as use_count,
             count(ph.post_hashtag_id) as post_count,
             date_format(max(p.created_at), '%Y-%m-%d %H:%i') as latest_post_created_at,
+            to_char(max(p.created_at), 'YYYY-MM-DD HH24:MI') as latest_post_created_at,
             case
                 when latest_log.action_type = 'DELETE' then 'DELETED'
                 when latest_log.action_type = 'HIDE' then 'HIDDEN'
@@ -439,6 +444,7 @@
             coalesce(h.use_count, 0) as use_count,
             count(ph.post_hashtag_id) as post_count,
             date_format(max(p.created_at), '%Y-%m-%d %H:%i') as latest_post_created_at,
+            to_char(max(p.created_at), 'YYYY-MM-DD HH24:MI') as latest_post_created_at,
             case
                 when latest_log.action_type = 'DELETE' then 'DELETED'
                 when latest_log.action_type = 'HIDE' then 'HIDDEN'
@@ -472,6 +478,7 @@
             p.deleted_yn,
             p.emotion_id,
             date_format(p.created_at, '%Y-%m-%d %H:%i') as created_at,
+            to_char(p.created_at, 'YYYY-MM-DD HH24:MI') as created_at,
             p.member_id,
             m.name as author_name,
             m.nickname as author_nickname,
@@ -488,6 +495,7 @@
             ), 0) as hashtag_count,
             coalesce((
                 select group_concat(concat('#', h.hashtag) order by h.hashtag separator ' ')
+                select string_agg(concat('#', h.hashtag), ' ' order by h.hashtag)
                 from post_hashtag ph
                 join hashtag h on h.hashtag_id = ph.hashtag_id
                 where ph.post_id = p.post_id
@@ -501,8 +509,8 @@
     <!-- hideAdminContentPost 수정 쿼리입니다. 관리자 기능에서 상태나 정보를 변경할 때 사용합니다. -->
     <update id="hideAdminContentPost">
         update post_tbl
-        set visibility = 'PRIVATE',
-            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        set visibility = 'PRIVATE', -- PostgreSQL does not support 'AFTER'
+            updated_at = TIMEZONE('Asia/Seoul', NOW())
         where post_id = #{postId}
           and deleted_yn = 'N'
     </update>
@@ -510,8 +518,8 @@
     <!-- restoreHiddenAdminContentPost 수정 쿼리입니다. 관리자 기능에서 상태나 정보를 변경할 때 사용합니다. -->
     <update id="restoreHiddenAdminContentPost">
         update post_tbl
-        set visibility = 'PUBLIC',
-            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        set visibility = 'PUBLIC', -- PostgreSQL does not support 'AFTER'
+            updated_at = TIMEZONE('Asia/Seoul', NOW())
         where post_id = #{postId}
           and deleted_yn = 'N'
     </update>
@@ -519,8 +527,8 @@
     <!-- softDeleteAdminContentPost 수정 쿼리입니다. 관리자 기능에서 상태나 정보를 변경할 때 사용합니다. -->
     <update id="softDeleteAdminContentPost">
         update post_tbl
-        set deleted_yn = 'Y',
-            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        set deleted_yn = 'Y', -- PostgreSQL does not support 'AFTER'
+            updated_at = TIMEZONE('Asia/Seoul', NOW())
         where post_id = #{postId}
           and deleted_yn = 'N'
     </update>
@@ -529,8 +537,8 @@
     <update id="restoreDeletedAdminContentPost">
         update post_tbl
         set deleted_yn = 'N',
-            visibility = 'PUBLIC',
-            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+            visibility = 'PUBLIC', -- PostgreSQL does not support 'AFTER'
+            updated_at = TIMEZONE('Asia/Seoul', NOW())
         where post_id = #{postId}
           and deleted_yn = 'Y'
     </update>
@@ -756,12 +764,15 @@
             <choose>
                 <when test="searchType == 'name'">
                     name like concat('%', #{keyword}, '%')
+                    name like ('%' || #{keyword} || '%')
                 </when>
                 <when test="searchType == 'nickname'">
                     nickname like concat('%', #{keyword}, '%')
+                    nickname like ('%' || #{keyword} || '%')
                 </when>
                 <otherwise>
                     email like concat('%', #{keyword}, '%')
+                    email like ('%' || #{keyword} || '%')
                 </otherwise>
             </choose>
           )
@@ -773,7 +784,7 @@
     <update id="updateMemberRoleForAdminPromotion">
         update members
         set role = #{role},
-            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+            updated_at = TIMEZONE('Asia/Seoul', NOW())
         where member_id = #{memberId}
           and status = 'ACTIVE'
           and role in ('USER', 'MEMBER', 'SUPER_ADMIN')
@@ -783,9 +794,10 @@
     <update id="suspendMember">
         update members
         set status = 'SUSPENDED',
-            suspended_until = #{suspendedUntil},
+            suspended_until = #{suspendedUntil}, -- Assuming suspendedUntil is already in correct timezone or UTC
             suspension_count = coalesce(suspension_count, 0) + 1,
             updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+            updated_at = TIMEZONE('Asia/Seoul', NOW())
         where member_id = #{memberId}
           and deleted_at is null
     </update>
@@ -794,7 +806,7 @@
     <update id="addWarningToMember">
         update members
         set warning_count = coalesce(warning_count, 0) + 1,
-            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+            updated_at = TIMEZONE('Asia/Seoul', NOW())
         where member_id = #{memberId}
           and deleted_at is null
     </update>
@@ -803,8 +815,8 @@
     <update id="restoreSuspendedMember">
         update members
         set status = 'ACTIVE',
-            suspended_until = null,
-            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+            suspended_until = null, -- Assuming suspendedUntil is already in correct timezone or UTC
+            updated_at = TIMEZONE('Asia/Seoul', NOW())
         where member_id = #{memberId}
           and status = 'SUSPENDED'
           and deleted_at is null
@@ -824,7 +836,7 @@
             #{actionType},
             #{targetType},
             #{targetId},
-            CONVERT_TZ(NOW(6), '+00:00', '+09:00'),
+            TIMEZONE('Asia/Seoul', NOW()),
             #{actionDetail}
         )
     </insert>
@@ -1246,10 +1258,12 @@
         select
             (select count(*)
              from members) as total_member_count,
+            (select count(*) -- PostgreSQL: DATE() function is not directly available, use CAST(timestamp AS DATE)
             (select count(*)
              from members
-             where created_at >= date(CONVERT_TZ(NOW(6), '+00:00', '+09:00'))
-               and created_at &lt; date_add(date(CONVERT_TZ(NOW(6), '+00:00', '+09:00')), interval 1 day)) as today_new_member_count,
+             where created_at >= CAST(TIMEZONE('Asia/Seoul', NOW()) AS DATE)
+               and created_at &lt; CAST(TIMEZONE('Asia/Seoul', NOW()) AS DATE) + INTERVAL '1 day') as today_new_member_count,
+               and created_at < (CAST(TIMEZONE('Asia/Seoul', NOW()) AS DATE) + INTERVAL '1 day')) as today_new_member_count,
             (select count(*)
              from post_tbl
              where deleted_yn = 'N') as post_count,
@@ -1265,14 +1279,16 @@
             count(*) as activity_count
         from post_tbl p
         where p.deleted_yn = 'N'
-          and p.emotion_id is not null
-          and p.created_at &gt;= #{startDate}
-          and p.created_at &lt; date_add(#{endDate}, interval 1 day)
+          and p.emotion_id IS NOT NULL
+          and p.created_at &gt;= #{startDate} -- Assuming startDate is already in correct timezone or UTC
+          and p.created_at &lt; #{endDate} + INTERVAL '1 day' -- date_add(date, interval) -> date + INTERVAL 'X unit'
+          and p.created_at >= #{startDate}
+          and p.created_at < (#{endDate} + INTERVAL '1 day')
         group by p.emotion_id
         order by p.emotion_id
     </select>
 
-    <!-- selectDashboardActiveUsers 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
+    <!-- selectDashboardActiveUsers 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. (PostgreSQL 호환) -->
     <select id="selectDashboardActiveUsers" resultMap="adminActiveUserStatMap">
         <choose>
             <when test="period == 'week'">
@@ -1286,18 +1302,22 @@
                 day_slots as (
                     select
                         day_index,
-                        date_add(#{startDate}, interval day_index day) as slot_date
+                        CAST(#{startDate} AS DATE) + (day_index * INTERVAL '1 day') as slot_date
+                        (CAST(#{startDate} AS DATE) + (day_index * INTERVAL '1 day')) as slot_date
                     from day_numbers d
                 )
                 select
-                    elt(s.day_index + 1, '월', '화', '수', '목', '금', '토', '일') as label,
+                    CASE s.day_index + 1 WHEN 1 THEN '월' WHEN 2 THEN '화' WHEN 3 THEN '수' WHEN 4 THEN '목' WHEN 5 THEN '금' WHEN 6 THEN '토' WHEN 7 THEN '일' END as label, -- ELT -> CASE
+                    CASE (s.day_index + 1) WHEN 1 THEN '월' WHEN 2 THEN '화' WHEN 3 THEN '수' WHEN 4 THEN '목' WHEN 5 THEN '금' WHEN 6 THEN '토' WHEN 7 THEN '일' END as label,
                     cast(count(distinct l.member_id) as decimal(10, 1)) as active_user_count
                 from day_slots s
                 left join login_audit_logs l
                   on l.success = 1
+                  on l.success = true
                  and l.member_id is not null
-                 and CONVERT_TZ(l.created_at, '+00:00', '+09:00') &gt;= s.slot_date
-                 and CONVERT_TZ(l.created_at, '+00:00', '+09:00') &lt; date_add(s.slot_date, interval 1 day)
+                 and TIMEZONE('Asia/Seoul', l.created_at) &gt;= s.slot_date
+                 and TIMEZONE('Asia/Seoul', l.created_at) &lt; s.slot_date + INTERVAL '1 day'
+                 and TIMEZONE('Asia/Seoul', l.created_at) < (s.slot_date + INTERVAL '1 day')
                 group by s.day_index
                 order by s.day_index
             </when>
@@ -1311,8 +1331,10 @@
                 ),
                 month_slots as (
                     select
+                        month_index, -- STR_TO_DATE -> TO_DATE, YEAR -> EXTRACT(YEAR FROM ...), LPAD -> LPAD
+                        TO_DATE(LPAD(month_index::text, 2, '0') || '-01-' || EXTRACT(YEAR FROM CAST(#{startDate} AS DATE))::text, 'MM-DD-YYYY') as month_start
                         month_index,
-                        str_to_date(concat(year(#{startDate}), '-', lpad(month_index, 2, '0'), '-01'), '%Y-%m-%d') as month_start
+                        TO_DATE(EXTRACT(YEAR FROM CAST(#{startDate} AS DATE))::text || '-' || LPAD(month_index::text, 2, '0') || '-01', 'YYYY-MM-DD') as month_start
                     from month_numbers
                 )
                 select
@@ -1321,9 +1343,11 @@
                 from month_slots s
                 left join login_audit_logs l
                   on l.success = 1
+                  on l.success = true
                  and l.member_id is not null
-                 and CONVERT_TZ(l.created_at, '+00:00', '+09:00') &gt;= s.month_start
-                 and CONVERT_TZ(l.created_at, '+00:00', '+09:00') &lt; date_add(s.month_start, interval 1 month)
+                 and TIMEZONE('Asia/Seoul', l.created_at) &gt;= s.month_start
+                 and TIMEZONE('Asia/Seoul', l.created_at) &lt; s.month_start + INTERVAL '1 month'
+                 and TIMEZONE('Asia/Seoul', l.created_at) < (s.month_start + INTERVAL '1 month')
                 group by s.month_index
                 order by s.month_index
             </when>
@@ -1341,9 +1365,12 @@
                 from hour_numbers h
                 left join login_audit_logs l
                   on l.success = 1
+                  on l.success = true
                  and l.member_id is not null
-                 and CONVERT_TZ(l.created_at, '+00:00', '+09:00') &gt;= date_add(#{startDate}, interval h.hour_index hour)
-                 and CONVERT_TZ(l.created_at, '+00:00', '+09:00') &lt; date_add(#{startDate}, interval (h.hour_index + 1) hour)
+                 and TIMEZONE('Asia/Seoul', l.created_at) &gt;= #{startDate} + (h.hour_index * INTERVAL '1 hour')
+                 and TIMEZONE('Asia/Seoul', l.created_at) &lt; #{startDate} + ((h.hour_index + 1) * INTERVAL '1 hour')
+                 and TIMEZONE('Asia/Seoul', l.created_at) >= (#{startDate} + (h.hour_index * INTERVAL '1 hour'))
+                 and TIMEZONE('Asia/Seoul', l.created_at) < (#{startDate} + ((h.hour_index + 1) * INTERVAL '1 hour'))
                 group by h.hour_index
                 order by h.hour_index
             </otherwise>
@@ -1363,6 +1390,7 @@
                 null as admin_name,
                 null as admin_nickname,
                 CHAR(54924, 50896, 32, 44032, 51077 USING utf8mb4) as activity_detail,
+                '회원 가입' as activity_detail,
                 m.created_at
             from members m
             where m.created_at is not null
@@ -1379,6 +1407,7 @@
                 null as admin_name,
                 null as admin_nickname,
                 CHAR(54924, 50896, 32, 53448, 53748 USING utf8mb4) as activity_detail,
+                '회원 탈퇴' as activity_detail,
                 m.deleted_at as created_at
             from members m
             where m.deleted_at is not null
@@ -1464,7 +1493,7 @@
                 null as admin_id,
                 null as admin_name,
                 null as admin_nickname,
-                CHAR(54924, 50896, 32, 44032, 51077 USING utf8mb4) as activity_detail,
+                '회원 가입' as activity_detail, -- CHAR(...) USING utf8mb4 -> 직접 문자열
                 m.created_at
             from members m
             where m.created_at is not null
@@ -1480,7 +1509,7 @@
                 null as admin_id,
                 null as admin_name,
                 null as admin_nickname,
-                CHAR(54924, 50896, 32, 53448, 53748 USING utf8mb4) as activity_detail,
+                '회원 탈퇴' as activity_detail, -- CHAR(...) USING utf8mb4 -> 직접 문자열
                 m.deleted_at as created_at
             from members m
             where m.deleted_at is not null
@@ -1562,17 +1591,24 @@
              where m.created_at is not null
                and m.created_at &gt;= #{startDate}
                and m.created_at &lt; date_add(#{endDate}, interval 1 day)) as new_member_count,
+               and m.created_at >= #{startDate}
+               and m.created_at < (#{endDate} + INTERVAL '1 day')) as new_member_count,
             (select count(distinct l.member_id)
              from login_audit_logs l
              where l.success = 1
-               and l.member_id is not null
-               and CONVERT_TZ(l.created_at, '+00:00', '+09:00') &gt;= #{startDate}
-               and CONVERT_TZ(l.created_at, '+00:00', '+09:00') &lt; date_add(#{endDate}, interval 1 day)) as active_user_count,
+             where l.success = true
+               and l.member_id IS NOT NULL
+               and TIMEZONE('Asia/Seoul', l.created_at) &gt;= #{startDate}
+               and TIMEZONE('Asia/Seoul', l.created_at) &lt; #{endDate} + INTERVAL '1 day') as active_user_count,
+               and TIMEZONE('Asia/Seoul', l.created_at) >= #{startDate}
+               and TIMEZONE('Asia/Seoul', l.created_at) < (#{endDate} + INTERVAL '1 day')) as active_user_count,
             (select count(*)
              from post_tbl p
              where p.deleted_yn = 'N'
                and p.created_at &gt;= #{startDate}
                and p.created_at &lt; date_add(#{endDate}, interval 1 day)) as post_count,
+               and p.created_at >= #{startDate}
+               and p.created_at < (#{endDate} + INTERVAL '1 day')) as post_count,
             (select count(*)
              from comment_tbl c
              join post_tbl p on p.post_id = c.post_id
@@ -1580,12 +1616,16 @@
                and p.deleted_yn = 'N'
                and c.created_at &gt;= #{startDate}
                and c.created_at &lt; date_add(#{endDate}, interval 1 day)) as comment_count,
+               and c.created_at >= #{startDate}
+               and c.created_at < (#{endDate} + INTERVAL '1 day')) as comment_count,
             (select count(*)
              from user_post_like l
              join post_tbl p on p.post_id = l.post_id
              where p.deleted_yn = 'N'
                and l.created_at &gt;= #{startDate}
                and l.created_at &lt; date_add(#{endDate}, interval 1 day)) as empathy_count
+               and l.created_at >= #{startDate}
+               and l.created_at < (#{endDate} + INTERVAL '1 day')) as empathy_count
     </select>
 
     <!-- selectStatisticsSubscriberTrend 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
@@ -1601,15 +1641,18 @@
                 )
                 select
                     elt(d.day_index + 1, '월', '화', '수', '목', '금', '토', '일') as label,
-                    count(m.member_id) as value
+                    CASE (d.day_index + 1) WHEN 1 THEN '월' WHEN 2 THEN '화' WHEN 3 THEN '수' WHEN 4 THEN '목' WHEN 5 THEN '금' WHEN 6 THEN '토' WHEN 7 THEN '일' END as label,
+                    COUNT(m.member_id) as value
                 from day_numbers d
                 left join members m
-                  on m.created_at &gt;= date_add(#{startDate}, interval d.day_index day)
-                 and m.created_at &lt; date_add(#{startDate}, interval (d.day_index + 1) day)
+                  on m.created_at &gt;= #{startDate} + (d.day_index * INTERVAL '1 day')
+                 and m.created_at &lt; #{startDate} + ((d.day_index + 1) * INTERVAL '1 day')
+                  on m.created_at >= (#{startDate} + (d.day_index * INTERVAL '1 day'))
+                 and m.created_at < (#{startDate} + ((d.day_index + 1) * INTERVAL '1 day'))
                 group by d.day_index
                 order by d.day_index
             </when>
-            <when test="period == 'month'">
+            <when test="period == 'month'"> -- PostgreSQL: YEAR -> EXTRACT(YEAR FROM ...), LPAD -> LPAD, STR_TO_DATE -> TO_DATE
                 with recursive month_numbers(month_index) as (
                     select 1
                     union all
@@ -1619,17 +1662,20 @@
                 ),
                 month_slots as (
                     select
+                        month_index, -- STR_TO_DATE -> TO_DATE, YEAR -> EXTRACT(YEAR FROM ...), LPAD -> LPAD
+                        TO_DATE(LPAD(month_index::text, 2, '0') || '-01-' || EXTRACT(YEAR FROM CAST(#{startDate} AS DATE))::text, 'MM-DD-YYYY') as month_start
                         month_index,
-                        str_to_date(concat(year(#{startDate}), '-', lpad(month_index, 2, '0'), '-01'), '%Y-%m-%d') as month_start
+                        TO_DATE(EXTRACT(YEAR FROM CAST(#{startDate} AS DATE))::text || '-' || LPAD(month_index::text, 2, '0') || '-01', 'YYYY-MM-DD') as month_start
                     from month_numbers
                 )
                 select
                     concat(s.month_index, '월') as label,
-                    count(m.member_id) as value
+                    COUNT(m.member_id) as value
                 from month_slots s
                 left join members m
                   on m.created_at &gt;= s.month_start
-                 and m.created_at &lt; date_add(s.month_start, interval 1 month)
+                 and m.created_at &lt; s.month_start + INTERVAL '1 month'
+                 and m.created_at < (s.month_start + INTERVAL '1 month')
                 group by s.month_index
                 order by s.month_index
             </when>
@@ -1646,8 +1692,10 @@
                     count(m.member_id) as value
                 from hour_numbers h
                 left join members m
-                  on m.created_at &gt;= date_add(#{startDate}, interval h.hour_index hour)
-                 and m.created_at &lt; date_add(#{startDate}, interval (h.hour_index + 1) hour)
+                  on m.created_at &gt;= #{startDate} + (h.hour_index * INTERVAL '1 hour')
+                 and m.created_at &lt; #{startDate} + ((h.hour_index + 1) * INTERVAL '1 hour')
+                  on m.created_at >= (#{startDate} + (h.hour_index * INTERVAL '1 hour'))
+                 and m.created_at < (#{startDate} + ((h.hour_index + 1) * INTERVAL '1 hour'))
                 group by h.hour_index
                 order by h.hour_index
             </otherwise>
@@ -1657,31 +1705,40 @@
     <!-- selectStatisticsContentActivity 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
     <select id="selectStatisticsContentActivity" resultMap="adminStatisticsTrendMap">
         select
-            CHAR(44172, 49884, 44544 USING utf8mb4) as label,
+            '게시글' as label, -- CHAR(...) USING utf8mb4 -> 직접 문자열
+            '게시글' as label,
             count(*) as value
         from post_tbl p
         where p.deleted_yn = 'N'
           and p.created_at &gt;= #{startDate}
-          and p.created_at &lt; date_add(#{endDate}, interval 1 day)
+          and p.created_at &lt; #{endDate} + INTERVAL '1 day'
+          and p.created_at >= #{startDate}
+          and p.created_at < (#{endDate} + INTERVAL '1 day')
         union all
         select
-            CHAR(45843, 44544 USING utf8mb4) as label,
+            '댓글' as label, -- CHAR(...) USING utf8mb4 -> 직접 문자열
+            '댓글' as label,
             count(*) as value
         from comment_tbl c
         join post_tbl p on p.post_id = c.post_id
         where c.deleted_yn = 'N'
           and p.deleted_yn = 'N'
           and c.created_at &gt;= #{startDate}
-          and c.created_at &lt; date_add(#{endDate}, interval 1 day)
+          and c.created_at &lt; #{endDate} + INTERVAL '1 day'
+          and c.created_at >= #{startDate}
+          and c.created_at < (#{endDate} + INTERVAL '1 day')
         union all
         select
-            CHAR(44277, 44048 USING utf8mb4) as label,
+            '공감' as label, -- CHAR(...) USING utf8mb4 -> 직접 문자열
+            '공감' as label,
             count(*) as value
         from user_post_like l
         join post_tbl p on p.post_id = l.post_id
         where p.deleted_yn = 'N'
           and l.created_at &gt;= #{startDate}
           and l.created_at &lt; date_add(#{endDate}, interval 1 day)
+          and l.created_at >= #{startDate}
+          and l.created_at < (#{endDate} + INTERVAL '1 day')
     </select>
 
     <!-- selectAdminProfile 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
@@ -1699,8 +1756,8 @@
     <!-- 관리자 계정의 프로필 이미지를 기본 이미지 상태로 되돌립니다. -->
     <update id="resetAdminProfileImagesToDefault">
         update members
-        set profile_image_url = null,
-            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        set profile_image_url = NULL,
+            updated_at = TIMEZONE('Asia/Seoul', NOW())
         where upper(role) = 'SUPER_ADMIN'
           and profile_image_url is not null
     </update>
@@ -1710,8 +1767,8 @@
         update members
         set name = #{name},
             nickname = #{nickname},
-            phone = #{phone},
-            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+            phone = #{phone}, -- Assuming phone is already validated
+            updated_at = TIMEZONE('Asia/Seoul', NOW())
         where member_id = #{memberId}
     </update>
 
@@ -1795,6 +1852,7 @@
           on created_admin.member_id = notice.created_by_admin_id
         where notice.deleted_at is null
           and notice.created_at >= date_sub(CONVERT_TZ(NOW(6), '+00:00', '+09:00'), interval 7 day)
+          and notice.created_at >= (TIMEZONE('Asia/Seoul', NOW()) - INTERVAL '7 days')
         order by notice.created_at desc, notice.notice_id desc
         limit 1
     </select>
@@ -1816,6 +1874,8 @@
             #{adminId},
             CONVERT_TZ(NOW(6), '+00:00', '+09:00'),
             CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+            TIMEZONE('Asia/Seoul', NOW()),
+            TIMEZONE('Asia/Seoul', NOW())
         )
     </insert>
 
@@ -1826,6 +1886,7 @@
             notice_type = #{noticeType},
             updated_by_admin_id = #{adminId},
             updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+            updated_at = TIMEZONE('Asia/Seoul', NOW())
         where notice_id = #{noticeId}
           and deleted_at is null
     </update>
@@ -1833,11 +1894,10 @@
     <update id="softDeleteAdminNotice">
         update notices_tbl
         set updated_by_admin_id = #{adminId},
-            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00'),
-            deleted_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+            updated_at = TIMEZONE('Asia/Seoul', NOW()),
+            deleted_at = TIMEZONE('Asia/Seoul', NOW())
         where notice_id = #{noticeId}
           and deleted_at is null
     </update>
 
 </mapper>
-

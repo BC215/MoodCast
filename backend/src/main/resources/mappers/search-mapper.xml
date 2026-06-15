@@ -15,6 +15,7 @@
             p.emotion_id as emotionId,
                 <!-- 검색 결과의 태그도 입력 순서로 보여주기 위해 post_hashtag_id 기준으로 합침 -->
             group_concat(concat('#', h.hashtag) order by ph.post_hashtag_id separator ' ') as tags,
+            string_agg(concat('#', h.hashtag), ' ' order by ph.post_hashtag_id) as tags,
             coalesce((select count(*) from user_post_like upl where upl.post_id = p.post_id), 0) as likes,
             coalesce((
                 select count(*)
@@ -48,6 +49,10 @@
               or lower(m.name) like concat('%', lower(#{query}), '%')
               or lower(m.nickname) like concat('%', lower(#{query}), '%')
               or lower(h.hashtag) like concat('%', lower(replace(#{query}, '#', '')), '%')
+              lower(p.content) like ('%' || lower(#{query}) || '%')
+              or lower(m.name) like ('%' || lower(#{query}) || '%')
+              or lower(m.nickname) like ('%' || lower(#{query}) || '%')
+              or lower(h.hashtag) like ('%' || lower(replace(#{query}, '#', '')) || '%')
           )
         group by p.post_id, p.member_id, m.name, m.nickname, m.profile_image_url, p.title, p.content, p.emotion_id, p.created_at
         order by p.created_at desc
@@ -68,6 +73,9 @@
         where lower(m.name) like concat('%', lower(#{query}), '%')
            or lower(m.nickname) like concat('%', lower(#{query}), '%')
            or lower(m.email) like concat('%', lower(#{query}), '%')
+        where lower(m.name) like ('%' || lower(#{query}) || '%')
+           or lower(m.nickname) like ('%' || lower(#{query}) || '%')
+           or lower(m.email) like ('%' || lower(#{query}) || '%')
         order by m.name asc
         limit 50
     </select>
@@ -103,6 +111,7 @@
                  left join post_hashtag ph on h.hashtag_id = ph.hashtag_id
                  left join post_tbl p on p.post_id = ph.post_id
         where lower(h.hashtag) like concat('%', lower(#{query}), '%')
+        where lower(h.hashtag) like ('%' || lower(#{query}) || '%')
           and p.deleted_yn = 'N'
           and p.visibility = 'PUBLIC'
         group by h.hashtag_id, h.hashtag

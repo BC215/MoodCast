@@ -40,10 +40,10 @@ spring:
       port: 6380 # Docker 컨테이너의 포트 매핑에 따라 6380으로 설정
       # password: ${REDIS_PASSWORD} # 로컬 Redis에 비밀번호가 없다면 주석 처리하거나 빈 값으로 둡니다.
   datasource:
-    url: ${DATABASE_URL}
+    url: jdbc:postgresql://aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres?options=-c%20pooler.user%3D${DATABASE_USER}
     username: ${DATABASE_USER}
     password: ${DATABASE_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.postgresql.Driver
   mail:
     host: ${MAIL_HOST:smtp.gmail.com}
     port: ${MAIL_PORT:587}
