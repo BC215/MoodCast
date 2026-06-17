@@ -46,7 +46,6 @@
             #{commentId, jdbcType=BIGINT},
             #{reason},
             'PENDING',
-            CONVERT_TZ(NOW(6), '+00:00', '+09:00')
             TIMEZONE('Asia/Seoul', NOW())
         )
     </insert>

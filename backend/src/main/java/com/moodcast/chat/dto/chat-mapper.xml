@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moodcast.chat.dao.ChatDao">
+
+    <resultMap id="chatThreadResultMap" type="com.moodcast.chat.vo.ChatThread">
+        <id property="threadId" column="thread_id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="otherMemberId" column="other_member_id"/>
+        <result property="lastMessage" column="last_message"/>
+        <result property="lastMessageAt" column="last_message_at"/>
+        <result property="unreadCount" column="unread_count"/>
+    </resultMap>
+
+    <select id="findChatThreadsByMemberId" resultMap="chatThreadResultMap">
+        SELECT
+            ct.thread_id,
+            CASE
+                WHEN ct.member1_id = #{memberId} THEN ct.member1_id
+                ELSE ct.member2_id
+            END AS member_id,
+            CASE
+                WHEN ct.member1_id = #{memberId} THEN ct.member2_id
+                ELSE ct.member1_id
+            END AS other_member_id,
+            (SELECT COUNT(*) FROM chat_messages cm WHERE cm.thread_id = ct.thread_id AND cm.read_at IS NULL AND cm.sender_id != #{memberId}) AS unread_count
+        FROM
+            chat_threads ct
+        WHERE
+            ct.member1_id = #{memberId} OR ct.member2_id = #{memberId}
+    </select>
+
+</mapper>

@@ -13,6 +13,7 @@ import com.moodcast.member.dto.login.LoginMemberResponse;
 import com.moodcast.member.dto.login.LoginRequest;
 import com.moodcast.member.dto.login.LoginResult;
 import com.moodcast.member.dto.login.RefreshTokenInfo;
+import com.moodcast.member.dto.post.PostResponse; // 가상의 PostResponse DTO
 import com.moodcast.member.dto.login.UpdateProfileRequest;
 import com.moodcast.member.dto.password.PasswordChangeRequest;
 import com.moodcast.member.dto.signup.EmailAuthSendResult;
@@ -570,6 +571,17 @@ public class LoginService {
             normalizedKeyword = null;
         }
         return loginDao.getMentionCandidates(memberId, normalizedKeyword);
+    }
+
+    /**
+     * 특정 회원의 게시물 목록을 조회합니다.
+     * 이관된 게시물도 포함될 수 있도록 DAO 쿼리를 확인해야 합니다.
+     * @param memberId 게시물을 조회할 회원의 ID
+     * @return 해당 회원의 게시물 목록
+     */
+    public List<PostResponse> getMemberPosts(Long memberId) {
+        // LoginDao에 findPostsByMemberId 메서드가 있다고 가정합니다.
+        return loginDao.findPostsByMemberId(memberId);
     }
 
     private Long getMemberIdFromHeader(String authHeader) {
