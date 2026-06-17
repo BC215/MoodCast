@@ -40,10 +40,20 @@ spring:
       port: 6380 # Docker 컨테이너의 포트 매핑에 따라 6380으로 설정
       # password: ${REDIS_PASSWORD} # 로컬 Redis에 비밀번호가 없다면 주석 처리하거나 빈 값으로 둡니다.
   datasource:
-    url: jdbc:postgresql://aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres?options=-c%20pooler.user%3D${DATABASE_USER}
-    username: ${DATABASE_USER}
+    # Supabase Pooler 사용 시 username은 반드시 postgres.[YOUR_PROJECT_REF_ID] 형식이어야 합니다.
+    # DATABASE_USER 환경 변수에 해당 값을 설정하세요.
+    url: jdbc:postgresql://aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres
+    username: ${DATABASE_USER:postgres.your-project-ref}
     password: ${DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      max-lifetime: 30000 # 30초 (세션 끊김 방지 최적화)
+      keepalive-time: 10000 # 10초 (유휴 연결 활성 유지)
+      idle-timeout: 600000
+      validation-query: SELECT 1
   mail:
     host: ${MAIL_HOST:smtp.gmail.com}
     port: ${MAIL_PORT:587}
@@ -81,13 +91,14 @@ cloud:
 
 mybatis:
   mapper-locations: classpath:/mappers/**/*.xml
-  type-aliases-package: com.moodcast.member.vo
+  type-aliases-package: com.moodcast.*.vo # 모든 도메인의 VO를 인식하도록 변경
   configuration:
     map-underscore-to-camel-case: true
 
 logging:
   level:
     root: INFO
+    org.springframework.web: DEBUG # 웹 계층 파라미터 바인딩 및 400 예외 상세 로깅
     org.springframework.jdbc.datasource.DataSourceTransactionManager: DEBUG # 트랜잭션 관리 로그
     com.zaxxer.hikari: DEBUG # HikariCP (기본 커넥션 풀) 연결 정보 로그
     org.apache.ibatis: DEBUG # MyBatis 내부 동작 로그
