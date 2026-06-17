@@ -280,4 +280,18 @@
         ORDER BY f.created_at DESC
     </select>
 
+    <select id="findPostsByMemberId" resultType="com.moodcast.post.vo.PostSummary">
+        SELECT
+            p.post_id as postId,
+            p.member_id as memberId,
+            p.title,
+            p.content,
+            p.emotion_id as emotionId,
+            to_char(p.created_at, 'YYYY-MM-DD HH24:MI') as createdAt
+        FROM post_tbl p
+        WHERE p.member_id = #{memberId}
+          AND p.deleted_yn IS DISTINCT FROM '1'
+        ORDER BY p.created_at DESC
+    </select>
+
 </mapper>

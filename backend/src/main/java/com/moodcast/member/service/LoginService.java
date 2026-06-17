@@ -13,12 +13,13 @@ import com.moodcast.member.dto.login.LoginMemberResponse;
 import com.moodcast.member.dto.login.LoginRequest;
 import com.moodcast.member.dto.login.LoginResult;
 import com.moodcast.member.dto.login.RefreshTokenInfo;
-import com.moodcast.member.dto.post.PostResponse; // 가상의 PostResponse DTO
 import com.moodcast.member.dto.login.UpdateProfileRequest;
 import com.moodcast.member.dto.password.PasswordChangeRequest;
 import com.moodcast.member.dto.signup.EmailAuthSendResult;
 import com.moodcast.member.dto.withdraw.WithdrawRequest;
 import com.moodcast.member.vo.Member;
+import com.moodcast.post.dao.PostDao;
+import com.moodcast.post.vo.PostSummary;
 import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -58,6 +59,9 @@ public class LoginService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final MessageSource messageSource;
+
+    @Autowired
+    private PostDao postDao;
 
     @Value("${app.dev-return-auth-code:false}")
     private boolean devReturnAuthCode;
@@ -579,9 +583,9 @@ public class LoginService {
      * @param memberId 게시물을 조회할 회원의 ID
      * @return 해당 회원의 게시물 목록
      */
-    public List<PostResponse> getMemberPosts(Long memberId) {
-        // LoginDao에 findPostsByMemberId 메서드가 있다고 가정합니다.
-        return loginDao.findPostsByMemberId(memberId);
+    public List<PostSummary> getMemberPosts(Long memberId) {
+        // PostDao를 주입받아 해당 회원의 게시물 목록을 조회하도록 리팩토링 (viewerId는 null 처리)
+        return postDao.selectPostsByMember(memberId, null);
     }
 
     private Long getMemberIdFromHeader(String authHeader) {

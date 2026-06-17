@@ -147,21 +147,21 @@
         select
             p.post_id as postId,
             p.member_id as memberId,
-            coalesce(m.nickname, m.name) as author,
+            coalesce(m.nickname, m.name, '알 수 없는 사용자') as author,
             p.title as title,
             p.content as content,
             p.emotion_id as emotionId,
             to_char(p.created_at, 'YYYY-MM-DD HH24:MI') as createdAt,
             coalesce(m.profile_image_url, '') as profileImageUrl,
             coalesce((select string_agg(concat('#', h.hashtag), ' ' order by ph.post_hashtag_id)
-                      from post_hashtag ph join hashtag h on ph.hashtag_id = h.hashtag_id
+                      from post_hashtag ph left join hashtag h on ph.hashtag_id = h.hashtag_id
                       where ph.post_id = p.post_id), '') as tags,
             coalesce((select count(*) from user_post_like where post_id = p.post_id), 0) as likes,
             coalesce((
                 select count(*)
                 from comment_tbl c
                 where c.post_id = p.post_id
-                  and c.deleted_yn = '0'
+                  and (c.deleted_yn = 'N' or c.deleted_yn = '0' or c.deleted_yn IS NULL)
                   and not exists (
                       select 1
                       from admin_action_logs log
@@ -181,10 +181,9 @@
             exists(select 1 from user_post_like where post_id = p.post_id and member_id = #{viewerId}) as likedByMe,
             exists(select 1 from saved_post where post_id = p.post_id and member_id = #{viewerId}) as savedByMe
         from post_tbl p
-                 join members m on p.member_id = m.member_id
+                 left join members m on p.member_id = m.member_id
         where p.post_id = #{postId}
-          and p.deleted_yn = '0'
-          and p.deleted_yn IS DISTINCT FROM '1' -- '1'(삭제)이 아닌 모든 게시글(0 또는 null)을 조회
+          and (p.deleted_yn = 'N' OR p.deleted_yn = '0' OR p.deleted_yn IS NULL)
         limit 1
     </select>
 
@@ -248,7 +247,7 @@
             exists(select 1 from user_post_like where post_id = p.post_id and member_id = #{viewerId}) as likedByMe,
             exists(select 1 from saved_post where post_id = p.post_id and member_id = #{viewerId}) as savedByMe
         from post_tbl p
-                 join members m on p.member_id = m.member_id
+                 left join members m on p.member_id = m.member_id
         where p.deleted_yn IS DISTINCT FROM '1' -- '1'(삭제)이 아닌 모든 게시글(0 또는 null)을 조회
           and p.visibility = 'PUBLIC'
         order by p.created_at desc
@@ -292,14 +291,16 @@
             exists(select 1 from user_post_like where post_id = p.post_id and member_id = #{viewerId}) as likedByMe,
             exists(select 1 from saved_post where post_id = p.post_id and member_id = #{viewerId}) as savedByMe
         from post_tbl p
-                 join members m on p.member_id = m.member_id
-        where p.deleted_yn = '0'
-          and p.visibility = 'PUBLIC'
+                 left join members m on p.member_id = m.member_id
+        where p.visibility = 'PUBLIC'
           and p.deleted_yn IS DISTINCT FROM '1' -- '1'(삭제)이 아닌 모든 게시글(0 또는 null)을 조회
+        order by (
+            coalesce((select count(*) from user_post_like where post_id = p.post_id), 0) +
+            coalesce((
                      select count(*)
                      from comment_tbl c
                      where c.post_id = p.post_id
-                       and c.deleted_yn = '0'
+                       and c.deleted_yn IS DISTINCT FROM '1'
                        and not exists (
                            select 1
                            from admin_action_logs log
@@ -356,9 +357,8 @@
             exists(select 1 from user_post_like where post_id = p.post_id and member_id = #{viewerId}) as likedByMe,
             exists(select 1 from saved_post where post_id = p.post_id and member_id = #{viewerId}) as savedByMe
         from post_tbl p
-                 join members m on p.member_id = m.member_id
-        where p.deleted_yn = '0'
-          and p.visibility = 'PUBLIC'
+                 left join members m on p.member_id = m.member_id
+        where p.visibility = 'PUBLIC'
           and p.deleted_yn IS DISTINCT FROM '1' -- '1'(삭제)이 아닌 모든 게시글(0 또는 null)을 조회
         order by p.created_at desc
         limit 50
@@ -391,8 +391,8 @@
             coalesce(m.profile_image_url, '') as profileImageUrl,
             c.parent_id as parentCommentId
         from comment_tbl c
-                 join post_tbl p on p.post_id = c.post_id
-                 join members m on c.member_id = m.member_id
+                 left join post_tbl p on p.post_id = c.post_id
+                 left join members m on c.member_id = m.member_id
                  left join (
                     select log.target_id, log.action_type
                     from admin_action_logs log
@@ -405,9 +405,9 @@
                     ) latest on latest.latest_log_id = log.log_id
                  ) latest_log on latest_log.target_id = c.comment_id
         where c.post_id = #{postId}
-          and p.deleted_yn = '0'
+          and p.deleted_yn IS DISTINCT FROM '1'
           and p.visibility = 'PUBLIC'
-          and c.deleted_yn = '0'
+          and c.deleted_yn IS DISTINCT FROM '1'
           and c.parent_id is null
           and (latest_log.action_type is null or latest_log.action_type != 'HIDE')
         order by c.created_at asc
@@ -424,8 +424,8 @@
             coalesce(m.profile_image_url, '') as profileImageUrl,
             c.parent_id as parentCommentId
         from comment_tbl c
-                 join post_tbl p on p.post_id = c.post_id
-                 join members m on c.member_id = m.member_id
+                 left join post_tbl p on p.post_id = c.post_id
+                 left join members m on c.member_id = m.member_id
                  left join (
                     select log.target_id, log.action_type
                     from admin_action_logs log
@@ -438,9 +438,9 @@
                     ) latest on latest.latest_log_id = log.log_id
                  ) latest_log on latest_log.target_id = c.comment_id
         where c.post_id = #{postId}
-          and p.deleted_yn = '0'
+          and p.deleted_yn IS DISTINCT FROM '1'
           and p.visibility = 'PUBLIC'
-          and c.deleted_yn = '0'
+          and c.deleted_yn IS DISTINCT FROM '1'
           and c.parent_id is not null
           and (latest_log.action_type is null or latest_log.action_type != 'HIDE')
         order by c.parent_id asc, c.created_at asc
@@ -452,7 +452,7 @@
             count(*) as count
         from post_tbl p
         where p.member_id = #{memberId}
-          and p.deleted_yn = '0'
+          and p.deleted_yn IS DISTINCT FROM '1'
           and p.visibility = 'PUBLIC'
           <if test="period == 'week'">
             and p.created_at >= (TIMEZONE('Asia/Seoul', NOW()) - INTERVAL '7 days')
@@ -533,8 +533,8 @@
             coalesce(m.profile_image_url, '') as profileImageUrl,
             c.parent_id as parentCommentId
         from comment_tbl c
-                 join post_tbl p on p.post_id = c.post_id
-                 join members m on c.member_id = m.member_id
+                 left join post_tbl p on p.post_id = c.post_id
+                 left join members m on c.member_id = m.member_id
                  left join (
                     select log.target_id, log.action_type
                     from admin_action_logs log
@@ -547,9 +547,9 @@
                     ) latest on latest.latest_log_id = log.log_id
                  ) latest_log on latest_log.target_id = c.comment_id
         where c.comment_id = #{commentId}
-          and p.deleted_yn = '0'
+          and p.deleted_yn IS DISTINCT FROM '1'
           and p.visibility = 'PUBLIC'
-          and c.deleted_yn = '0'
+          and c.deleted_yn IS DISTINCT FROM '1'
           and (latest_log.action_type is null or latest_log.action_type != 'HIDE')
         limit 1
     </select>
@@ -659,10 +659,10 @@
             exists(select 1 from user_post_like where post_id = p.post_id and member_id = #{viewerId}) as likedByMe,
             exists(select 1 from saved_post where post_id = p.post_id and member_id = #{viewerId}) as savedByMe
         from saved_post s
-                 join post_tbl p on s.post_id = p.post_id
-                 join members m on p.member_id = m.member_id
+                 left join post_tbl p on s.post_id = p.post_id
+                 left join members m on p.member_id = m.member_id
         where s.member_id = #{memberId}
-          and p.deleted_yn = '0'
+          and p.deleted_yn IS DISTINCT FROM '1'
           and p.visibility = 'PUBLIC'
         order by s.created_at desc
         limit 50

@@ -1802,7 +1802,7 @@
         limit 1
     </select>
 
-    <insert id="insertAdminNotice">
+    <insert id="insertAdminNotice" useGeneratedKeys="true" keyProperty="noticeId">
         insert into notices_tbl (
             title,
             content,
