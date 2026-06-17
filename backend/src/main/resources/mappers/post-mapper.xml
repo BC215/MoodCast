@@ -452,7 +452,7 @@
             count(*) as count
         from post_tbl p
         where p.member_id = #{memberId}
-          and p.deleted_yn = '0' <!-- Corrected to string literal '0' -->
+          and p.deleted_yn = '0'
           and p.visibility = 'PUBLIC'
           <if test="period == 'week'">
             and p.created_at >= (TIMEZONE('Asia/Seoul', NOW()) - INTERVAL '7 days')

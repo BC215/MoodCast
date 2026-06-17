@@ -70,8 +70,8 @@
             #{profileImageUrl},
             #{emailVerified},
             #{phoneVerified},
-            CONVERT_TZ(NOW(6), '+00:00', '+09:00'),
-            CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+            TIMEZONE('Asia/Seoul', NOW()),
+            TIMEZONE('Asia/Seoul', NOW())
         )
     </insert>
 

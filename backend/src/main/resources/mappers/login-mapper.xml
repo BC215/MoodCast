@@ -139,8 +139,8 @@
         SELECT COUNT(*)
         FROM post_tbl
         WHERE member_id = #{memberId}
-          AND (deleted_yn = 'N' OR deleted_yn = '0' OR deleted_yn IS NULL OR deleted_yn = FALSE) <!-- 이관된 게시물의 deleted_yn 값 및 boolean/null 값 확인 -->
-          AND (visibility = 'PUBLIC' OR status = 'ACTIVE' OR visibility IS NULL OR status IS NULL) <!-- 이관된 게시물의 상태 값 및 null 값 확인 -->
+          AND deleted_yn = '0'
+          AND visibility = 'PUBLIC'
     </select>
 
     <select id="countSavedPosts" resultType="long">
@@ -152,8 +152,8 @@
         FROM user_post_like l
         JOIN post_tbl p ON l.post_id = p.post_id
         WHERE p.member_id = #{memberId}
-          AND (p.deleted_yn = 'N' OR p.deleted_yn = '0' OR p.deleted_yn IS NULL OR p.deleted_yn = FALSE)
-          AND (p.visibility = 'PUBLIC' OR p.status = 'ACTIVE' OR p.visibility IS NULL OR p.status IS NULL)
+          AND p.deleted_yn = '0'
+          AND p.visibility = 'PUBLIC'
     </select>
 
     <select id="countPostComments" resultType="long">
@@ -161,8 +161,8 @@
         FROM comment_tbl c
         JOIN post_tbl p ON c.post_id = p.post_id
         WHERE p.member_id = #{memberId}
-          AND (p.deleted_yn = 'N' OR p.deleted_yn = '0' OR p.deleted_yn IS NULL OR p.deleted_yn = FALSE)
-          AND (p.visibility = 'PUBLIC' OR p.status = 'ACTIVE' OR p.visibility IS NULL OR p.status IS NULL)
+          AND p.deleted_yn = '0'
+          AND p.visibility = 'PUBLIC'
           AND c.deleted_yn = 'N'
           AND NOT EXISTS (
               SELECT 1
@@ -185,8 +185,8 @@
         FROM saved_post s
         JOIN post_tbl p ON s.post_id = p.post_id
         WHERE p.member_id = #{memberId}
-          AND (p.deleted_yn = 'N' OR p.deleted_yn = '0' OR p.deleted_yn IS NULL OR p.deleted_yn = FALSE)
-          AND (p.visibility = 'PUBLIC' OR p.status = 'ACTIVE' OR p.visibility IS NULL OR p.status IS NULL)
+          AND p.deleted_yn = '0'
+          AND p.visibility = 'PUBLIC'
     </select>
 
     <select id="countWeeklyPostReactions" resultType="long">
@@ -196,8 +196,8 @@
                  FROM user_post_like l
                           JOIN post_tbl p ON l.post_id = p.post_id
                  WHERE p.member_id = #{memberId}
-                   AND (p.deleted_yn = 'N' OR p.deleted_yn = '0' OR p.deleted_yn IS NULL OR p.deleted_yn = FALSE)
-                   AND (p.visibility = 'PUBLIC' OR p.status = 'ACTIVE' OR p.visibility IS NULL OR p.status IS NULL)
+                   AND p.deleted_yn = '0'
+                   AND p.visibility = 'PUBLIC'
                    AND l.created_at >= TIMEZONE('Asia/Seoul', NOW()) - INTERVAL '7 days'
                    AND l.created_at >= (TIMEZONE('Asia/Seoul', NOW()) - INTERVAL '7 days')
                  UNION ALL
@@ -205,8 +205,8 @@
                  FROM comment_tbl c
                           JOIN post_tbl p ON c.post_id = p.post_id
                  WHERE p.member_id = #{memberId}
-                   AND (p.deleted_yn = 'N' OR p.deleted_yn = '0' OR p.deleted_yn IS NULL OR p.deleted_yn = FALSE)
-                   AND (p.visibility = 'PUBLIC' OR p.status = 'ACTIVE' OR p.visibility IS NULL OR p.status IS NULL)
+                   AND p.deleted_yn = '0'
+                   AND p.visibility = 'PUBLIC'
                    AND c.deleted_yn = 'N'
                    AND NOT EXISTS (
                        SELECT 1
@@ -229,8 +229,8 @@
                  FROM saved_post s
                           JOIN post_tbl p ON s.post_id = p.post_id
                  WHERE p.member_id = #{memberId}
-                   AND (p.deleted_yn = 'N' OR p.deleted_yn = '0' OR p.deleted_yn IS NULL OR p.deleted_yn = FALSE)
-                   AND (p.visibility = 'PUBLIC' OR p.status = 'ACTIVE' OR p.visibility IS NULL OR p.status IS NULL)
+                   AND p.deleted_yn = '0'
+                   AND p.visibility = 'PUBLIC'
                    AND s.created_at >= TIMEZONE('Asia/Seoul', NOW()) - INTERVAL '7 days'
                    AND s.created_at >= (TIMEZONE('Asia/Seoul', NOW()) - INTERVAL '7 days')
              ) t
