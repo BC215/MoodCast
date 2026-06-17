@@ -3,8 +3,10 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<!-- 관리자 MyBatis 매퍼입니다. 관리자 페이지 API에서 사용하는 SQL과 결과 매핑을 정의합니다. -->
 <mapper namespace="com.moodcast.admin.dao.AdminDao">
 
+    <!-- adminDashboardSummaryMap 결과 매핑입니다. DB 조회 결과 컬럼을 화면 응답 VO 필드에 연결합니다. -->
     <resultMap id="adminDashboardSummaryMap" type="com.moodcast.admin.vo.AdminDashboardSummary">
         <result property="totalMemberCount" column="total_member_count"/>
         <result property="todayNewMemberCount" column="today_new_member_count"/>
@@ -12,6 +14,7 @@
         <result property="pendingReportCount" column="pending_report_count"/>
     </resultMap>
 
+    <!-- adminMemberMap 결과 매핑입니다. DB 조회 결과 컬럼을 화면 응답 VO 필드에 연결합니다. -->
     <resultMap id="adminMemberMap" type="com.moodcast.admin.vo.AdminMember">
         <id property="memberId" column="member_id"/>
         <result property="name" column="name"/>
@@ -30,6 +33,7 @@
         <result property="warningCount" column="warning_count"/>
     </resultMap>
 
+    <!-- adminContentPostMap 결과 매핑입니다. DB 조회 결과 컬럼을 화면 응답 VO 필드에 연결합니다. -->
     <resultMap id="adminContentPostMap" type="com.moodcast.admin.vo.AdminContentPost">
         <id property="postId" column="post_id"/>
         <result property="title" column="title"/>
@@ -47,6 +51,7 @@
         <result property="tags" column="tags"/>
     </resultMap>
 
+    <!-- adminContentCommentMap 결과 매핑입니다. DB 조회 결과 컬럼을 화면 응답 VO 필드에 연결합니다. -->
     <resultMap id="adminContentCommentMap" type="com.moodcast.admin.vo.AdminContentComment">
         <id property="commentId" column="comment_id"/>
         <result property="postId" column="post_id"/>
@@ -62,6 +67,7 @@
         <result property="moderationStatus" column="moderation_status"/>
     </resultMap>
 
+    <!-- adminContentHashtagMap 결과 매핑입니다. DB 조회 결과 컬럼을 화면 응답 VO 필드에 연결합니다. -->
     <resultMap id="adminContentHashtagMap" type="com.moodcast.admin.vo.AdminContentHashtag">
         <id property="hashtagId" column="hashtag_id"/>
         <result property="hashtag" column="hashtag"/>
@@ -71,6 +77,7 @@
         <result property="moderationStatus" column="moderation_status"/>
     </resultMap>
 
+    <!-- adminProfileMap 결과 매핑입니다. DB 조회 결과 컬럼을 화면 응답 VO 필드에 연결합니다. -->
     <resultMap id="adminProfileMap" type="com.moodcast.admin.vo.AdminProfile">
         <id property="memberId" column="member_id"/>
         <result property="name" column="name"/>
@@ -78,6 +85,7 @@
         <result property="phone" column="phone"/>
     </resultMap>
 
+    <!-- adminMemberDetailMap 결과 매핑입니다. DB 조회 결과 컬럼을 화면 응답 VO 필드에 연결합니다. -->
     <resultMap id="adminMemberDetailMap" type="com.moodcast.admin.vo.AdminMemberDetail">
         <id property="memberId" column="member_id"/>
         <result property="email" column="email"/>
@@ -131,16 +139,19 @@
         <result property="suspendedMemberCount" column="suspended_member_count"/>
     </resultMap>
 
+    <!-- adminEmotionActivityMap 결과 매핑입니다. DB 조회 결과 컬럼을 화면 응답 VO 필드에 연결합니다. -->
     <resultMap id="adminEmotionActivityMap" type="com.moodcast.admin.vo.AdminEmotionActivity">
         <id property="emotionId" column="emotion_id"/>
         <result property="activityCount" column="activity_count"/>
     </resultMap>
 
+    <!-- adminActiveUserStatMap 결과 매핑입니다. DB 조회 결과 컬럼을 화면 응답 VO 필드에 연결합니다. -->
     <resultMap id="adminActiveUserStatMap" type="com.moodcast.admin.vo.AdminActiveUserStat">
         <result property="label" column="label"/>
         <result property="activeUserCount" column="active_user_count"/>
     </resultMap>
 
+    <!-- adminStatisticsSummaryMap 결과 매핑입니다. DB 조회 결과 컬럼을 화면 응답 VO 필드에 연결합니다. -->
     <resultMap id="adminStatisticsSummaryMap" type="com.moodcast.admin.vo.AdminStatisticsSummary">
         <result property="totalMemberCount" column="total_member_count"/>
         <result property="newMemberCount" column="new_member_count"/>
@@ -150,11 +161,13 @@
         <result property="empathyCount" column="empathy_count"/>
     </resultMap>
 
+    <!-- adminStatisticsTrendMap 결과 매핑입니다. DB 조회 결과 컬럼을 화면 응답 VO 필드에 연결합니다. -->
     <resultMap id="adminStatisticsTrendMap" type="com.moodcast.admin.vo.AdminStatisticsTrend">
         <result property="label" column="label"/>
         <result property="value" column="value"/>
     </resultMap>
 
+    <!-- adminRecentActivityMap 결과 매핑입니다. DB 조회 결과 컬럼을 화면 응답 VO 필드에 연결합니다. -->
     <resultMap id="adminRecentActivityMap" type="com.moodcast.admin.vo.AdminRecentActivity">
         <result property="activityType" column="activity_type"/>
         <result property="memberId" column="member_id"/>
@@ -168,6 +181,7 @@
         <result property="createdAt" column="created_at"/>
     </resultMap>
 
+    <!-- 공지사항 결과 매핑입니다. notices_tbl 컬럼을 Notice VO 필드에 연결합니다. -->
     <resultMap id="noticeMap" type="com.moodcast.admin.vo.Notice">
         <id property="noticeId" column="notice_id"/>
         <result property="title" column="title"/>
@@ -186,6 +200,7 @@
         <result property="deletedAt" column="deleted_at"/>
     </resultMap>
 
+    <!-- adminReportMap 결과 매핑입니다. 신고 및 제재 관리 화면의 신고 목록/상세 값을 연결합니다. -->
     <resultMap id="adminReportMap" type="com.moodcast.admin.vo.AdminReport">
         <id property="reportId" column="report_id"/>
         <result property="targetType" column="target_type"/>
@@ -223,18 +238,21 @@
         <result property="sameTargetReporterCount" column="same_target_reporter_count"/>
     </resultMap>
 
+    <!-- 관리자 기능 담당 작업(문건우): 신고 처리율 통계 결과 매핑입니다. -->
     <resultMap id="adminReportProcessRateStatMap" type="com.moodcast.admin.vo.AdminReportProcessRateStat">
         <result property="totalCount" column="total_count"/>
         <result property="doneCount" column="done_count"/>
         <result property="openCount" column="open_count"/>
     </resultMap>
 
+    <!-- 신고 상세 패널의 최근 활동 결과 매핑입니다. -->
     <resultMap id="adminReportActivityMap" type="com.moodcast.admin.vo.AdminReportActivity">
         <result property="type" column="type"/>
         <result property="text" column="text"/>
         <result property="time" column="time"/>
     </resultMap>
 
+    <!-- 신고 상세 패널의 동일 대상 신고자 결과 매핑입니다. -->
     <resultMap id="adminReportReporterMap" type="com.moodcast.admin.vo.AdminReportReporter">
         <result property="memberId" column="member_id"/>
         <result property="name" column="name"/>
@@ -245,11 +263,13 @@
         <result property="latestReportedAt" column="latest_reported_at"/>
     </resultMap>
 
+    <!-- selectTotalMemberCount 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
     <select id="selectTotalMemberCount" resultType="long">
         select count(*)
         from members
     </select>
 
+    <!-- selectMembers 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
     <select id="selectMembers" resultMap="adminMemberMap">
         select
             member_id,
@@ -271,13 +291,14 @@
         order by created_at desc
     </select>
 
+    <!-- selectAdminContentPosts 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
     <select id="selectAdminContentPosts" resultMap="adminContentPostMap">
         select
             p.post_id,
             p.title,
             p.content,
             p.visibility,
-            p.deleted_yn,
+            p.deleted_yn, -- PostgreSQL: BOOLEAN type might be 't'/'f' or 'true'/'false'
             p.emotion_id,
             to_char(p.created_at, 'YYYY-MM-DD HH24:MI') as created_at,
             p.member_id,
@@ -295,18 +316,19 @@
                 from post_hashtag ph
                 where ph.post_id = p.post_id
             ), 0) as hashtag_count,
-            coalesce((
+            coalesce(
                 select string_agg(concat('#', h.hashtag), ' ' order by h.hashtag)
                 from post_hashtag ph
                 join hashtag h on h.hashtag_id = ph.hashtag_id
                 where ph.post_id = p.post_id
-            ), '') as tags
+            ), '') as tags -- PostgreSQL: TEXT type
         from post_tbl p
         left join members m on m.member_id = p.member_id
         order by p.created_at desc
         limit 500
     </select>
 
+    <!-- selectAdminContentComments 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
     <select id="selectAdminContentComments" resultMap="adminContentCommentMap">
         select
             c.comment_id,
@@ -314,14 +336,14 @@
             coalesce(p.title, '제목 없음') as post_title,
             c.content,
             to_char(c.created_at, 'YYYY-MM-DD HH24:MI') as created_at,
-            c.deleted_yn,
+            c.deleted_yn, -- PostgreSQL: BOOLEAN type might be 't'/'f' or 'true'/'false'
             c.member_id,
             m.name as author_name,
             m.nickname as author_nickname,
             m.profile_image_url as author_profile_image_url,
             c.parent_id,
             case
-                when c.deleted_yn = TRUE then 'DELETED'
+                when c.deleted_yn = 'Y' then 'DELETED'
                 when latest_log.action_type = 'HIDE' then 'HIDDEN'
                 else 'PUBLIC'
             end as moderation_status
@@ -350,13 +372,13 @@
             coalesce(p.title, '제목 없음') as post_title,
             c.content,
             to_char(c.created_at, 'YYYY-MM-DD HH24:MI') as created_at,
-            c.deleted_yn,
+            c.deleted_yn, -- PostgreSQL: BOOLEAN type might be 't'/'f' or 'true'/'false'
             c.member_id,
             m.name as author_name,
             m.nickname as author_nickname,
             c.parent_id,
             case
-                when c.deleted_yn = TRUE then 'DELETED'
+                when c.deleted_yn = 'Y' then 'DELETED'
                 when latest_log.action_type = 'HIDE' then 'HIDDEN'
                 else 'PUBLIC'
             end as moderation_status
@@ -378,6 +400,7 @@
         limit 1
     </select>
 
+    <!-- selectAdminContentHashtags 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
     <select id="selectAdminContentHashtags" resultMap="adminContentHashtagMap">
         select
             h.hashtag_id,
@@ -446,13 +469,12 @@
             p.title,
             p.content,
             p.visibility,
-            p.deleted_yn,
+            p.deleted_yn, -- PostgreSQL: BOOLEAN type might be 't'/'f' or 'true'/'false'
             p.emotion_id,
             to_char(p.created_at, 'YYYY-MM-DD HH24:MI') as created_at,
             p.member_id,
             m.name as author_name,
             m.nickname as author_nickname,
-            coalesce((
                 select count(*)
                 from comment_tbl c
                 where c.post_id = p.post_id
@@ -463,51 +485,56 @@
                 from post_hashtag ph
                 where ph.post_id = p.post_id
             ), 0) as hashtag_count,
-            coalesce((
+            coalesce(
                 select string_agg(concat('#', h.hashtag), ' ' order by h.hashtag)
                 from post_hashtag ph
                 join hashtag h on h.hashtag_id = ph.hashtag_id
                 where ph.post_id = p.post_id
-            ), '') as tags
+            ), '') as tags -- PostgreSQL: TEXT type
         from post_tbl p
         left join members m on m.member_id = p.member_id
         where p.post_id = #{postId}
         limit 1
     </select>
 
+    <!-- hideAdminContentPost 수정 쿼리입니다. 관리자 기능에서 상태나 정보를 변경할 때 사용합니다. -->
     <update id="hideAdminContentPost">
         update post_tbl
-        set visibility = 'PRIVATE',
-            updated_at = TIMEZONE('Asia/Seoul', NOW())
+        set visibility = 'PRIVATE', -- PostgreSQL does not support 'AFTER'
+            updated_at = TIMEZONE('Asia/Seoul', NOW()) -- Use trigger for updated_at in PostgreSQL
         where post_id = #{postId}
           and deleted_yn = FALSE
     </update>
 
+    <!-- restoreHiddenAdminContentPost 수정 쿼리입니다. 관리자 기능에서 상태나 정보를 변경할 때 사용합니다. -->
     <update id="restoreHiddenAdminContentPost">
         update post_tbl
-        set visibility = 'PUBLIC',
+        set visibility = 'PUBLIC', -- PostgreSQL does not support 'AFTER'
             updated_at = TIMEZONE('Asia/Seoul', NOW())
         where post_id = #{postId}
           and deleted_yn = FALSE
     </update>
 
+    <!-- softDeleteAdminContentPost 수정 쿼리입니다. 관리자 기능에서 상태나 정보를 변경할 때 사용합니다. -->
     <update id="softDeleteAdminContentPost">
         update post_tbl
-        set deleted_yn = TRUE,
-            updated_at = TIMEZONE('Asia/Seoul', NOW())
+        set deleted_yn = TRUE, -- PostgreSQL does not support 'AFTER'
+            updated_at = TIMEZONE('Asia/Seoul', NOW()) -- Use trigger for updated_at in PostgreSQL
         where post_id = #{postId}
           and deleted_yn = FALSE
     </update>
 
+    <!-- restoreDeletedAdminContentPost 수정 쿼리입니다. 관리자 기능에서 상태나 정보를 변경할 때 사용합니다. -->
     <update id="restoreDeletedAdminContentPost">
         update post_tbl
         set deleted_yn = FALSE,
-            visibility = 'PUBLIC',
-            updated_at = TIMEZONE('Asia/Seoul', NOW())
+            visibility = 'PUBLIC', -- PostgreSQL does not support 'AFTER'
+            updated_at = TIMEZONE('Asia/Seoul', NOW()) -- Use trigger for updated_at in PostgreSQL
         where post_id = #{postId}
           and deleted_yn = TRUE
     </update>
 
+    <!-- deleteAdminPostComments 삭제 쿼리입니다. 관리자 기능에서 연결 데이터 또는 대상 데이터를 삭제할 때 사용합니다. -->
     <delete id="deleteAdminPostComments">
         delete from comment_tbl
         where post_id = #{postId}
@@ -528,6 +555,7 @@
         where post_id = #{postId}
     </delete>
 
+    <!-- hardDeleteAdminContentPost 삭제 쿼리입니다. 관리자 기능에서 연결 데이터 또는 대상 데이터를 삭제할 때 사용합니다. -->
     <delete id="hardDeleteAdminContentPost">
         delete from post_tbl
         where post_id = #{postId}
@@ -677,6 +705,7 @@
         limit 50
     </select>
 
+    <!-- selectMemberDetail 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
     <select id="selectMemberDetail" resultMap="adminMemberDetailMap">
         select
             member_id,
@@ -700,6 +729,7 @@
         limit 1
     </select>
 
+    <!-- searchMembersForAdminPromotion 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
     <select id="searchMembersForAdminPromotion" resultMap="adminMemberMap">
         select
             member_id,
@@ -725,12 +755,15 @@
             <choose>
                 <when test="searchType == 'name'">
                     name like concat('%', #{keyword}, '%')
+                    name like ('%' || #{keyword} || '%')
                 </when>
                 <when test="searchType == 'nickname'">
                     nickname like concat('%', #{keyword}, '%')
+                    nickname like ('%' || #{keyword} || '%')
                 </when>
                 <otherwise>
                     email like concat('%', #{keyword}, '%')
+                    email like ('%' || #{keyword} || '%')
                 </otherwise>
             </choose>
           )
@@ -738,6 +771,7 @@
         limit 100
     </select>
 
+    <!-- updateMemberRoleForAdminPromotion 수정 쿼리입니다. 관리자 기능에서 상태나 정보를 변경할 때 사용합니다. -->
     <update id="updateMemberRoleForAdminPromotion">
         update members
         set role = #{role},
@@ -747,6 +781,7 @@
           and role in ('USER', 'MEMBER', 'SUPER_ADMIN')
     </update>
 
+    <!-- suspendMember 수정 쿼리입니다. 관리자 기능에서 상태나 정보를 변경할 때 사용합니다. -->
     <update id="suspendMember">
         update members
         set status = 'SUSPENDED',
@@ -757,6 +792,7 @@
           and deleted_at is null
     </update>
 
+    <!-- addWarningToMember 수정 쿼리입니다. 신고 처리 결과가 경고일 때 경고 횟수를 증가시킵니다. -->
     <update id="addWarningToMember">
         update members
         set warning_count = coalesce(warning_count, 0) + 1,
@@ -765,6 +801,7 @@
           and deleted_at is null
     </update>
 
+    <!-- restoreSuspendedMember 수정 쿼리입니다. 관리자 기능에서 상태나 정보를 변경할 때 사용합니다. -->
     <update id="restoreSuspendedMember">
         update members
         set status = 'ACTIVE',
@@ -775,6 +812,7 @@
           and deleted_at is null
     </update>
 
+    
     <insert id="insertAdminActionLog">
         insert into admin_action_logs (
             admin_id,
@@ -793,6 +831,7 @@
         )
     </insert>
 
+    <!-- selectAdminReports 조회 쿼리입니다. 신고 목록에서 게시글/댓글 신고를 함께 조회합니다. -->
     <select id="selectAdminReports" resultMap="adminReportMap">
         select
             r.report_id,
@@ -831,7 +870,7 @@
                     when r.post_id IS NOT NULL then post_author.member_id
                     else comment_author.member_id
                 end
-                  and coalesce(target_post_count.deleted_yn, FALSE) = FALSE
+                  and coalesce(target_post_count.deleted_yn, FALSE) = FALSE -- PostgreSQL: BOOLEAN type
             ) as target_post_count,
             (
                 select count(*)
@@ -840,7 +879,7 @@
                     when r.post_id IS NOT NULL then post_author.member_id
                     else comment_author.member_id
                 end
-                  and coalesce(target_comment_count.deleted_yn, FALSE) = FALSE
+                  and coalesce(target_comment_count.deleted_yn, FALSE) = FALSE -- PostgreSQL: BOOLEAN type
             ) as target_comment_count,
             (
                 select count(*)
@@ -888,7 +927,7 @@
             ) as post_tags,
             case
                 when r.post_id is not null then post_target.content
-                else comment_target.content
+                else comment_target.content -- PostgreSQL: TEXT type
             end as target_content,
             comment_target.content as comment_content,
             r.reason,
@@ -958,16 +997,18 @@
             r.report_id desc
     </select>
 
+    <!-- 관리자 기능 담당 작업(문건우): 처리율 = 처리 완료 신고 수 / 전체 신고 수 기준으로 집계합니다. -->
     <select id="selectAdminReportProcessRate" resultMap="adminReportProcessRateStatMap">
         select
             count(*) as total_count,
-            sum(case when r.report_status = 'DONE' then 1 else 0 end) as done_count,
+            sum(case when r.report_status = 'DONE' then 1 else 0 end) as done_count, -- PostgreSQL: 1 and 0 are treated as integers
             sum(case when r.report_status = 'DONE' then 0 else 1 end) as open_count
         from report r
-        where r.created_at &gt;= #{startDate}
-          and r.created_at &lt; (#{endDate} + INTERVAL '1 day')
+        where <![CDATA[ r.created_at >= #{startDate} ]]>
+          <![CDATA[ and r.created_at < (#{endDate} + INTERVAL '1 day') ]]>
     </select>
 
+    <!-- selectAdminReportById 조회 쿼리입니다. 신고 상세와 처리 후 갱신에 사용합니다. -->
     <select id="selectAdminReportById" resultMap="adminReportMap">
         select *
         from (
@@ -1008,7 +1049,7 @@
                     when r.post_id IS NOT NULL then post_author.member_id
                         else comment_author.member_id
                     end
-                      and coalesce(target_post_count.deleted_yn, FALSE) = FALSE
+                      and coalesce(target_post_count.deleted_yn, FALSE) = FALSE -- PostgreSQL: BOOLEAN type
                 ) as target_post_count,
                 (
                     select count(*)
@@ -1017,7 +1058,7 @@
                     when r.post_id IS NOT NULL then post_author.member_id
                         else comment_author.member_id
                     end
-                      and coalesce(target_comment_count.deleted_yn, FALSE) = FALSE
+                      and coalesce(target_comment_count.deleted_yn, FALSE) = FALSE -- PostgreSQL: BOOLEAN type
                 ) as target_comment_count,
                 (
                     select count(*)
@@ -1065,7 +1106,7 @@
                 ) as post_tags,
                 case
                     when r.post_id is not null then post_target.content
-                    else comment_target.content
+                    else comment_target.content -- PostgreSQL: TEXT type
                 end as target_content,
                 comment_target.content as comment_content,
                 r.reason,
@@ -1113,6 +1154,7 @@
         ) report_detail
     </select>
 
+    <!-- selectAdminReportRecentActivities 조회 쿼리입니다. 신고 대상 회원의 최근 게시글, 댓글, 제재 로그를 합쳐 조회합니다. -->
     <select id="selectAdminReportRecentActivities" resultMap="adminReportActivityMap">
         select
             activity_type as type,
@@ -1150,6 +1192,7 @@
         limit 50
     </select>
 
+    <!-- selectAdminReportReporters 조회 쿼리입니다. 같은 게시글/댓글을 신고한 신고자 목록을 조회합니다. -->
     <select id="selectAdminReportReporters" resultMap="adminReportReporterMap">
         select
             reporter.member_id,
@@ -1157,8 +1200,8 @@
             reporter.nickname,
             reporter.email,
             count(*) as report_count,
-            to_char(min(same_report.created_at), 'YYYY-MM-DD HH24:MI') as first_reported_at,
-            to_char(max(same_report.created_at), 'YYYY-MM-DD HH24:MI') as latest_reported_at
+            date_format(min(same_report.created_at), '%Y-%m-%d %H:%i') as first_reported_at,
+            date_format(max(same_report.created_at), '%Y-%m-%d %H:%i') as latest_reported_at
         from report base_report
         join report same_report
           on (
@@ -1179,6 +1222,7 @@
         order by max(same_report.created_at) desc, max(same_report.report_id) desc
     </select>
 
+    <!-- markAdminReportReviewing 수정 쿼리입니다. 처음 확인한 신고를 검토 중으로 전환합니다. -->
     <update id="markAdminReportReviewing">
         update report
         set report_status = 'REVIEWING',
@@ -1187,6 +1231,7 @@
           and report_status in ('PENDING', 'REVIEWING')
     </update>
 
+    <!-- processAdminReport 수정 쿼리입니다. 신고를 처리 완료 상태로 저장합니다. -->
     <update id="processAdminReport">
         update report
         set report_status = 'DONE',
@@ -1198,14 +1243,15 @@
           and report_status in ('PENDING', 'REVIEWING')
     </update>
 
+    <!-- selectDashboardSummary 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
     <select id="selectDashboardSummary" resultMap="adminDashboardSummaryMap">
         select
             (select count(*)
              from members) as total_member_count,
             (select count(*)
              from members
-             where created_at &gt;= CAST(TIMEZONE('Asia/Seoul', NOW()) AS DATE)
-               and created_at &lt; (CAST(TIMEZONE('Asia/Seoul', NOW()) AS DATE) + INTERVAL '1 day')) as today_new_member_count,
+             where created_at >= CAST(TIMEZONE('Asia/Seoul', NOW()) AS DATE)
+               <![CDATA[ and created_at < (CAST(TIMEZONE('Asia/Seoul', NOW()) AS DATE) + INTERVAL '1 day') ]]> ) as today_new_member_count,
             (select count(*)
              from post_tbl
              where deleted_yn = FALSE) as post_count,
@@ -1214,19 +1260,21 @@
              where report_status in ('PENDING', 'REVIEWING')) as pending_report_count
     </select>
 
+    <!-- selectDashboardEmotionActivity 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
     <select id="selectDashboardEmotionActivity" resultMap="adminEmotionActivityMap">
         select
             p.emotion_id,
             count(*) as activity_count
-        from post_tbl p
+        from post_tbl p -- PostgreSQL: BOOLEAN type might be 't'/'f' or 'true'/'false'
         where p.deleted_yn = FALSE
           and p.emotion_id IS NOT NULL
-          and p.created_at &gt;= #{startDate}
-          and p.created_at &lt; (#{endDate} + INTERVAL '1 day')
+          <![CDATA[ and p.created_at >= #{startDate} ]]> -- Assuming startDate is already in correct timezone or UTC
+          and p.created_at < (#{endDate} + INTERVAL '1 day')
         group by p.emotion_id
         order by p.emotion_id
     </select>
 
+    <!-- selectDashboardActiveUsers 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. (PostgreSQL 호환) -->
     <select id="selectDashboardActiveUsers" resultMap="adminActiveUserStatMap">
         <choose>
             <when test="period == 'week'">
@@ -1245,13 +1293,13 @@
                 )
                 select
                     CASE (s.day_index + 1) WHEN 1 THEN '월' WHEN 2 THEN '화' WHEN 3 THEN '수' WHEN 4 THEN '목' WHEN 5 THEN '금' WHEN 6 THEN '토' WHEN 7 THEN '일' END as label,
-                    cast(count(distinct l.member_id) as decimal(10, 1)) as active_user_count
+                    cast(count(distinct l.member_id) as decimal(10, 1)) as active_user_count -- PostgreSQL: decimal(10,1) is compatible
                 from day_slots s
                 left join login_audit_logs l
                   on l.success = true
                  and l.member_id is not null
-                 and TIMEZONE('Asia/Seoul', l.created_at) &gt;= s.slot_date
-                 and TIMEZONE('Asia/Seoul', l.created_at) &lt; (s.slot_date + INTERVAL '1 day')
+                 <![CDATA[ and TIMEZONE('Asia/Seoul', l.created_at) >= s.slot_date ]]>
+                 <![CDATA[ and TIMEZONE('Asia/Seoul', l.created_at) < s.slot_date + INTERVAL '1 day' ]]>
                 group by s.day_index
                 order by s.day_index
             </when>
@@ -1266,7 +1314,7 @@
                 month_slots as (
                     select
                         month_index,
-                        TO_DATE(EXTRACT(YEAR FROM CAST(#{startDate} AS DATE))::text || '-' || LPAD(month_index::text, 2, '0') || '-01', 'YYYY-MM-DD') as month_start
+                        TO_DATE(EXTRACT(YEAR FROM CAST(#{startDate} AS DATE))::text || '-' || LPAD(month_index::text, 2, '0') || '-01', 'YYYY-MM-DD') as month_start -- PostgreSQL: TO_DATE, EXTRACT, LPAD
                     from month_numbers
                 )
                 select
@@ -1276,8 +1324,8 @@
                 left join login_audit_logs l
                   on l.success = true
                  and l.member_id is not null
-                 and TIMEZONE('Asia/Seoul', l.created_at) &gt;= s.month_start
-                 and TIMEZONE('Asia/Seoul', l.created_at) &lt; (s.month_start + INTERVAL '1 month')
+                 <![CDATA[ and TIMEZONE('Asia/Seoul', l.created_at) >= s.month_start ]]>
+                 <![CDATA[ and TIMEZONE('Asia/Seoul', l.created_at) < s.month_start + INTERVAL '1 month' ]]>
                 group by s.month_index
                 order by s.month_index
             </when>
@@ -1296,14 +1344,14 @@
                 left join login_audit_logs l
                   on l.success = true
                  and l.member_id is not null
-                 and TIMEZONE('Asia/Seoul', l.created_at) &gt;= (#{startDate} + (h.hour_index * INTERVAL '1 hour'))
-                 and TIMEZONE('Asia/Seoul', l.created_at) &lt; (#{startDate} + ((h.hour_index + 1) * INTERVAL '1 hour'))
+                 <![CDATA[ and TIMEZONE('Asia/Seoul', l.created_at) >= (#{startDate} + (h.hour_index * INTERVAL '1 hour')) ]]>
+                 <![CDATA[ and TIMEZONE('Asia/Seoul', l.created_at) < (#{startDate} + ((h.hour_index + 1) * INTERVAL '1 hour')) ]]>
                 group by h.hour_index
                 order by h.hour_index
             </otherwise>
         </choose>
     </select>
-
+    <!-- selectRecentDashboardActivities 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
     <select id="selectRecentDashboardActivities" resultMap="adminRecentActivityMap">
         select *
         from (
@@ -1405,6 +1453,7 @@
         limit 10
     </select>
 
+    <!-- selectAllDashboardActivities 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
     <select id="selectAllDashboardActivities" resultMap="adminRecentActivityMap">
         select *
         from (
@@ -1505,6 +1554,7 @@
         order by created_at desc
     </select>
 
+    <!-- selectStatisticsSummary 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
     <select id="selectStatisticsSummary" resultMap="adminStatisticsSummaryMap">
         select
             (select count(*)
@@ -1512,34 +1562,35 @@
             (select count(*)
              from members m
              where m.created_at IS NOT NULL
-               and m.created_at &gt;= #{startDate}
-               and m.created_at &lt; (#{endDate} + INTERVAL '1 day')) as new_member_count,
+               <![CDATA[ and m.created_at >= #{startDate} ]]>
+               <![CDATA[ and m.created_at < (#{endDate} + INTERVAL '1 day') ]]> ) as new_member_count,
             (select count(distinct l.member_id)
              from login_audit_logs l
              where l.success = true
                and l.member_id IS NOT NULL
-               and TIMEZONE('Asia/Seoul', l.created_at) &gt;= #{startDate}
-               and TIMEZONE('Asia/Seoul', l.created_at) &lt; (#{endDate} + INTERVAL '1 day')) as active_user_count,
+               <![CDATA[ and TIMEZONE('Asia/Seoul', l.created_at) >= #{startDate} ]]>
+               <![CDATA[ and TIMEZONE('Asia/Seoul', l.created_at) < (#{endDate} + INTERVAL '1 day') ]]> ) as active_user_count,
             (select count(*)
              from post_tbl p
              where p.deleted_yn = FALSE
-               and p.created_at &gt;= #{startDate}
-               and p.created_at &lt; (#{endDate} + INTERVAL '1 day')) as post_count,
+               <![CDATA[ and p.created_at >= #{startDate} ]]>
+               <![CDATA[ and p.created_at < (#{endDate} + INTERVAL '1 day') ]]> ) as post_count,
             (select count(*)
              from comment_tbl c
              join post_tbl p on p.post_id = c.post_id
              where c.deleted_yn = FALSE
                and p.deleted_yn = FALSE
-               and c.created_at &gt;= #{startDate}
-               and c.created_at &lt; (#{endDate} + INTERVAL '1 day')) as comment_count,
+               <![CDATA[ and c.created_at >= #{startDate} ]]>
+               <![CDATA[ and c.created_at < (#{endDate} + INTERVAL '1 day') ]]> ) as comment_count,
             (select count(*)
              from user_post_like l
              join post_tbl p on p.post_id = l.post_id
              where p.deleted_yn = FALSE
-               and l.created_at &gt;= #{startDate}
-               and l.created_at &lt; (#{endDate} + INTERVAL '1 day')) as empathy_count
+               <![CDATA[ and l.created_at >= #{startDate} ]]>
+               <![CDATA[ and l.created_at < (#{endDate} + INTERVAL '1 day') ]]> ) as empathy_count
     </select>
 
+    <!-- selectStatisticsSubscriberTrend 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
     <select id="selectStatisticsSubscriberTrend" resultMap="adminStatisticsTrendMap">
         <choose>
             <when test="period == 'week'">
@@ -1555,12 +1606,12 @@
                     COUNT(m.member_id) as value
                 from day_numbers d
                 left join members m
-                  on m.created_at &gt;= (#{startDate} + (d.day_index * INTERVAL '1 day'))
-                 and m.created_at &lt; (#{startDate} + ((d.day_index + 1) * INTERVAL '1 day'))
+                  <![CDATA[ on m.created_at >= (#{startDate} + (d.day_index * INTERVAL '1 day')) ]]>
+                 <![CDATA[ and m.created_at < (#{startDate} + ((d.day_index + 1) * INTERVAL '1 day')) ]]>
                 group by d.day_index
                 order by d.day_index
             </when>
-            <when test="period == 'month'">
+            <when test="period == 'month'"> -- PostgreSQL: YEAR -> EXTRACT(YEAR FROM ...), LPAD -> LPAD, STR_TO_DATE -> TO_DATE
                 with recursive month_numbers(month_index) as (
                     select 1
                     union all
@@ -1571,7 +1622,7 @@
                 month_slots as (
                     select
                         month_index,
-                        TO_DATE(EXTRACT(YEAR FROM CAST(#{startDate} AS DATE))::text || '-' || LPAD(month_index::text, 2, '0') || '-01', 'YYYY-MM-DD') as month_start
+                        TO_DATE(EXTRACT(YEAR FROM CAST(#{startDate} AS DATE))::text || '-' || LPAD(month_index::text, 2, '0') || '-01', 'YYYY-MM-DD') as month_start -- PostgreSQL: TO_DATE, EXTRACT, LPAD
                     from month_numbers
                 )
                 select
@@ -1579,8 +1630,8 @@
                     COUNT(m.member_id) as value
                 from month_slots s
                 left join members m
-                  on m.created_at &gt;= s.month_start
-                 and m.created_at &lt; (s.month_start + INTERVAL '1 month')
+                 <![CDATA[ and m.created_at < s.month_start + INTERVAL '1 month' ]]>
+                 <![CDATA[ on m.created_at >= s.month_start ]]>
                 group by s.month_index
                 order by s.month_index
             </when>
@@ -1595,45 +1646,46 @@
                 select
                     concat(lpad(h.hour_index, 2, '0'), '시') as label,
                     count(m.member_id) as value
-                from hour_numbers h
-                left join members m
-                  on m.created_at &gt;= #{startDate} + (h.hour_index * INTERVAL '1 hour')
-                 and m.created_at &lt; #{startDate} + ((h.hour_index + 1) * INTERVAL '1 hour')
+                  <![CDATA[ on m.created_at >= (#{startDate} + (h.hour_index * INTERVAL '1 hour')) ]]>
+                 <![CDATA[ and m.created_at < (#{startDate} + ((h.hour_index + 1) * INTERVAL '1 hour')) ]]>
                 group by h.hour_index
+                from hour_numbers h
                 order by h.hour_index
             </otherwise>
         </choose>
     </select>
 
+    <!-- selectStatisticsContentActivity 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
     <select id="selectStatisticsContentActivity" resultMap="adminStatisticsTrendMap">
         select
-            '게시글' as label,
+            '게시글' as label, -- CHAR(...) USING utf8mb4 -> 직접 문자열
             count(*) as value
         from post_tbl p
         where p.deleted_yn = FALSE
-          and p.created_at &gt;= #{startDate}
-          and p.created_at &lt; (#{endDate} + INTERVAL '1 day')
+          <![CDATA[ and p.created_at >= #{startDate} ]]>
+          <![CDATA[ and p.created_at < (#{endDate} + INTERVAL '1 day') ]]>
         union all
         select
-            '댓글' as label,
+            '댓글' as label, -- CHAR(...) USING utf8mb4 -> 직접 문자열
             count(*) as value
         from comment_tbl c
         join post_tbl p on p.post_id = c.post_id
         where c.deleted_yn = FALSE
           and p.deleted_yn = FALSE
-          and c.created_at &gt;= #{startDate}
-          and c.created_at &lt; (#{endDate} + INTERVAL '1 day')
+          <![CDATA[ and c.created_at >= #{startDate} ]]>
+          <![CDATA[ and c.created_at < (#{endDate} + INTERVAL '1 day') ]]>
         union all
         select
-            '공감' as label,
+            '공감' as label, -- CHAR(...) USING utf8mb4 -> 직접 문자열
             count(*) as value
         from user_post_like l
         join post_tbl p on p.post_id = l.post_id
         where p.deleted_yn = FALSE
-          and l.created_at &gt;= #{startDate}
-          and l.created_at &lt; (#{endDate} + INTERVAL '1 day')
+          <![CDATA[ and l.created_at >= #{startDate} ]]>
+          <![CDATA[ and l.created_at < (#{endDate} + INTERVAL '1 day') ]]>
     </select>
 
+    <!-- selectAdminProfile 조회 쿼리입니다. 관리자 화면에서 필요한 데이터를 조회합니다. -->
     <select id="selectAdminProfile" resultMap="adminProfileMap">
         select
             member_id,
@@ -1645,14 +1697,16 @@
         limit 1
     </select>
 
+    <!-- 관리자 계정의 프로필 이미지를 기본 이미지 상태로 되돌립니다. -->
     <update id="resetAdminProfileImagesToDefault">
         update members
         set profile_image_url = NULL,
-            updated_at = TIMEZONE('Asia/Seoul', NOW())
+            updated_at = TIMEZONE('Asia/Seoul', NOW()) -- Use trigger for updated_at in PostgreSQL
         where upper(role) = 'SUPER_ADMIN'
           and profile_image_url is not null
     </update>
 
+    <!-- updateAdminProfile 수정 쿼리입니다. 관리자 기능에서 상태나 정보를 변경할 때 사용합니다. -->
     <update id="updateAdminProfile">
         update members
         set name = #{name},
@@ -1741,7 +1795,7 @@
         left join members created_admin
           on created_admin.member_id = notice.created_by_admin_id
         where notice.deleted_at IS NULL
-          and notice.created_at &gt;= (TIMEZONE('Asia/Seoul', NOW()) - INTERVAL '7 days')
+          <![CDATA[ and notice.created_at >= (TIMEZONE('Asia/Seoul', NOW()) - INTERVAL '7 days') ]]>
         order by notice.created_at desc, notice.notice_id desc
         limit 1
     </select>
@@ -1761,6 +1815,8 @@
             #{noticeType},
             #{adminId},
             #{adminId},
+            CONVERT_TZ(NOW(6), '+00:00', '+09:00'),
+            CONVERT_TZ(NOW(6), '+00:00', '+09:00')
             TIMEZONE('Asia/Seoul', NOW()),
             TIMEZONE('Asia/Seoul', NOW())
         )

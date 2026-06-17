@@ -54,30 +54,61 @@
 
 ```sql
 CREATE TABLE members (
-  member_id BIGINT NOT NULL AUTO_INCREMENT,
+  member_id BIGSERIAL PRIMARY KEY,
 
   email VARCHAR(255) NOT NULL,
-  password_hash VARCHAR(255) NULL,
+  password_hash VARCHAR(255),
 
   name VARCHAR(50) NOT NULL,
-  nickname VARCHAR(50) NULL,
+  nickname VARCHAR(50),
   phone VARCHAR(30) NOT NULL,
 
-  profile_image_url VARCHAR(500) NULL,
-  bio VARCHAR(300) NULL,
+  profile_image_url VARCHAR(500),
+  bio VARCHAR(300),
 
-  email_verified TINYINT NOT NULL DEFAULT 0,
-  phone_verified TINYINT NOT NULL DEFAULT 0,
+  email_verified BOOLEAN NOT NULL DEFAULT FALSE,
+  phone_verified BOOLEAN NOT NULL DEFAULT FALSE,
 
   role VARCHAR(20) NOT NULL DEFAULT 'USER',
   status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
 
-  last_login_at DATETIME(6) NULL,
-  created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  updated_at DATETIME(6) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(6),
-  deleted_at DATETIME(6) NULL,
+  last_login_at TIMESTAMP(6) WITHOUT TIME ZONE,
+  created_at TIMESTAMP(6) WITHOUT TIME ZONE NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP(6) WITHOUT TIME ZONE, -- PostgreSQL does not directly support ON UPDATE CURRENT_TIMESTAMP. A trigger is needed for this functionality.
+  deleted_at TIMESTAMP(6),
 
-  PRIMARY KEY (member_id),
+  UNIQUE (email),
+  UNIQUE (nickname),
+  UNIQUE (phone)
+);
+```
+
+```sql
+-- Optional: Trigger for updated_at column
+-- CREATE OR REPLACE FUNCTION update_updated_at_column()
+-- RETURNS TRIGGER AS $$
+-- BEGIN
+--    NEW.updated_at = NOW();
+--    RETURN NEW;
+-- END;
+-- $$ language 'plpgsql';
+--
+-- CREATE TRIGGER update_members_updated_at
+-- BEFORE UPDATE ON members
+-- FOR EACH ROW
+-- EXECUTE FUNCTION update_updated_at_column();
+
+  member_id BIGSERIAL PRIMARY KEY,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password_hash VARCHAR(255),
+  name VARCHAR(50) NOT NULL,
+  nickname VARCHAR(50) UNIQUE,
+  phone VARCHAR(30) NOT NULL UNIQUE,
+  profile_image_url VARCHAR(500),
+  bio VARCHAR(300),
+  email_verified BOOLEAN NOT NULL DEFAULT FALSE,
+  phone_verified BOOLEAN NOT NULL DEFAULT FALSE,
+  role VARCHAR(20) NOT NULL DEFAULT 'USER',
 
   UNIQUE (email),
   UNIQUE (nickname),

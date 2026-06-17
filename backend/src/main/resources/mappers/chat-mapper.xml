@@ -2,47 +2,63 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.moodcast.moodchat.dao.ChatDao">
     <select id="selectChatThreads" resultType="com.moodcast.moodchat.vo.ChatThreadVo">
-        select
-            t.partner_member_id as partnerMemberId,
-            m.name as partnerName,
-            m.nickname as partnerNickname,
-            m.profile_image_url as partnerProfileImageUrl,
-            t.last_message as lastMessage,
-            t.last_message_at as lastMessageAt,
-            t.unread_count as unreadCount
-        from (
-            select
-                case
+        WITH user_relevant_chats AS (
+            SELECT
+                chat_id,
+                sender_id,
+                receiver_id,
+                content,
+                is_read,
+                created_at,
+                CASE
                     when sender_id = #{memberId} then receiver_id
                     else sender_id
-                end as partner_member_id,
-                date_format(max(created_at), '%Y-%m-%dT%H:%i:%s') as last_message_at,
-                sum(case when receiver_id = #{memberId} and is_read = 0 then 1 else 0 end) as unread_count,
-                substring_index(
-                    group_concat(content order by created_at desc, chat_id desc separator '|||'),
-                    '|||',
-                    1
-                ) as last_message
+                END AS partner_member_id,
+                sender_hidden_at,
+                receiver_hidden_at
             from chat_tbl
             where (sender_id = #{memberId} or receiver_id = #{memberId})
-              and deleted_yn = 0
+              and deleted_yn = '0'
               and (
                 (sender_id = #{memberId} and (sender_hidden_at is null or created_at > sender_hidden_at))
                 or
                 (receiver_id = #{memberId} and (receiver_hidden_at is null or created_at > receiver_hidden_at))
               )
-            group by
-                case
-                    when sender_id = #{memberId} then receiver_id
-                    else sender_id
-                end
-        ) t
+        ),
+        ranked_latest_messages AS (
+            SELECT
+                chat_id,
+                partner_member_id,
+                content AS last_message,
+                created_at AS last_message_at,
+                ROW_NUMBER() OVER (PARTITION BY partner_member_id ORDER BY created_at DESC, chat_id DESC) AS rn
+            FROM user_relevant_chats
+        ),
+        unread_counts AS (
+            SELECT
+                partner_member_id,
+                COUNT(*) FILTER (WHERE receiver_id = #{memberId} AND is_read = 0) AS unread_count
+            FROM user_relevant_chats
+            GROUP BY partner_member_id
+        )
+        SELECT
+            rlm.partner_member_id AS partnerMemberId,
+            m.name AS partnerName,
+            m.nickname AS partnerNickname,
+            m.profile_image_url AS partnerProfileImageUrl,
+            rlm.last_message AS lastMessage,
+            to_char(rlm.last_message_at, 'YYYY-MM-DD"T"HH24:MI:SS') AS lastMessageAt,
+            COALESCE(uc.unread_count, 0) AS unreadCount
+        FROM ranked_latest_messages rlm
         join members m
-          on m.member_id = t.partner_member_id
+          on m.member_id = rlm.partner_member_id
+        LEFT JOIN unread_counts uc
+          on uc.partner_member_id = rlm.partner_member_id
+        WHERE rlm.rn = 1
         order by
-            case when t.unread_count > 0 then 0 else 1 end,
-            t.last_message_at desc,
-            t.partner_member_id desc
+            CASE WHEN COALESCE(uc.unread_count, 0) > 0 THEN 0 ELSE 1 END,
+            rlm.last_message_at desc,
+            rlm.partner_member_id desc
     </select>
 
     <select id="selectChatMessages" resultType="com.moodcast.moodchat.vo.ChatVo">
@@ -51,11 +67,11 @@
             sender_id as senderId,
             receiver_id as receiverId,
             content,
-            is_read as isRead,
-            date_format(created_at, '%Y-%m-%dT%H:%i:%s') as createdAt,
-            deleted_yn as deletedYn
+            is_read as isRead, -- is_read is INT/SMALLINT
+            to_char(created_at, 'YYYY-MM-DD"T"HH24:MI:SS') as createdAt,
+            deleted_yn as deletedYn -- deleted_yn is VARCHAR
         from chat_tbl
-        where deleted_yn = 0
+        where deleted_yn = '0'
           and (
             (sender_id = #{memberId} and receiver_id = #{partnerId})
             or
@@ -74,9 +90,9 @@
             sender_id as senderId,
             receiver_id as receiverId,
             content,
-            is_read as isRead,
-            date_format(created_at, '%Y-%m-%dT%H:%i:%s') as createdAt,
-            deleted_yn as deletedYn,
+            is_read as isRead, -- is_read is INT/SMALLINT
+            to_char(created_at, 'YYYY-MM-DD"T"HH24:MI:SS') as createdAt,
+            deleted_yn as deletedYn, -- deleted_yn is VARCHAR
             sender_deleted_yn as senderDeletedYn,
             receiver_deleted_yn as receiverDeletedYn
         from chat_tbl
@@ -112,55 +128,55 @@
 
     <update id="updateMessagesRead">
         update chat_tbl
-        set is_read = 1
+        set is_read = TRUE
         where receiver_id = #{memberId}
           and sender_id = #{partnerId}
-          and is_read = 0
-          and deleted_yn = 0
+          and is_read = FALSE
+          and deleted_yn = FALSE
     </update>
 
     <update id="deleteChatMessageGlobally">
         update chat_tbl
-        set deleted_yn = 1,
-            sender_deleted_yn = 1,
-            receiver_deleted_yn = 1
+        set deleted_yn = TRUE,
+            sender_deleted_yn = TRUE,
+            receiver_deleted_yn = TRUE
         where chat_id = #{chatId}
     </update>
 
     <update id="deleteChatMessageForSender">
         update chat_tbl
-        set sender_deleted_yn = 1,
+        set sender_deleted_yn = TRUE,
             deleted_yn = case
-                when receiver_deleted_yn = 1 then 1
+                when receiver_deleted_yn = TRUE then TRUE
                 else deleted_yn
             end
         where chat_id = #{chatId}
           and sender_id = #{memberId}
-          and deleted_yn = 0
+          and deleted_yn = FALSE
     </update>
 
     <update id="deleteChatMessageForReceiver">
         update chat_tbl
-        set receiver_deleted_yn = 1,
+        set receiver_deleted_yn = TRUE,
             deleted_yn = case
-                when sender_deleted_yn = 1 then 1
+                when sender_deleted_yn = TRUE then TRUE
                 else deleted_yn
             end
         where chat_id = #{chatId}
           and receiver_id = #{memberId}
-          and deleted_yn = 0
+          and deleted_yn = FALSE
     </update>
 
     <update id="hideDirectChatMessagesAsSender">
         update chat_tbl
-        set sender_hidden_at = CURRENT_TIMESTAMP(6)
+        set sender_hidden_at = NOW()
         where sender_id = #{memberId}
           and receiver_id = #{partnerId}
     </update>
 
     <update id="hideDirectChatMessagesAsReceiver">
         update chat_tbl
-        set receiver_hidden_at = CURRENT_TIMESTAMP(6)
+        set receiver_hidden_at = NOW()
         where sender_id = #{partnerId}
           and receiver_id = #{memberId}
     </update>

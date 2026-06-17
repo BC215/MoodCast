@@ -76,9 +76,8 @@
             #{content},
             #{visibility},
             #{emotionId},
-            CONVERT_TZ(NOW(6), '+00:00', '+09:00'),
             TIMEZONE('Asia/Seoul', NOW()),
-            'N'
+            '0'
         )
     </insert>
 
@@ -107,7 +106,7 @@
 
     <update id="decrementHashtagUseCount" parameterType="long">
         update hashtag
-        set use_count = greatest(use_count - 1, 0)
+        set use_count = use_count + 1
         where hashtag_id = #{hashtagId}
     </update>
 
@@ -135,7 +134,6 @@
             #{mentionText},
             #{startIndex},
             #{endIndex},
-            CONVERT_TZ(NOW(6), '+00:00', '+09:00')
             TIMEZONE('Asia/Seoul', NOW())
         )
     </insert>
@@ -153,23 +151,17 @@
             p.title as title,
             p.content as content,
             p.emotion_id as emotionId,
-            date_format(p.created_at, '%Y-%m-%d %H:%i') as createdAt,
             to_char(p.created_at, 'YYYY-MM-DD HH24:MI') as createdAt,
             coalesce(m.profile_image_url, '') as profileImageUrl,
-            <!-- post_hashtag_id(연결 테이블 PK) 순으로 합치면 사용자가 입력한 해시태그 순서가 유지됨 -->
-            coalesce((
-                select group_concat(concat('#', h.hashtag) order by ph.post_hashtag_id separator ' ')
-                select string_agg(concat('#', h.hashtag), ' ' order by ph.post_hashtag_id)
-                from post_hashtag ph
-                         join hashtag h on ph.hashtag_id = h.hashtag_id
-                where ph.post_id = p.post_id
-            ), '') as tags,
+            coalesce((select string_agg(concat('#', h.hashtag), ' ' order by ph.post_hashtag_id)
+                      from post_hashtag ph join hashtag h on ph.hashtag_id = h.hashtag_id
+                      where ph.post_id = p.post_id), '') as tags,
             coalesce((select count(*) from user_post_like where post_id = p.post_id), 0) as likes,
             coalesce((
                 select count(*)
                 from comment_tbl c
                 where c.post_id = p.post_id
-                  and c.deleted_yn = 'N'
+                  and c.deleted_yn = '0'
                   and not exists (
                       select 1
                       from admin_action_logs log
@@ -191,7 +183,7 @@
         from post_tbl p
                  join members m on p.member_id = m.member_id
         where p.post_id = #{postId}
-          and p.deleted_yn = 'N'
+          and p.deleted_yn = '0'
           and p.visibility = 'PUBLIC'
         limit 1
     </select>
@@ -202,10 +194,9 @@
             title = #{title},
             content = #{content},
             emotion_id = #{emotionId},
-            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
             updated_at = TIMEZONE('Asia/Seoul', NOW())
         where post_id = #{postId}
-          and deleted_yn = 'N'
+          and deleted_yn = '0'
     </update>
 
     <delete id="deletePostHashtagsByPostId" parameterType="long">
@@ -215,8 +206,7 @@
 
     <update id="softDeletePost" parameterType="long">
         update post_tbl
-        set deleted_yn = 'Y',
-            updated_at = CONVERT_TZ(NOW(6), '+00:00', '+09:00')
+        set deleted_yn = '1',
             updated_at = TIMEZONE('Asia/Seoul', NOW())
         where post_id = #{postId}
     </update>
@@ -229,22 +219,17 @@
             p.title as title,
             p.content as content,
             p.emotion_id as emotionId,
-            date_format(p.created_at, '%Y-%m-%d %H:%i') as createdAt,
             to_char(p.created_at, 'YYYY-MM-DD HH24:MI') as createdAt,
             coalesce(m.profile_image_url, '') as profileImageUrl,
-            <!-- 해시태그를 이름순이 아니라 입력 순서대로 보여주기 위한 정렬 기준임 -->
-            coalesce((
-                select group_concat(concat('#', h.hashtag) order by ph.post_hashtag_id separator ' ')
-                select string_agg(concat('#', h.hashtag), ' ' order by ph.post_hashtag_id)
-                from post_hashtag ph join hashtag h on ph.hashtag_id = h.hashtag_id
-                where ph.post_id = p.post_id
-            ), '') as tags,
+            coalesce((select string_agg(concat('#', h.hashtag), ' ' order by ph.post_hashtag_id)
+                      from post_hashtag ph join hashtag h on ph.hashtag_id = h.hashtag_id
+                      where ph.post_id = p.post_id), '') as tags,
             coalesce((select count(*) from user_post_like where post_id = p.post_id), 0) as likes,
             coalesce((
                 select count(*)
                 from comment_tbl c
                 where c.post_id = p.post_id
-                  and c.deleted_yn = 'N'
+                  and c.deleted_yn = '0'
                   and not exists (
                       select 1
                       from admin_action_logs log
@@ -264,7 +249,7 @@
             exists(select 1 from saved_post where post_id = p.post_id and member_id = #{viewerId}) as savedByMe
         from post_tbl p
                  join members m on p.member_id = m.member_id
-        where p.deleted_yn = 'N'
+        where p.deleted_yn = '0'
           and p.visibility = 'PUBLIC'
         order by p.created_at desc
         limit 50
@@ -278,22 +263,17 @@
             p.title as title,
             p.content as content,
             p.emotion_id as emotionId,
-            date_format(p.created_at, '%Y-%m-%d %H:%i') as createdAt,
             to_char(p.created_at, 'YYYY-MM-DD HH24:MI') as createdAt,
             coalesce(m.profile_image_url, '') as profileImageUrl,
-            <!-- 인기글 조회에서도 같은 순서 규칙을 써야 화면마다 태그 순서가 일관됨 -->
-            coalesce((
-                select group_concat(concat('#', h.hashtag) order by ph.post_hashtag_id separator ' ')
-                select string_agg(concat('#', h.hashtag), ' ' order by ph.post_hashtag_id)
-                from post_hashtag ph join hashtag h on ph.hashtag_id = h.hashtag_id
-                where ph.post_id = p.post_id
-            ), '') as tags,
+            coalesce((select string_agg(concat('#', h.hashtag), ' ' order by ph.post_hashtag_id)
+                      from post_hashtag ph join hashtag h on ph.hashtag_id = h.hashtag_id
+                      where ph.post_id = p.post_id), '') as tags,
             coalesce((select count(*) from user_post_like where post_id = p.post_id), 0) as likes,
             coalesce((
                 select count(*)
                 from comment_tbl c
                 where c.post_id = p.post_id
-                  and c.deleted_yn = 'N'
+                  and c.deleted_yn = '0'
                   and not exists (
                       select 1
                       from admin_action_logs log
@@ -313,13 +293,13 @@
             exists(select 1 from saved_post where post_id = p.post_id and member_id = #{viewerId}) as savedByMe
         from post_tbl p
                  join members m on p.member_id = m.member_id
-        where p.deleted_yn = 'N'
+        where p.deleted_yn = '0'
           and p.visibility = 'PUBLIC'
         order by (coalesce((select count(*) from user_post_like where post_id = p.post_id), 0) + coalesce((
                      select count(*)
                      from comment_tbl c
                      where c.post_id = p.post_id
-                       and c.deleted_yn = 'N'
+                       and c.deleted_yn = '0'
                        and not exists (
                            select 1
                            from admin_action_logs log
@@ -347,22 +327,17 @@
             p.title as title,
             p.content as content,
             p.emotion_id as emotionId,
-            date_format(p.created_at, '%Y-%m-%d %H:%i') as createdAt,
             to_char(p.created_at, 'YYYY-MM-DD HH24:MI') as createdAt,
             coalesce(m.profile_image_url, '') as profileImageUrl,
-            <!-- 마이페이지 글 목록도 입력 순서로 노출되도록 동일하게 처리함 -->
-            coalesce((
-                select group_concat(concat('#', h.hashtag) order by ph.post_hashtag_id separator ' ')
-                select string_agg(concat('#', h.hashtag), ' ' order by ph.post_hashtag_id)
-                from post_hashtag ph join hashtag h on ph.hashtag_id = h.hashtag_id
-                where ph.post_id = p.post_id
-            ), '') as tags,
+            coalesce((select string_agg(concat('#', h.hashtag), ' ' order by ph.post_hashtag_id)
+                      from post_hashtag ph join hashtag h on ph.hashtag_id = h.hashtag_id
+                      where ph.post_id = p.post_id), '') as tags,
             coalesce((select count(*) from user_post_like where post_id = p.post_id), 0) as likes,
             coalesce((
                 select count(*)
                 from comment_tbl c
                 where c.post_id = p.post_id
-                  and c.deleted_yn = 'N'
+                  and c.deleted_yn = '0'
                   and not exists (
                       select 1
                       from admin_action_logs log
@@ -382,7 +357,7 @@
             exists(select 1 from saved_post where post_id = p.post_id and member_id = #{viewerId}) as savedByMe
         from post_tbl p
                  join members m on p.member_id = m.member_id
-        where p.deleted_yn = 'N'
+        where p.deleted_yn = '0'
           and p.visibility = 'PUBLIC'
           and p.member_id = #{memberId}
         order by p.created_at desc
@@ -398,7 +373,6 @@
             pm.mention_text as mentionText,
             pm.start_index as startIndex,
             pm.end_index as endIndex,
-            date_format(pm.created_at, '%Y-%m-%d %H:%i:%s') as createdAt
             to_char(pm.created_at, 'YYYY-MM-DD HH24:MI:SS') as createdAt
         from post_mention_tbl pm
                  join members m on pm.mentioned_user_id = m.member_id
@@ -413,7 +387,6 @@
             c.member_id as memberId,
             coalesce(m.nickname, m.name) as author,
             c.content as content,
-            date_format(c.created_at, '%Y-%m-%d %H:%i') as createdAt,
             to_char(c.created_at, 'YYYY-MM-DD HH24:MI') as createdAt,
             coalesce(m.profile_image_url, '') as profileImageUrl,
             c.parent_id as parentCommentId
@@ -432,9 +405,9 @@
                     ) latest on latest.latest_log_id = log.log_id
                  ) latest_log on latest_log.target_id = c.comment_id
         where c.post_id = #{postId}
-          and p.deleted_yn = 'N'
+          and p.deleted_yn = '0'
           and p.visibility = 'PUBLIC'
-          and c.deleted_yn = 'N'
+          and c.deleted_yn = '0'
           and c.parent_id is null
           and (latest_log.action_type is null or latest_log.action_type != 'HIDE')
         order by c.created_at asc
@@ -447,7 +420,6 @@
             c.member_id as memberId,
             coalesce(m.nickname, m.name) as author,
             c.content as content,
-            date_format(c.created_at, '%Y-%m-%d %H:%i') as createdAt,
             to_char(c.created_at, 'YYYY-MM-DD HH24:MI') as createdAt,
             coalesce(m.profile_image_url, '') as profileImageUrl,
             c.parent_id as parentCommentId
@@ -466,9 +438,9 @@
                     ) latest on latest.latest_log_id = log.log_id
                  ) latest_log on latest_log.target_id = c.comment_id
         where c.post_id = #{postId}
-          and p.deleted_yn = 'N'
+          and p.deleted_yn = '0'
           and p.visibility = 'PUBLIC'
-          and c.deleted_yn = 'N'
+          and c.deleted_yn = '0'
           and c.parent_id is not null
           and (latest_log.action_type is null or latest_log.action_type != 'HIDE')
         order by c.parent_id asc, c.created_at asc
@@ -480,14 +452,12 @@
             count(*) as count
         from post_tbl p
         where p.member_id = #{memberId}
-          and p.deleted_yn = 'N'
+          and p.deleted_yn = '0' <!-- Corrected to string literal '0' -->
           and p.visibility = 'PUBLIC'
           <if test="period == 'week'">
-            and p.created_at >= date_sub(convert_tz(now(6), '+00:00', '+09:00'), interval 7 day)
             and p.created_at >= (TIMEZONE('Asia/Seoul', NOW()) - INTERVAL '7 days')
           </if>
           <if test="period == 'month'">
-            and p.created_at >= date_sub(convert_tz(now(6), '+00:00', '+09:00'), interval 30 day)
             and p.created_at >= (TIMEZONE('Asia/Seoul', NOW()) - INTERVAL '30 days')
           </if>
         group by p.emotion_id
@@ -507,9 +477,8 @@
             #{memberId},
             #{content},
             #{parentCommentId},
-            CONVERT_TZ(NOW(6), '+00:00', '+09:00'),
             TIMEZONE('Asia/Seoul', NOW()),
-            'N'
+            '0'
         )
     </insert>
 
@@ -527,7 +496,6 @@
             #{mentionText},
             #{startIndex},
             #{endIndex},
-            CONVERT_TZ(NOW(6), '+00:00', '+09:00')
             TIMEZONE('Asia/Seoul', NOW())
         )
     </insert>
@@ -547,7 +515,6 @@
             cm.mention_text as mentionText,
             cm.start_index as startIndex,
             cm.end_index as endIndex,
-            date_format(cm.created_at, '%Y-%m-%d %H:%i:%s') as createdAt
             to_char(cm.created_at, 'YYYY-MM-DD HH24:MI:SS') as createdAt
         from comment_mention_tbl cm
                  join members m on cm.mentioned_user_id = m.member_id
@@ -562,7 +529,6 @@
             c.member_id as memberId,
             coalesce(m.nickname, m.name) as author,
             c.content as content,
-            date_format(c.created_at, '%Y-%m-%d %H:%i') as createdAt,
             to_char(c.created_at, 'YYYY-MM-DD HH24:MI') as createdAt,
             coalesce(m.profile_image_url, '') as profileImageUrl,
             c.parent_id as parentCommentId
@@ -581,9 +547,9 @@
                     ) latest on latest.latest_log_id = log.log_id
                  ) latest_log on latest_log.target_id = c.comment_id
         where c.comment_id = #{commentId}
-          and p.deleted_yn = 'N'
+          and p.deleted_yn = '0'
           and p.visibility = 'PUBLIC'
-          and c.deleted_yn = 'N'
+          and c.deleted_yn = '0'
           and (latest_log.action_type is null or latest_log.action_type != 'HIDE')
         limit 1
     </select>
@@ -592,19 +558,19 @@
         update comment_tbl
         set content = #{content}
         where comment_id = #{commentId}
-          and deleted_yn = 'N'
+          and deleted_yn = '0'
     </update>
 
     <update id="deleteComment" parameterType="long">
         update comment_tbl
-        set deleted_yn = 'Y'
+        set deleted_yn = '1'
         where comment_id = #{commentId}
     </update>
 
     <select id="selectChildCommentIds" parameterType="long" resultType="long">
         select comment_id from comment_tbl
         where parent_id = #{commentId}
-          and deleted_yn = 'N'
+          and deleted_yn = '0'
     </select>
 
     <select id="selectPostLikeByPostAndMember" parameterType="map" resultType="int">
@@ -622,7 +588,6 @@
         ) values (
             #{postId},
             #{memberId},
-            CONVERT_TZ(NOW(6), '+00:00', '+09:00')
             TIMEZONE('Asia/Seoul', NOW())
         )
     </insert>
@@ -648,7 +613,6 @@
         ) values (
             #{postId},
             #{memberId},
-            CONVERT_TZ(NOW(6), '+00:00', '+09:00')
             TIMEZONE('Asia/Seoul', NOW())
         )
     </insert>
@@ -667,21 +631,16 @@
             p.title as title,
             p.content as content,
             p.emotion_id as emotionId,
-            date_format(p.created_at, '%Y-%m-%d %H:%i') as createdAt,
             to_char(p.created_at, 'YYYY-MM-DD HH24:MI') as createdAt,
-            <!-- 저장한 글 목록도 같은 기준으로 맞춰야 태그 순서가 뒤바뀌지 않음 -->
-            coalesce((
-                select group_concat(concat('#', h.hashtag) order by ph.post_hashtag_id separator ' ')
-                select string_agg(concat('#', h.hashtag), ' ' order by ph.post_hashtag_id)
-                from post_hashtag ph join hashtag h on ph.hashtag_id = h.hashtag_id
-                where ph.post_id = p.post_id
-            ), '') as tags,
+            coalesce((select string_agg(concat('#', h.hashtag), ' ' order by ph.post_hashtag_id)
+                      from post_hashtag ph join hashtag h on ph.hashtag_id = h.hashtag_id
+                      where ph.post_id = p.post_id), '') as tags,
             coalesce((select count(*) from user_post_like where post_id = p.post_id), 0) as likes,
             coalesce((
                 select count(*)
                 from comment_tbl c
                 where c.post_id = p.post_id
-                  and c.deleted_yn = 'N'
+                  and c.deleted_yn = '0'
                   and not exists (
                       select 1
                       from admin_action_logs log
@@ -703,7 +662,7 @@
                  join post_tbl p on s.post_id = p.post_id
                  join members m on p.member_id = m.member_id
         where s.member_id = #{memberId}
-          and p.deleted_yn = 'N'
+          and p.deleted_yn = '0'
           and p.visibility = 'PUBLIC'
         order by s.created_at desc
         limit 50

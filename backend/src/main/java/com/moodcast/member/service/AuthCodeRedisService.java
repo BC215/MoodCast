@@ -24,9 +24,12 @@ public class AuthCodeRedisService {
     private static final int IP_DAILY_SEND_LIMIT = 30;
 
     private final StringRedisTemplate redisTemplate;
+    private final MessageSource messageSource; // ⭐️ 누락되었던 변수 선언 추가
 
-    public AuthCodeRedisService(StringRedisTemplate redisTemplate) {
+    // ⭐️ 생성자를 통해 redisTemplate과 messageSource를 동시에 정상 주입
+    public AuthCodeRedisService(StringRedisTemplate redisTemplate, MessageSource messageSource) {
         this.redisTemplate = redisTemplate;
+        this.messageSource = messageSource;
     }
 
     // redis key로 사용할 문자열 세팅
