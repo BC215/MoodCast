@@ -475,6 +475,8 @@
             p.member_id,
             m.name as author_name,
             m.nickname as author_nickname,
+            m.profile_image_url as author_profile_image_url,
+            coalesce((
                 select count(*)
                 from comment_tbl c
                 where c.post_id = p.post_id

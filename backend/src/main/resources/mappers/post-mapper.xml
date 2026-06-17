@@ -184,7 +184,7 @@
                  join members m on p.member_id = m.member_id
         where p.post_id = #{postId}
           and p.deleted_yn = '0'
-          and p.visibility = 'PUBLIC'
+          and p.deleted_yn IS DISTINCT FROM '1' -- '1'(삭제)이 아닌 모든 게시글(0 또는 null)을 조회
         limit 1
     </select>
 
@@ -249,7 +249,7 @@
             exists(select 1 from saved_post where post_id = p.post_id and member_id = #{viewerId}) as savedByMe
         from post_tbl p
                  join members m on p.member_id = m.member_id
-        where p.deleted_yn = '0'
+        where p.deleted_yn IS DISTINCT FROM '1' -- '1'(삭제)이 아닌 모든 게시글(0 또는 null)을 조회
           and p.visibility = 'PUBLIC'
         order by p.created_at desc
         limit 50
@@ -295,7 +295,7 @@
                  join members m on p.member_id = m.member_id
         where p.deleted_yn = '0'
           and p.visibility = 'PUBLIC'
-        order by (coalesce((select count(*) from user_post_like where post_id = p.post_id), 0) + coalesce((
+          and p.deleted_yn IS DISTINCT FROM '1' -- '1'(삭제)이 아닌 모든 게시글(0 또는 null)을 조회
                      select count(*)
                      from comment_tbl c
                      where c.post_id = p.post_id
@@ -359,7 +359,7 @@
                  join members m on p.member_id = m.member_id
         where p.deleted_yn = '0'
           and p.visibility = 'PUBLIC'
-          and p.member_id = #{memberId}
+          and p.deleted_yn IS DISTINCT FROM '1' -- '1'(삭제)이 아닌 모든 게시글(0 또는 null)을 조회
         order by p.created_at desc
         limit 50
     </select>

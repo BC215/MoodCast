@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.moodcast.member.dao.LoginAuditDao">
 
-    <insert id="insertLoginAuditLog" parameterType="com.moodcast.member.vo.LoginAuditLog">
+    <insert id="insertLoginAuditLog" parameterType="com.moodcast.member.vo.LoginAuditLog" useGeneratedKeys="true" keyProperty="loginAuditId">
         insert into login_audit_logs (
             member_id,
             email,

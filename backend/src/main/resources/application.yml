@@ -84,3 +84,13 @@ mybatis:
   type-aliases-package: com.moodcast.member.vo
   configuration:
     map-underscore-to-camel-case: true
+
+logging:
+  level:
+    root: INFO
+    org.springframework.jdbc.datasource.DataSourceTransactionManager: DEBUG # 트랜잭션 관리 로그
+    com.zaxxer.hikari: DEBUG # HikariCP (기본 커넥션 풀) 연결 정보 로그
+    org.apache.ibatis: DEBUG # MyBatis 내부 동작 로그
+    java.sql: TRACE # JDBC 드라이버 레벨 로그 (PreparedStatement, ResultSet 등) - 쿼리 및 파라미터 확인
+    # 특정 매퍼의 SQL만 보려면 (예시)
+    # com.moodcast.post.dao.PostDao: TRACE

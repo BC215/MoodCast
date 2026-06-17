@@ -32,7 +32,7 @@
             NOW(), <!-- joined_at -->
             NULL, <!-- hidden_at -->
             NULL, <!-- last_read_message_id -->
-            true,
+            1, -- is_active
             COALESCE(#{deletedYn}, 'N')
         )
         ON CONFLICT (room_id, member_id) DO UPDATE SET
@@ -46,7 +46,7 @@
                 WHERE room_id = EXCLUDED.room_id
                   AND deleted_yn = 'N'
             ),
-            is_active = true,
+            is_active = 1,
             deleted_yn = 'N'
     </insert>
 
@@ -62,6 +62,8 @@
         UPDATE chat_room_member
         SET left_at = NOW(),
             is_active = false
+        SET left_at = NOW(), -- is_active를 0으로 변경
+            is_active = 0
         WHERE room_id = #{roomId}
           AND member_id = #{memberId}
           AND deleted_yn = 'N'
@@ -77,8 +79,8 @@
               FROM chat_room_member crm
               WHERE crm.room_id = #{roomId}
                 AND crm.deleted_yn = 'N'
-                AND crm.left_at IS NULL
-                AND crm.is_active = true
+                AND crm.left_at IS NULL,
+                AND crm.is_active = 1
           )
     </update>
 
@@ -125,7 +127,7 @@
             FROM chat_room_member
             WHERE deleted_yn = 'N'
               AND left_at IS NULL
-              AND is_active = true
+              AND is_active = 1
             GROUP BY room_id
         ) mc ON mc.room_id = r.room_id
         LEFT JOIN (
@@ -166,7 +168,7 @@
             FROM chat_room_member
             WHERE deleted_yn = 'N'
               AND left_at IS NULL
-              AND is_active = true
+              AND is_active = 1
             GROUP BY room_id
         ) mc ON mc.room_id = r.room_id
         LEFT JOIN (
@@ -235,7 +237,7 @@
             FROM chat_room_member
             WHERE deleted_yn = 'N'
               AND left_at IS NULL
-              AND is_active = true
+              AND is_active = 1
             GROUP BY room_id
         ) mc ON mc.room_id = r.room_id
         LEFT JOIN (
@@ -250,7 +252,7 @@
              AND visible_rm.deleted_yn = 'N'
             WHERE cm.deleted_yn = 'N'
               AND visible_rm.left_at IS NULL
-              AND visible_rm.is_active = true
+              AND visible_rm.is_active = 1
               AND (visible_rm.joined_at IS NULL OR cm.created_at >= visible_rm.joined_at)
               AND (visible_rm.hidden_at IS NULL OR cm.created_at > visible_rm.hidden_at)
             GROUP BY cm.room_id
@@ -267,7 +269,7 @@
             WHERE cm.deleted_yn = 'N'
               AND cm.sender_id != #{memberId}
               AND reader.left_at IS NULL
-              AND reader.is_active = true
+              AND reader.is_active = 1
               AND (reader.joined_at IS NULL OR cm.created_at >= reader.joined_at)
               AND (reader.hidden_at IS NULL OR cm.created_at > reader.hidden_at)
               AND (reader.last_read_message_id IS NULL OR cm.message_id &gt; reader.last_read_message_id)
@@ -275,7 +277,7 @@
         ) unread ON unread.room_id = r.room_id
         WHERE r.deleted_yn = 'N'
           AND rm.left_at IS NULL
-          AND rm.is_active = true
+          AND rm.is_active = 1
           AND (
               rm.hidden_at IS NULL
               OR EXISTS (
@@ -338,7 +340,7 @@
           AND rm.member_id = #{memberId}
           AND rm.deleted_yn = 'N'
           AND rm.left_at IS NULL
-          AND rm.is_active = true
+          AND rm.is_active = 1
         LIMIT 1
     </select>
 
@@ -363,7 +365,7 @@
         WHERE rm.room_id = #{roomId}
           AND rm.deleted_yn = 'N'
           AND rm.left_at IS NULL
-          AND rm.is_active = true
+          AND rm.is_active = 1
         ORDER BY rm.joined_at ASC, rm.room_member_id ASC
     </select>
 
@@ -372,8 +374,8 @@
         FROM chat_room_member
         WHERE room_id = #{roomId}
           AND deleted_yn = 'N'
-          AND left_at IS NULL
-          AND is_active = true
+          AND left_at IS NULL,
+          AND is_active = 1
     </select>
 
     <insert id="insertChatMessage" parameterType="com.moodcast.chat.vo.ChatMessageVo" useGeneratedKeys="true" keyProperty="messageId">
@@ -441,10 +443,8 @@
                 WHERE crm.room_id = cm.room_id
                   AND crm.deleted_yn = 'N'
                   AND crm.left_at IS NULL
-                  AND crm.is_active = 1
-                  AND crm.member_id &lt;&gt; cm.sender_id
-                  AND crm.is_active = true
-                  AND crm.member_id != cm.sender_id
+                  AND crm.is_active = 1,
+                  AND crm.member_id &lt;&gt; cm.sender_id,
                   AND (
                         crm.last_read_message_id IS NULL
                         OR crm.last_read_message_id &lt; cm.message_id
@@ -480,10 +480,8 @@
                 WHERE crm.room_id = cm.room_id
                   AND crm.deleted_yn = 'N'
                   AND crm.left_at IS NULL
-                  AND crm.is_active = 1
-                  AND crm.member_id &lt;&gt; cm.sender_id
-                  AND crm.is_active = true
-                  AND crm.member_id != cm.sender_id
+                  AND crm.is_active = 1,
+                  AND crm.member_id &lt;&gt; cm.sender_id,
                   AND (
                         crm.last_read_message_id IS NULL
                         OR crm.last_read_message_id &lt; cm.message_id
@@ -501,9 +499,8 @@
         WHERE cm.room_id = #{roomId}
           AND cm.deleted_yn = 'N'
           <if test="memberId != null">
-              AND rm.left_at IS NULL
-              AND rm.is_active = 1
-              AND rm.is_active = true
+              AND rm.left_at IS NULL,
+              AND rm.is_active = 1,
               AND (rm.joined_at IS NULL OR cm.created_at >= rm.joined_at)
               AND (rm.hidden_at IS NULL OR cm.created_at > rm.hidden_at)
           </if>

@@ -16,12 +16,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/chat")
 public class ChatController {
-
-    @Autowired
-    private ChatService chatService;
-
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
+    // @RequiredArgsConstructor가 final 필드에 대한 생성자를 자동으로 생성하므로 @Autowired는 불필요합니다.
+    private final ChatService chatService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @GetMapping("/messages")
     public ResponseEntity<?> messages(
