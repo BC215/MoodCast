@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { websocketBaseUrl } from '../shared/lib/websocketUrl';
 
-const API_BASE = import.meta.env.VITE_BACKSERVER || 'http://localhost:8080';
+const API_BASE = import.meta.env.VITE_BACKSERVER || '/api';
 export const CHAT_UNREAD_CHANGED_EVENT = 'moodchat:unread-changed';
 
 function sumUnreadCount(threads) {

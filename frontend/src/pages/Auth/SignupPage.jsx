@@ -14,7 +14,7 @@ const nameRegex = /^[가-힣]{2,10}$/;
 const nicknameRegex = /^[가-힣A-Za-z0-9]{2,12}$/;
 const passwordRegex =
   /^(?=.*[A-Za-z])(?=.*\d)(?=.*[?!@#$%^&*])[A-Za-z\d?!@#$%^&*]{8,20}$/;
-const BACKSERVER = "http://localhost:8080"; // import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+const BACKSERVER = import.meta.env.VITE_BACKSERVER || "/api"; // import.meta.env.VITE_BACKSERVER || "/api";
 const normalizeAuthCode = (value) => value.replace(/\D/g, "").slice(0, 6);
 
 export const SignupPage = () => {

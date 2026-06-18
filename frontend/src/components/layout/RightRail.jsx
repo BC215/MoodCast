@@ -126,7 +126,7 @@ function RightRailBase({
   const [trendingTags, setTrendingTags] = useState([]);
   const [loadingTags, setLoadingTags] = useState(true);
   const [expandedTags, setExpandedTags] = useState(false);
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "/api";
 
   // controlled 모드(외부 props)와 uncontrolled 모드(내부 state) 모두 지원
   const isControlled =

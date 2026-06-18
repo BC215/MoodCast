@@ -17,7 +17,7 @@ export function MobileShell({ title, children, hideSearch = false, fixedContent 
   const [searchOpen, setSearchOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || 'http://localhost:8080';
+  const BACKSERVER = import.meta.env.VITE_BACKSERVER || '/api';
 
   const closeTopMenus = () => {
     setNotificationOpen(false);

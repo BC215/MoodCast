@@ -18,7 +18,7 @@ export function FollowersPage() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || 'http://localhost:8080';
+  const BACKSERVER = import.meta.env.VITE_BACKSERVER || '/api';
   
   // 프로필 주인의 ID 가져오기 (URL 파라미터가 있으면 그것을, 없으면 본인 ID)
   const targetId = params.memberId || currentMember?.memberId;

@@ -25,7 +25,7 @@ import {
 } from "../../shared/lib/chatRoomModel";
 import "./groupChatStyles.css";
 
-const API_BASE = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+const API_BASE = import.meta.env.VITE_BACKSERVER || "/api";
 
 function GroupChatBody({ desktop, onRoomOpenChange }) {
   const { member, accessToken } = useAuthStore();

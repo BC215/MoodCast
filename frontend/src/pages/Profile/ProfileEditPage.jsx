@@ -50,7 +50,7 @@ export function ProfileEditPage() {
     setSaved(false);
   };
 
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || 'http://localhost:8080';
+  const BACKSERVER = import.meta.env.VITE_BACKSERVER || '/api';
 
   // 프로필 사진을 선택하면 우선 즉시 미리보기를 보여주고, 서버에 업로드를 진행합니다.
   const handlePhotoChange = async (event) => {

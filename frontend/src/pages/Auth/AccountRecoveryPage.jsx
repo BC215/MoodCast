@@ -24,7 +24,7 @@ export const AccountRecoveryPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialMode =
     searchParams.get("mode") === "password" ? "password" : "email";
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "/api";
 
   const [mode, setMode] = useState(initialMode);
   const [isLoading, setIsLoading] = useState(false);

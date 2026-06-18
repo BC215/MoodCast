@@ -10,7 +10,7 @@ import styles from "../../adminComponentsCss/reportManagement/ReportListItem.mod
 export function ReportListItem({ report, onOpen }) {
   const Icon = getTypeIcon(report.type);
   const isResolved = report.status === REPORT_LABELS.done;
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "/api";
   const summaryText = stripHtml(report.detail || report.targetContent || "");
   const firstImageSrc = getFirstReportImageSrc(report, BACKSERVER);
 

@@ -14,7 +14,7 @@ const nicknameRegex = /^[가-힣A-Za-z0-9]{2,12}$/;
 export const SocialExtraSignupPage = () => {
   const navigate = useNavigate();
   const { setAuthData } = useAuthStore();
-  const BACKSERVER = "http://localhost:8080"; // import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "/api"; // import.meta.env.VITE_BACKSERVER || "/api";
 
   const [pending, setPending] = useState(null);
   const [form, setForm] = useState({

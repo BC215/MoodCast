@@ -537,7 +537,7 @@ export function StatisticsDashboardPage() {
   const [loading, setLoading] = useState(false); // 여러 통계 API를 불러오는 중인지 저장합니다.
   const { accessToken } = useAuthStore(); // 관리자 API 호출에 필요한 로그인 토큰입니다.
 
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "/api";
   const currentPeriod = getCurrentPeriodOption(periodLabel);
 
   useEffect(() => {

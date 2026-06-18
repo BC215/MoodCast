@@ -68,7 +68,7 @@ export function PostDetailPage() {
   const [loading, setLoading] = useState(true);
   const [commentCount, setCommentCount] = useState(0);
   const [commentsReady, setCommentsReady] = useState(false);
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "/api";
   const shouldAutoFocusComments = useMemo(
     () =>
       searchParams.get("comments") === "1" ||

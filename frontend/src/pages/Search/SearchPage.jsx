@@ -31,7 +31,7 @@ export function SearchPage() {
     accessToken: token,
     isLoggedIn,
   } = useAuthStore();
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "/api";
 
   // 트렌딩 태그 조회
   useEffect(() => {

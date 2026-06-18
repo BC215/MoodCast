@@ -40,7 +40,7 @@ export function HomeFeedPage() {
   const [emotionFilter, setEmotionFilter] = useState(null);
   const [hashtagFilter, setHashtagFilter] = useState(null);
   const { accessToken } = useAuthStore();
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "/api";
   const FEED_SCROLL_KEY = "moodcast-feed-scroll-y";
 
   const handlePeriodFilterChange = (nextPeriod) => {

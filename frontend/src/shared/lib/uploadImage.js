@@ -8,12 +8,18 @@
  * @param {boolean} cropSquare
  * @returns {Promise<File>}
  */
-import apiClient from '../api/apiClient';
+import apiClient from "../api/apiClient";
 
-function resizeImage(file, maxWidth, maxHeight, quality = 0.85, cropSquare = false) {
+function resizeImage(
+  file,
+  maxWidth,
+  maxHeight,
+  quality = 0.85,
+  cropSquare = false,
+) {
   return new Promise((resolve, reject) => {
-    if (!file.type.startsWith('image/')) {
-      reject(new Error('이미지 파일만 업로드할 수 있습니다.'));
+    if (!file.type.startsWith("image/")) {
+      reject(new Error("이미지 파일만 업로드할 수 있습니다."));
       return;
     }
 
@@ -39,38 +45,56 @@ function resizeImage(file, maxWidth, maxHeight, quality = 0.85, cropSquare = fal
         targetWidth = maxWidth;
         targetHeight = maxHeight;
       } else {
-        const ratio = Math.min(maxWidth / sourceWidth, maxHeight / sourceHeight, 1);
+        const ratio = Math.min(
+          maxWidth / sourceWidth,
+          maxHeight / sourceHeight,
+          1,
+        );
         targetWidth = Math.max(1, Math.round(sourceWidth * ratio));
         targetHeight = Math.max(1, Math.round(sourceHeight * ratio));
       }
 
-      const canvas = document.createElement('canvas');
+      const canvas = document.createElement("canvas");
       canvas.width = targetWidth;
       canvas.height = targetHeight;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(image, sx, sy, sWidth, sHeight, 0, 0, targetWidth, targetHeight);
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(
+        image,
+        sx,
+        sy,
+        sWidth,
+        sHeight,
+        0,
+        0,
+        targetWidth,
+        targetHeight,
+      );
       URL.revokeObjectURL(objectUrl);
 
-      const mimeType = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+      const mimeType = file.type === "image/png" ? "image/png" : "image/jpeg";
       canvas.toBlob(
         (blob) => {
           if (!blob) {
-            reject(new Error('이미지 변환에 실패했습니다.'));
+            reject(new Error("이미지 변환에 실패했습니다."));
             return;
           }
-          const extension = mimeType === 'image/png' ? '.png' : '.jpg';
-          const nameWithoutExt = file.name.replace(/\.[^/.]+$/, '');
-          const resizedFile = new File([blob], `${nameWithoutExt}${extension}`, { type: mimeType });
+          const extension = mimeType === "image/png" ? ".png" : ".jpg";
+          const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
+          const resizedFile = new File(
+            [blob],
+            `${nameWithoutExt}${extension}`,
+            { type: mimeType },
+          );
           resolve(resizedFile);
         },
         mimeType,
-        mimeType === 'image/png' ? 1.0 : quality
+        mimeType === "image/png" ? 1.0 : quality,
       );
     };
 
     image.onerror = () => {
       URL.revokeObjectURL(objectUrl);
-      reject(new Error('이미지 로드에 실패했습니다.'));
+      reject(new Error("이미지 로드에 실패했습니다."));
     };
 
     image.src = objectUrl;
@@ -83,13 +107,18 @@ function resizeImage(file, maxWidth, maxHeight, quality = 0.85, cropSquare = fal
  *
  * @param {File} file - 업로드할 이미지 파일
  * @param {string} token - JWT Access Token
- * @param {string} backserver - 백엔드 base URL (예: http://localhost:8080)
+ * @param {string} backserver - 백엔드 base URL (예: /api 또는 http://localhost:8080/api)
  * @param {{maxWidth?: number, maxHeight?: number, quality?: number, cropSquare?: boolean, folderType?: 'user-images'|'post-images'}} [options]
  * @returns {Promise<string>} - 서버에 저장된 이미지 접근 URL
  */
-const DEFAULT_BACKSERVER = import.meta.env.VITE_BACKSERVER || 'http://localhost:8080';
+const DEFAULT_BACKSERVER = import.meta.env.VITE_BACKSERVER || "/api";
 
-export async function uploadImage(file, token, backserver = DEFAULT_BACKSERVER, options = {}) {
+export async function uploadImage(
+  file,
+  token,
+  backserver = DEFAULT_BACKSERVER,
+  options = {},
+) {
   let uploadFile = file;
   if (options.maxWidth || options.maxHeight || options.cropSquare) {
     uploadFile = await resizeImage(
@@ -97,13 +126,13 @@ export async function uploadImage(file, token, backserver = DEFAULT_BACKSERVER, 
       options.maxWidth ?? 1200,
       options.maxHeight ?? 1200,
       options.quality ?? 0.85,
-      Boolean(options.cropSquare)
+      Boolean(options.cropSquare),
     );
   }
 
   const formData = new FormData();
-  formData.append('file', uploadFile);
-  formData.append('folderType', options.folderType || 'post-images');
+  formData.append("file", uploadFile);
+  formData.append("folderType", options.folderType || "post-images");
 
   const headers = {};
   if (token) {
@@ -111,7 +140,14 @@ export async function uploadImage(file, token, backserver = DEFAULT_BACKSERVER, 
   }
 
   try {
-    const response = await apiClient.post(`${backserver}/upload`, formData, {
+    const normalizedBackserver = String(
+      backserver || DEFAULT_BACKSERVER || "",
+    ).replace(/\/+$/, "");
+    const uploadUrl = normalizedBackserver
+      ? `${normalizedBackserver}/upload`
+      : "/upload";
+
+    const response = await apiClient.post(uploadUrl, formData, {
       headers,
     });
 
@@ -123,7 +159,7 @@ export async function uploadImage(file, token, backserver = DEFAULT_BACKSERVER, 
       responseData.error ||
         responseData.message ||
         error.message ||
-        `업로드 실패${status ? ` (${status})` : ''}`,
+        `업로드 실패${status ? ` (${status})` : ""}`,
     );
 
     uploadError.status = status;

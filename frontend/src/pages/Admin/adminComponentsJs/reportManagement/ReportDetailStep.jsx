@@ -14,7 +14,7 @@ export function ReportDetailStep({ report, onClose, onProcess }) {
   const [isPostDetailModalOpen, setIsPostDetailModalOpen] = useState(false);
   const visibleActivities = (report.activities || []).slice(0, 5);
   const isCommentReport = report.type === "댓글";
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "/api";
   const postImageSrcs = getPostImageSrcs(report, BACKSERVER);
   const targetText = stripHtml(report.targetContent || report.detail || "");
   const commentText = stripHtml(report.commentContent || "");

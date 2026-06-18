@@ -31,7 +31,7 @@ function AppRoutes() {
   const desktop = useIsDesktop();
   const [authChecked, setAuthChecked] = useState(false);
   const { accessToken, member, isLoggedIn, setAuthData, clearAuthData } = useAuthStore();
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "/api";
   const authRoute = (element) => (
     <RequireAuth authChecked={authChecked}>{element}</RequireAuth>
   );

@@ -28,7 +28,7 @@ export function SavedPage() {
   const { accessToken, isLoggedIn } = useAuthStore();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || 'http://localhost:8080';
+  const BACKSERVER = import.meta.env.VITE_BACKSERVER || '/api';
 
   // 로그인된 사용자의 저장된 게시물을 백엔드에서 가져옵니다.
   useEffect(() => {

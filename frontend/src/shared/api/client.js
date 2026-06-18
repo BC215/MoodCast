@@ -2,7 +2,7 @@ import axios from "axios";
 import { useAuthStore } from "../../stores/useAuthStore";
 
 // Vercel 배포 환경에서는 VITE_BACKSERVER='/api'
-// 로컬 개발 환경(.env)에서는 VITE_BACKSERVER='http://localhost:8080/api'
+// 로컬 개발 환경(.env)에서는 VITE_BACKSERVER='http://localhost:8080/api' 또는 '/api'
 const API_BASE_URL = import.meta.env.VITE_BACKSERVER;
 
 if (!API_BASE_URL) {

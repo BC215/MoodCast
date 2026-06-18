@@ -45,7 +45,7 @@ export function DashboardRecentActivities() {
   const { accessToken } = useAuthStore(); // 관리자 API 호출에 필요한 로그인 토큰입니다.
 
   const BACKSERVER = (
-    import.meta.env.VITE_BACKSERVER || "http://localhost:8080"
+    import.meta.env.VITE_BACKSERVER || "/api"
   ).replace(/\/$/, "");
 
   useEffect(() => {

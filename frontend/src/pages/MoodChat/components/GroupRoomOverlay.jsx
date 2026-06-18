@@ -14,7 +14,7 @@ import {
 } from "../../../shared/lib/chatRoomModel";
 import { GroupChatRoomDetail } from "../../GroupChat/components/GroupChatRoomDetail";
 
-const API_BASE = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+const API_BASE = import.meta.env.VITE_BACKSERVER || "/api";
 
 export function GroupRoomOverlay({
   room,

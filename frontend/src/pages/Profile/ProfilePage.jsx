@@ -105,7 +105,7 @@ export function ProfilePage() {
     accessToken: token,
     isLoggedIn,
   } = useAuthStore();
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "/api";
 
   // 실제 조회할 ID 결정 (파라미터 없으면 내 ID)
   const targetId = sanitizedHandle || currentMember?.memberId;

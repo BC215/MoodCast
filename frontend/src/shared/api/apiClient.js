@@ -1,8 +1,10 @@
 import axios from "axios";
 import { useAuthStore, logoutAndRedirect } from "../../stores/useAuthStore";
 
-const BACKSERVER = "http://localhost:8080"; // import.meta.env.VITE_BACKSERVER || 'http://localhost:8080';
-axios.defaults.baseURL = BACKSERVER;
+const BACKSERVER = (import.meta.env.VITE_BACKSERVER || "/api").trim();
+const NORMALIZED_BACKSERVER = BACKSERVER.replace(/\/+$/, "");
+
+axios.defaults.baseURL = NORMALIZED_BACKSERVER || "/api";
 
 let refreshPromise = null;
 

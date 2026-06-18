@@ -41,7 +41,7 @@ import { ChatRoomCreateModal } from "./components/ChatRoomCreateModal";
 import { GroupRoomOverlay } from "./components/GroupRoomOverlay";
 import styles from "./MoodChatPage.module.css";
 
-const API_BASE = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+const API_BASE = import.meta.env.VITE_BACKSERVER || "/api";
 const DEFAULT_CURRENT_USER_ID = null;
 
 function buildImageEntries(files) {

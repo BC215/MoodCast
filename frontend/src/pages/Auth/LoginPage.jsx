@@ -82,7 +82,7 @@ export const LoginPage = () => {
     open: false,
     message: "",
   });
-  const BACKSERVER = "http://localhost:8080"; // import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "/api"; // import.meta.env.VITE_BACKSERVER || "/api";
 
   useEffect(() => {
     const savedEmail = window.localStorage.getItem(SAVED_EMAIL_KEY);

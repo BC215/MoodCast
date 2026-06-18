@@ -27,8 +27,8 @@ export const SocialCallbackPage = () => {
   const [searchParams] = useSearchParams();
   const { accessToken, setAuthData } = useAuthStore();
   const calledRef = useRef(false);
-  const [toast, setToast] = useState({ show: false, type: "", message: "" }); // import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
-  const BACKSERVER = "http://localhost:8080";
+  const [toast, setToast] = useState({ show: false, type: "", message: "" }); // import.meta.env.VITE_BACKSERVER || "/api";
+  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "/api";
   const pathname = window.location.pathname;
   const provider = pathname.includes("/auth/google/")
     ? "google"

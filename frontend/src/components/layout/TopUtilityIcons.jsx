@@ -20,7 +20,7 @@ function TopUtilityIconsBase({ onSearch }) {
   const menuRef = useRef(null);
   const notificationRef = useRef(null);
   const profileBtnRef = useRef(null);
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || 'http://localhost:8080';
+  const BACKSERVER = import.meta.env.VITE_BACKSERVER || '/api';
 
   const { notifications, unreadCount, removeNotification, clearNotifications } = useRealtimeNotifications(
     isLoggedIn ? member?.memberId : null,

@@ -21,7 +21,7 @@ function DesktopShell({
   const [loadingPosts, setLoadingPosts] = useState(true);
   const cachedPostsRef = useRef(null); // Use useRef for mutable cache
   const cachedPostsPromiseRef = useRef(null); // Use useRef for mutable promise
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "/api";
   const navigate = useNavigate();
   const location = useLocation();
 

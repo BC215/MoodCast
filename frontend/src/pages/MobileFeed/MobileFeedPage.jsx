@@ -21,7 +21,7 @@ export function MobileFeedPage() {
   const [loading, setLoading] = useState(true);
   const [selectedMoodFilter, setSelectedMoodFilter] = useState(null);
   const { accessToken } = useAuthStore();
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || 'http://localhost:8080';
+  const BACKSERVER = import.meta.env.VITE_BACKSERVER || '/api';
   const FEED_SCROLL_KEY = 'moodcast-feed-scroll-y';
 
   const normalizeContent = (content) => {

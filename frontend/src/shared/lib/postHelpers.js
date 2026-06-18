@@ -9,7 +9,7 @@
  * @returns {string} 순수 텍스트
  */
 export const BACKSERVER =
-  import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+  import.meta.env.VITE_BACKSERVER || "/api";
 export const PUBLIC_S3_BASE_URL = import.meta.env.VITE_PUBLIC_S3_BASE_URL || "";
 
 function buildPublicS3Url(key, publicS3BaseUrl = PUBLIC_S3_BASE_URL) {

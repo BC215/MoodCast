@@ -53,7 +53,7 @@ export function UserManagementDrawer({
   const { accessToken, member, setAuthData } = useAuthStore();
 
   const BACKSERVER = (
-    import.meta.env.VITE_BACKSERVER || "http://localhost:8080"
+    import.meta.env.VITE_BACKSERVER || "/api"
   ).replace(/\/$/, "");
 
   const getManagedMemberProfileImageSrc = (managedMember) => {

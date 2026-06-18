@@ -74,7 +74,7 @@ export function ContentPostManagement() {
   const [bulkActionLoading, setBulkActionLoading] = useState(false);
 
   const { accessToken } = useAuthStore();
-  const BACKSERVER = (import.meta.env.VITE_BACKSERVER || "http://localhost:8080").replace(/\/$/, "");
+  const BACKSERVER = (import.meta.env.VITE_BACKSERVER || "/api").replace(/\/$/, "");
 
   const authHeaders = useMemo(
     () => ({ Authorization: `Bearer ${accessToken}` }),

@@ -17,7 +17,7 @@ export function FollowingPage() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || 'http://localhost:8080';
+  const BACKSERVER = import.meta.env.VITE_BACKSERVER || '/api';
   
   // 프로필 주인의 ID 가져오기
   const targetId = params.memberId || currentMember?.memberId;
