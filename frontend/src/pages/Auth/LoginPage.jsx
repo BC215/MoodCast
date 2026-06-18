@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import apiClient from "../../shared/api/apiClient";
 import { useAuthStore } from "../../stores/useAuthStore";
 import { LoginView } from "./components/LoginView";
 import AuthConfirmModal from "./components/AuthConfirmModal";
@@ -82,7 +82,6 @@ export const LoginPage = () => {
     open: false,
     message: "",
   });
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "/api"; // import.meta.env.VITE_BACKSERVER || "/api";
 
   useEffect(() => {
     const savedEmail = window.localStorage.getItem(SAVED_EMAIL_KEY);
@@ -145,9 +144,9 @@ export const LoginPage = () => {
 
     setIsLoading(true);
 
-    axios
+    apiClient
       .post(
-        `${BACKSERVER}/auth/login`,
+        "/auth/login",
         {
           email: member.email,
           password: member.password,
