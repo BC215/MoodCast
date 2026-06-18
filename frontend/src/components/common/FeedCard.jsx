@@ -17,8 +17,8 @@ import CelebrationIcon from "@mui/icons-material/Celebration";
 import SentimentNeutralIcon from "@mui/icons-material/SentimentNeutral";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useAuthStore } from "../../stores/useAuthStore";
+import { apiClient } from "../../shared/api/client";
 import { defaultAvatarSrc } from "../../shared/lib/defaultAvatar";
 import { normalizeBackendUrl } from "../../shared/lib/postHelpers";
 import { CommentModal } from "./CommentModal";
@@ -166,7 +166,6 @@ export function FeedCard({
 }) {
   const navigate = useNavigate();
   const { member, accessToken: storeToken } = useAuthStore();
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
   const accessToken = storeToken; // Rely on Zustand store for accessToken
 
   // member.nickname으로 비교 (post.author는 nickname 값)
@@ -233,7 +232,7 @@ export function FeedCard({
     ...extractImageUrls(rawContent),
   ]
     .filter(Boolean)
-    .map((src) => normalizeBackendUrl(src, BACKSERVER, "post-images"));
+    .map((src) => normalizeBackendUrl(src, "", "post-images"));
   const imageSrcs = Array.from(new Set(imageCandidates));
   const imageSrc = imageSrcs[0] ?? null;
   const timeLabel = post.time ?? post.createdAt ?? post.created_at ?? "";
@@ -261,7 +260,7 @@ export function FeedCard({
       post.image_url ??
       post.photo_url ??
       null,
-    BACKSERVER,
+    "",
     "user-images",
   );
   const profileInitial = post.author
@@ -310,9 +309,7 @@ export function FeedCard({
 
   const fetchComments = async (postId) => {
     try {
-      const response = await axios.get(
-        `${BACKSERVER}/posts/${postId}/comments`,
-      );
+      const response = await apiClient.get(`/posts/${postId}/comments`);
       const items = response.data?.results || [];
 
       const normalizeComment = (comment) => ({
@@ -436,15 +433,7 @@ export function FeedCard({
     }
 
     try {
-      const response = await axios.post(
-        `${BACKSERVER}/posts/${postId}/saves`,
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
+      const response = await apiClient.post(`/posts/${postId}/saves`, null);
       setSaved(response.data.saved);
     } catch (err) {
       console.error("❌ 게시물 저장 실패:", err);
@@ -469,16 +458,10 @@ export function FeedCard({
       return;
     }
     try {
-      await axios.post(
-        `${BACKSERVER}/reports`, // 신고 API 엔드포인트
-        {
-          postId: postId,
-          reason: reason,
-        },
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        },
-      );
+      await apiClient.post(`/reports`, {
+        postId: postId,
+        reason: reason,
+      });
       setReportModalOpen(false);
       alert("게시물 신고가 정상적으로 접수되었습니다.");
     } catch (error) {
@@ -505,11 +488,7 @@ export function FeedCard({
     try {
       setDeleteModalOpen(false);
 
-      await axios.delete(`${BACKSERVER}/posts/${postId}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      await apiClient.delete(`/posts/${postId}`);
 
       window.location.reload();
     } catch (err) {
@@ -526,15 +505,7 @@ export function FeedCard({
     }
 
     try {
-      const response = await axios.post(
-        `${BACKSERVER}/posts/${postId}/likes`,
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
+      const response = await apiClient.post(`/posts/${postId}/likes`, null);
 
       setLiked(response.data.liked);
       if (typeof response.data.likes === "number") {
@@ -554,15 +525,9 @@ export function FeedCard({
     }
 
     try {
-      const response = await axios.post(
-        `${BACKSERVER}/posts/${postId}/comments`,
-        { content },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
+      const response = await apiClient.post(`/posts/${postId}/comments`, {
+        content,
+      });
       const nextComment = response.data.comment;
       const mappedComment = {
         ...nextComment,
@@ -597,15 +562,10 @@ export function FeedCard({
     }
 
     try {
-      const response = await axios.post(
-        `${BACKSERVER}/posts/${postId}/comments`,
-        { content, mentions },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
+      const response = await apiClient.post(`/posts/${postId}/comments`, {
+        content,
+        mentions,
+      });
       const nextComment = response.data.comment;
       const mappedComment = {
         ...nextComment,

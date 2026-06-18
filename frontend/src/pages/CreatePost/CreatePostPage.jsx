@@ -144,18 +144,10 @@ export function CreatePostPage() {
   const handleImageUpload = async (event) => {
     const files = Array.from(event.target.files || []);
     if (!files.length) return;
-    const effectiveToken =
-      token || window.sessionStorage.getItem("moodcast-access-token");
 
     for (const file of files) {
       try {
-        const url = await uploadImage(file, effectiveToken, BACKSERVER, {
-          maxWidth: 1200,
-          maxHeight: 1200,
-          quality: 0.8,
-          cropSquare: false,
-          folderType: "post-images",
-        });
+        const url = await uploadImage(file, { folderType: "post-images" });
         // 업로드한 이미지는 본문 문자열에 넣지 않고 미리보기 목록에만 추가함
         setAttachedImages((prev) => [...prev, url]);
       } catch (err) {

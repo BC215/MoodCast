@@ -1,10 +1,10 @@
-import axios from "axios";
 import { DesktopShell } from "../../components/layout/DesktopShell";
 import { MobileShell } from "../../components/layout/MobileShell";
 import { useIsDesktop } from "../../hooks/useViewportWidth";
 import { useRef, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuthStore } from "../../stores/useAuthStore";
+import { apiClient } from "../../shared/api/client";
 import styles from "./EditPostPage.module.css";
 import { uploadImage } from "../../shared/lib/uploadImage";
 import { fetchMentionCandidates } from "../../shared/api/followApi";
@@ -57,7 +57,6 @@ export function EditPostPage() {
   const [mentionOpen, setMentionOpen] = useState(false);
   const [mentionRange, setMentionRange] = useState(null);
   const [mentions, setMentions] = useState([]);
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
 
   const closeMentionBox = () => {
     setMentionKeyword("");
@@ -151,11 +150,7 @@ export function EditPostPage() {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`${BACKSERVER}/api/posts/${postId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await apiClient.get(`/posts/${postId}`);
         const post = response.data;
 
         setTitle(post.title || "");
@@ -189,24 +184,16 @@ export function EditPostPage() {
     };
 
     fetchPost();
-  }, [postId, token, BACKSERVER, navigate]);
+  }, [postId, navigate]);
 
   // 수정 중인 게시물 본문에 이미지를 업로드합니다.
   const handleImageUpload = async (event) => {
     const files = Array.from(event.target.files || []);
     if (!files.length) return;
-    const effectiveToken =
-      token || window.sessionStorage.getItem("moodcast-access-token");
 
     for (const file of files) {
       try {
-        const url = await uploadImage(file, effectiveToken, BACKSERVER, {
-          maxWidth: 1200,
-          maxHeight: 1200,
-          quality: 0.8,
-          cropSquare: false,
-          folderType: "post-images",
-        });
+        const url = await uploadImage(file, { folderType: "post-images" });
         // 새로 올린 이미지도 본문 textarea에는 넣지 않고 목록으로만 관리함
         setAttachedImages((prev) => [...prev, url]);
       } catch (err) {
@@ -293,11 +280,7 @@ export function EditPostPage() {
         mentions,
       };
 
-      await axios.put(`${BACKSERVER}/api/posts/${postId}`, requestData, {
-        headers: {
-          Authorization: `Bearer ${effectiveToken}`,
-        },
-      });
+      await apiClient.put(`/posts/${postId}`, requestData);
 
       alert("게시물이 수정되었습니다.");
       navigate("/app");
