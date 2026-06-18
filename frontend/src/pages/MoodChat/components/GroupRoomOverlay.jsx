@@ -44,9 +44,13 @@ export function GroupRoomOverlay({
     }
 
     const numericLastReadMessageId = Number(lastReadMessageId);
-    const hasMessageId = Number.isFinite(numericLastReadMessageId) && numericLastReadMessageId > 0;
+    const hasMessageId =
+      Number.isFinite(numericLastReadMessageId) && numericLastReadMessageId > 0;
 
-    if (hasMessageId && lastSentReadMessageIdRef.current >= numericLastReadMessageId) {
+    if (
+      hasMessageId &&
+      lastSentReadMessageIdRef.current >= numericLastReadMessageId
+    ) {
       return;
     }
 
@@ -87,7 +91,9 @@ export function GroupRoomOverlay({
     try {
       const response = await fetchGroupChatMessages(roomId, currentMemberId);
       const normalizedMessages = Array.isArray(response.data)
-        ? response.data.map((item) => normalizeGroupMessage(item, groupMessageTimeCacheRef.current))
+        ? response.data.map((item) =>
+            normalizeGroupMessage(item, groupMessageTimeCacheRef.current),
+          )
         : [];
 
       setMessages(normalizedMessages);
@@ -123,16 +129,23 @@ export function GroupRoomOverlay({
 
   const handleIncomingMessage = (incomingMessage) => {
     if (incomingMessage?.eventType === "CHAT_DELETE") {
-      const deletedMessageId = Number(incomingMessage?.messageId ?? incomingMessage?.id);
+      const deletedMessageId = Number(
+        incomingMessage?.messageId ?? incomingMessage?.id,
+      );
 
       setMessages((previousMessages) =>
-        previousMessages.filter((item) => Number(item.messageId) !== deletedMessageId),
+        previousMessages.filter(
+          (item) => Number(item.messageId) !== deletedMessageId,
+        ),
       );
       onRoomUpdated?.();
       return;
     }
 
-    const normalized = normalizeGroupMessage(incomingMessage, groupMessageTimeCacheRef.current);
+    const normalized = normalizeGroupMessage(
+      incomingMessage,
+      groupMessageTimeCacheRef.current,
+    );
 
     setMessages((previousMessages) => {
       const pendingIndex = previousMessages.findIndex(
@@ -185,13 +198,21 @@ export function GroupRoomOverlay({
     }
 
     const payload =
-      eventOrPayload && typeof eventOrPayload === "object" && typeof eventOrPayload.preventDefault !== "function"
+      eventOrPayload &&
+      typeof eventOrPayload === "object" &&
+      typeof eventOrPayload.preventDefault !== "function"
         ? eventOrPayload
         : {};
-    const trimmedMessage = typeof payload.text === "string" ? payload.text.trim() : "";
+    const trimmedMessage =
+      typeof payload.text === "string" ? payload.text.trim() : "";
     const imageUrls = Array.isArray(payload.imageUrls) ? payload.imageUrls : [];
 
-    if ((!trimmedMessage && imageUrls.length === 0) || !room?.roomId || !currentMemberId || isSending) {
+    if (
+      (!trimmedMessage && imageUrls.length === 0) ||
+      !room?.roomId ||
+      !currentMemberId ||
+      isSending
+    ) {
       return;
     }
 
@@ -207,19 +228,23 @@ export function GroupRoomOverlay({
         return false;
       }
 
-      const pendingMessage = normalizeGroupMessage({
-        messageId: `pending-${Date.now()}`,
-        roomId: room.roomId,
-        senderId: currentMemberId,
-        senderName: currentMember?.memberName || currentMember?.nickname || "나",
-        profileImageUrl: currentMember?.profileImageUrl || "",
-        content,
-        createdAt: new Date().toISOString(),
-        readCount: 0,
-        unreadCount: 0,
-        eventType: "",
-        isPending: true,
-      }, groupMessageTimeCacheRef.current);
+      const pendingMessage = normalizeGroupMessage(
+        {
+          messageId: `pending-${Date.now()}`,
+          roomId: room.roomId,
+          senderId: currentMemberId,
+          senderName:
+            currentMember?.memberName || currentMember?.nickname || "나",
+          profileImageUrl: currentMember?.profileImageUrl || "",
+          content,
+          createdAt: new Date().toISOString(),
+          readCount: 0,
+          unreadCount: 0,
+          eventType: "",
+          isPending: true,
+        },
+        groupMessageTimeCacheRef.current,
+      );
 
       setMessages((previousMessages) => [...previousMessages, pendingMessage]);
 
@@ -229,19 +254,25 @@ export function GroupRoomOverlay({
       });
 
       if (!published) {
-        const response = await axios.post(`${API_BASE}/api/chat/rooms/${room.roomId}/messages`, {
-          senderId: currentMemberId,
-          content,
-        });
+        const response = await axios.post(
+          `${API_BASE}/chat/rooms/${room.roomId}/messages`,
+          {
+            senderId: currentMemberId,
+            content,
+          },
+        );
 
-        const savedMessage = normalizeGroupMessage(response.data, groupMessageTimeCacheRef.current);
+        const savedMessage = normalizeGroupMessage(
+          response.data,
+          groupMessageTimeCacheRef.current,
+        );
         setMessages((previousMessages) => {
-            const pendingIndex = previousMessages.findIndex(
-              (item) =>
-                item.isPending &&
-                Number(item.senderId) === Number(savedMessage.senderId) &&
-                item.rawContent === savedMessage.rawContent,
-            );
+          const pendingIndex = previousMessages.findIndex(
+            (item) =>
+              item.isPending &&
+              Number(item.senderId) === Number(savedMessage.senderId) &&
+              item.rawContent === savedMessage.rawContent,
+          );
 
           if (pendingIndex >= 0) {
             const nextMessages = [...previousMessages];
@@ -272,10 +303,15 @@ export function GroupRoomOverlay({
     }
 
     try {
-      await deleteGroupChatMessage(room.roomId, item.messageId, currentMemberId);
+      await deleteGroupChatMessage(
+        room.roomId,
+        item.messageId,
+        currentMemberId,
+      );
       setMessages((previousMessages) =>
         previousMessages.filter(
-          (messageItem) => Number(messageItem.messageId) !== Number(item.messageId),
+          (messageItem) =>
+            Number(messageItem.messageId) !== Number(item.messageId),
         ),
       );
     } catch (error) {
@@ -328,7 +364,9 @@ export function GroupRoomOverlay({
         onProfileClick={onProfileClick}
         onBack={onClose}
       />
-      {isLoadingMessages ? <p className="moodchat-overlayStatus">메시지를 불러오는 중...</p> : null}
+      {isLoadingMessages ? (
+        <p className="moodchat-overlayStatus">메시지를 불러오는 중...</p>
+      ) : null}
     </>
   );
 }

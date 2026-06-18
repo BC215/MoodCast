@@ -5,7 +5,10 @@ import { DesktopShell } from "../../components/layout/DesktopShell";
 import { MobileShell } from "../../components/layout/MobileShell";
 import { useAuthStore } from "../../stores/useAuthStore";
 import { useIsDesktop } from "../../hooks/useViewportWidth";
-import { parseChatContent, serializeChatContent } from "../../shared/lib/chatContent";
+import {
+  parseChatContent,
+  serializeChatContent,
+} from "../../shared/lib/chatContent";
 import {
   createGroupChatRoom,
   deleteGroupChatMessage,
@@ -30,7 +33,10 @@ const API_BASE = import.meta.env.VITE_BACKSERVER || "/api";
 function GroupChatBody({ desktop, onRoomOpenChange }) {
   const { member, accessToken } = useAuthStore();
   const navigate = useNavigate();
-  const currentMemberId = useMemo(() => Number(member?.memberId) || null, [member?.memberId]);
+  const currentMemberId = useMemo(
+    () => Number(member?.memberId) || null,
+    [member?.memberId],
+  );
   const messageInputRef = useRef(null);
   const groupMessageTimeCacheRef = useRef(new Map());
   const [rooms, setRooms] = useState([]);
@@ -98,7 +104,9 @@ function GroupChatBody({ desktop, onRoomOpenChange }) {
               return previousRoom;
             }
 
-            const isActive = activeRoom?.roomId && Number(activeRoom.roomId) === Number(nextRoom.roomId);
+            const isActive =
+              activeRoom?.roomId &&
+              Number(activeRoom.roomId) === Number(nextRoom.roomId);
 
             return {
               ...previousRoom,
@@ -169,16 +177,22 @@ function GroupChatBody({ desktop, onRoomOpenChange }) {
       const deletedMessageId = Number(payload?.messageId ?? payload?.id);
 
       setMessages((previousMessages) =>
-        previousMessages.filter((message) => Number(message.messageId) !== deletedMessageId),
+        previousMessages.filter(
+          (message) => Number(message.messageId) !== deletedMessageId,
+        ),
       );
       refreshRooms();
       return;
     }
 
-    const normalized = normalizeMessage(payload, groupMessageTimeCacheRef.current);
+    const normalized = normalizeMessage(
+      payload,
+      groupMessageTimeCacheRef.current,
+    );
     const isSystemMessage = normalized.eventType === "CHAT_SYSTEM";
     const shouldRefreshRooms =
-      isSystemMessage || Number(activeRoom?.roomId) !== Number(normalized.roomId);
+      isSystemMessage ||
+      Number(activeRoom?.roomId) !== Number(normalized.roomId);
 
     setRooms((previousRooms) =>
       previousRooms.map((room) =>
@@ -216,7 +230,8 @@ function GroupChatBody({ desktop, onRoomOpenChange }) {
 
       if (
         previousMessages.some(
-          (message) => Number(message.messageId) === Number(normalized.messageId),
+          (message) =>
+            Number(message.messageId) === Number(normalized.messageId),
         )
       ) {
         return previousMessages;
@@ -226,7 +241,9 @@ function GroupChatBody({ desktop, onRoomOpenChange }) {
     });
 
     if (currentMemberId && Number(normalized.senderId) !== currentMemberId) {
-      syncRoomReadState(normalized.roomId, normalized.messageId).catch(() => {});
+      syncRoomReadState(normalized.roomId, normalized.messageId).catch(
+        () => {},
+      );
     }
   };
 
@@ -236,9 +253,13 @@ function GroupChatBody({ desktop, onRoomOpenChange }) {
     }
 
     const numericLastReadMessageId = Number(lastReadMessageId);
-    const hasMessageId = Number.isFinite(numericLastReadMessageId) && numericLastReadMessageId > 0;
+    const hasMessageId =
+      Number.isFinite(numericLastReadMessageId) && numericLastReadMessageId > 0;
 
-    if (hasMessageId && lastSentReadMessageIdRef.current >= numericLastReadMessageId) {
+    if (
+      hasMessageId &&
+      lastSentReadMessageIdRef.current >= numericLastReadMessageId
+    ) {
       return;
     }
 
@@ -329,7 +350,9 @@ function GroupChatBody({ desktop, onRoomOpenChange }) {
       await refreshRooms();
     } catch (requestError) {
       console.error("Group room creation failed", requestError);
-      setError(requestError.response?.data?.message || "Unable to create room.");
+      setError(
+        requestError.response?.data?.message || "Unable to create room.",
+      );
     }
   };
 
@@ -338,12 +361,15 @@ function GroupChatBody({ desktop, onRoomOpenChange }) {
       return;
     }
 
-    const memberIds = Number.isFinite(Number(targetMemberId)) && Number(targetMemberId) > 0
-      ? [Number(targetMemberId)]
-      : null;
+    const memberIds =
+      Number.isFinite(Number(targetMemberId)) && Number(targetMemberId) > 0
+        ? [Number(targetMemberId)]
+        : null;
 
     if (!memberIds) {
-      const invitedIds = window.prompt("Enter memberId values separated by commas.");
+      const invitedIds = window.prompt(
+        "Enter memberId values separated by commas.",
+      );
       if (!invitedIds) {
         return;
       }
@@ -358,12 +384,16 @@ function GroupChatBody({ desktop, onRoomOpenChange }) {
       }
 
       try {
-        await inviteGroupChatMembers(activeRoom.roomId, { memberIds: parsedMemberIds });
+        await inviteGroupChatMembers(activeRoom.roomId, {
+          memberIds: parsedMemberIds,
+        });
         await refreshRooms();
         return;
       } catch (requestError) {
         console.error("Group invite failed", requestError);
-        setError(requestError.response?.data?.message || "Unable to invite members.");
+        setError(
+          requestError.response?.data?.message || "Unable to invite members.",
+        );
         return;
       }
     }
@@ -373,7 +403,9 @@ function GroupChatBody({ desktop, onRoomOpenChange }) {
       await refreshRooms();
     } catch (requestError) {
       console.error("Group invite failed", requestError);
-      setError(requestError.response?.data?.message || "Unable to invite members.");
+      setError(
+        requestError.response?.data?.message || "Unable to invite members.",
+      );
     }
   };
 
@@ -401,8 +433,11 @@ function GroupChatBody({ desktop, onRoomOpenChange }) {
   };
 
   const handleSubmitMessage = async (payload = {}) => {
-    const trimmedValue = typeof payload?.text === "string" ? payload.text.trim() : "";
-    const imageUrls = Array.isArray(payload?.imageUrls) ? payload.imageUrls : [];
+    const trimmedValue =
+      typeof payload?.text === "string" ? payload.text.trim() : "";
+    const imageUrls = Array.isArray(payload?.imageUrls)
+      ? payload.imageUrls
+      : [];
 
     if (
       (!trimmedValue && imageUrls.length === 0) ||
@@ -447,12 +482,18 @@ function GroupChatBody({ desktop, onRoomOpenChange }) {
       });
 
       if (!published) {
-        const response = await axios.post(`${API_BASE}/api/chat/rooms/${activeRoom.roomId}/messages`, {
-          senderId: currentMemberId,
-          content,
-        });
+        const response = await axios.post(
+          `${API_BASE}/chat/rooms/${activeRoom.roomId}/messages`,
+          {
+            senderId: currentMemberId,
+            content,
+          },
+        );
 
-        const savedMessage = normalizeMessage(response.data, groupMessageTimeCacheRef.current);
+        const savedMessage = normalizeMessage(
+          response.data,
+          groupMessageTimeCacheRef.current,
+        );
         setMessages((previousMessages) => {
           const pendingIndex = previousMessages.findIndex(
             (message) =>
@@ -477,7 +518,9 @@ function GroupChatBody({ desktop, onRoomOpenChange }) {
       return true;
     } catch (requestError) {
       console.error("Group message send failed", requestError);
-      setError(requestError.response?.data?.message || "Unable to send message.");
+      setError(
+        requestError.response?.data?.message || "Unable to send message.",
+      );
       return false;
     } finally {
       setIsSending(false);
@@ -490,10 +533,16 @@ function GroupChatBody({ desktop, onRoomOpenChange }) {
     }
 
     try {
-      await deleteGroupChatMessage(activeRoom.roomId, item.messageId, currentMemberId);
+      await deleteGroupChatMessage(
+        activeRoom.roomId,
+        item.messageId,
+        currentMemberId,
+      );
     } catch (requestError) {
       console.error("Group message delete failed", requestError);
-      setError(requestError.response?.data?.message || "메시지를 삭제하지 못했습니다.");
+      setError(
+        requestError.response?.data?.message || "메시지를 삭제하지 못했습니다.",
+      );
     }
   };
 
@@ -510,8 +559,12 @@ function GroupChatBody({ desktop, onRoomOpenChange }) {
       roomDescription={roomDescription}
       invitedMemberIds={invitedMemberIds}
       onRoomNameChange={(event) => setRoomName(event.target.value)}
-      onRoomDescriptionChange={(event) => setRoomDescription(event.target.value)}
-      onInvitedMemberIdsChange={(event) => setInvitedMemberIds(event.target.value)}
+      onRoomDescriptionChange={(event) =>
+        setRoomDescription(event.target.value)
+      }
+      onInvitedMemberIdsChange={(event) =>
+        setInvitedMemberIds(event.target.value)
+      }
       onCreateRoom={createRoom}
       onSelectRoom={openRoom}
     />
@@ -569,7 +622,12 @@ export function GroupChatPage() {
 
   if (!desktop) {
     return (
-      <MobileShell title="Group Chat" hideSearch fixedContent hideBottomNav={false}>
+      <MobileShell
+        title="Group Chat"
+        hideSearch
+        fixedContent
+        hideBottomNav={false}
+      >
         <GroupChatBody desktop={false} />
       </MobileShell>
     );

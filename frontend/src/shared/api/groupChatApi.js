@@ -17,18 +17,17 @@ async function requestWithFallback(primaryRequest, fallbackRequest) {
 export function fetchGroupChatRooms(memberId) {
   return requestWithFallback(
     () =>
-      axios.get(`${API_BASE}/api/chat/rooms`, {
+      axios.get(`${API_BASE}/chat/rooms`, {
         params: { memberId },
       }),
-    () =>
-      axios.get(`${API_BASE}/chat/rooms/member/${memberId}`),
+    () => axios.get(`${API_BASE}/chat/rooms/member/${memberId}`),
   ).catch(() => ({ data: [] }));
 }
 
 export function fetchGroupChatMessages(roomId, memberId) {
   return requestWithFallback(
     () =>
-      axios.get(`${API_BASE}/api/chat/rooms/${roomId}/messages`, {
+      axios.get(`${API_BASE}/chat/rooms/${roomId}/messages`, {
         params: memberId ? { memberId } : undefined,
       }),
     () =>
@@ -40,21 +39,21 @@ export function fetchGroupChatMessages(roomId, memberId) {
 
 export function createGroupChatRoom(payload) {
   return requestWithFallback(
-    () => axios.post(`${API_BASE}/api/chat/rooms`, payload),
+    () => axios.post(`${API_BASE}/chat/rooms`, payload),
     () => axios.post(`${API_BASE}/chat/rooms`, payload),
   );
 }
 
 export function inviteGroupChatMembers(roomId, payload) {
   return requestWithFallback(
-    () => axios.post(`${API_BASE}/api/chat/rooms/${roomId}/members`, payload),
+    () => axios.post(`${API_BASE}/chat/rooms/${roomId}/members`, payload),
     () => axios.post(`${API_BASE}/chat/rooms/${roomId}/members`, payload),
   );
 }
 
 export function fetchGroupChatMembers(roomId) {
   return requestWithFallback(
-    () => axios.get(`${API_BASE}/api/chat/rooms/${roomId}/members`),
+    () => axios.get(`${API_BASE}/chat/rooms/${roomId}/members`),
     () => axios.get(`${API_BASE}/chat/rooms/${roomId}/members`),
   ).catch(() => ({ data: [] }));
 }
@@ -62,29 +61,27 @@ export function fetchGroupChatMembers(roomId) {
 export function leaveGroupChatRoom(roomId, memberId) {
   return requestWithFallback(
     () =>
-      axios.delete(`${API_BASE}/api/chat/rooms/${roomId}/leave`, {
+      axios.delete(`${API_BASE}/chat/rooms/${roomId}/leave`, {
         params: { memberId },
       }),
-    () =>
-      axios.delete(`${API_BASE}/chat/rooms/${roomId}/members/${memberId}`),
+    () => axios.delete(`${API_BASE}/chat/rooms/${roomId}/members/${memberId}`),
   );
 }
 
 export function hideGroupChatRoom(roomId, memberId) {
   return requestWithFallback(
     () =>
-      axios.delete(`${API_BASE}/api/chat/rooms/${roomId}/hide`, {
+      axios.delete(`${API_BASE}/chat/rooms/${roomId}/hide`, {
         params: { memberId },
       }),
-    () =>
-      axios.delete(`${API_BASE}/chat/rooms/${roomId}/members/${memberId}`),
+    () => axios.delete(`${API_BASE}/chat/rooms/${roomId}/members/${memberId}`),
   );
 }
 
 export function markGroupChatRoomAsRead(roomId, memberId) {
   return requestWithFallback(
     () =>
-      axios.post(`${API_BASE}/api/chat/rooms/${roomId}/read`, null, {
+      axios.post(`${API_BASE}/chat/rooms/${roomId}/read`, null, {
         params: memberId ? { memberId } : undefined,
       }),
     () =>
@@ -96,7 +93,7 @@ export function markGroupChatRoomAsRead(roomId, memberId) {
 
 export function updateGroupChatRoomRead(roomId, payload) {
   return requestWithFallback(
-    () => axios.patch(`${API_BASE}/api/chat/rooms/${roomId}/read`, payload),
+    () => axios.patch(`${API_BASE}/chat/rooms/${roomId}/read`, payload),
     () => axios.patch(`${API_BASE}/chat/rooms/${roomId}/read`, payload),
   ).catch(() => ({}));
 }
@@ -104,7 +101,7 @@ export function updateGroupChatRoomRead(roomId, payload) {
 export function deleteGroupChatMessage(roomId, messageId, memberId) {
   return requestWithFallback(
     () =>
-      axios.delete(`${API_BASE}/api/chat/rooms/${roomId}/messages/${messageId}`, {
+      axios.delete(`${API_BASE}/chat/rooms/${roomId}/messages/${messageId}`, {
         params: { memberId },
       }),
     () =>
