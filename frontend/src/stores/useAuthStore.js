@@ -58,7 +58,8 @@ export const useAuthStore = create((set) => ({
 
     const memberData = response.data?.member || response.data;
 
-    if (token) {
+    // 🚨 방어 코드: token이 존재하되, 문자열 "undefined"나 "null"이 아닐 때만 저장합니다.
+    if (token && token !== "undefined" && token !== "null") {
       useAuthStore.getState().setAuthData(token, memberData);
       return true; // 로그인/토큰 저장 성공
     }

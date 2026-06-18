@@ -28,7 +28,7 @@ apiClient.interceptors.request.use(
     // Zustand 상태를 거치지 않고, 브라우저의 sessionStorage에서 직접 토큰을 꺼냅니다.
     let token = window.sessionStorage.getItem("moodcast-access-token");
 
-    if (token) {
+    if (token && token !== "undefined" && token !== "null") {
       token = token.replace(/^"|"$/g, ""); // 🚨 불필요한 앞뒤 따옴표 완벽 제거
       config.headers = config.headers || {};
       config.headers["Authorization"] = `Bearer ${token}`;
@@ -77,9 +77,8 @@ apiClient.interceptors.response.use(
           "토큰 갱신 실패. 강제 로그아웃 처리됩니다.",
           refreshError,
         );
-        // 스토리지 완전 폭파
-        window.sessionStorage.removeItem("moodcast-access-token");
-        window.sessionStorage.removeItem("moodcast-member");
+        // 🚨 스토리지 완전 폭파 (clear)
+        window.sessionStorage.clear();
         try {
           if (typeof useAuthStore.getState().clearAuthData === "function") {
             useAuthStore.getState().clearAuthData();
@@ -94,8 +93,7 @@ apiClient.interceptors.response.use(
       // 리프레시를 시도할 수 없는 조건의 401/403 에러일 때 즉각 폭파 및 리다이렉트
       const requestUrl = error.config?.url || "";
       if (!requestUrl.includes("/auth/login")) {
-        window.sessionStorage.removeItem("moodcast-access-token");
-        window.sessionStorage.removeItem("moodcast-member");
+        window.sessionStorage.clear(); // 🚨 스토리지 완전 폭파
         try {
           if (typeof useAuthStore.getState().clearAuthData === "function") {
             useAuthStore.getState().clearAuthData();
