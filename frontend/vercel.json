@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/ws-chat/(.*)",
+      "destination": "http://13.209.103.106:8080/ws-chat/$1"
+    },
+    {
       "source": "/api/:path*",
       "destination": "http://13.209.103.106:8080/:path*"
     },
