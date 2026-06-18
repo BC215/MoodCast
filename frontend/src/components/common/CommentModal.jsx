@@ -12,8 +12,8 @@ import ReplyIcon from "@mui/icons-material/Reply";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useAuthStore } from "../../stores/useAuthStore";
+import { apiClient } from "../../shared/api/client";
 import { defaultAvatarSrc } from "../../shared/lib/defaultAvatar";
 import { fetchMentionCandidates } from "../../shared/api/followApi";
 import { RichTextContent } from "../../shared/ui/rich-text/RichTextContent";
@@ -37,8 +37,6 @@ export function CommentModal({
 }) {
   const navigate = useNavigate();
   const { member, accessToken } = useAuthStore();
-  const BACKSERVER =
-    import.meta.env.VITE_BACKSERVER ?? "http://localhost:8080/api";
   const [comment, setComment] = useState("");
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
@@ -86,9 +84,7 @@ export function CommentModal({
 
     const loadComments = async () => {
       try {
-        const response = await axios.get(
-          `${BACKSERVER}/posts/${post.postId}/comments`,
-        );
+        const response = await apiClient.get(`/posts/${post.postId}/comments`);
         const items = response.data?.results || [];
         if (!active) return;
 
@@ -119,7 +115,7 @@ export function CommentModal({
     return () => {
       active = false;
     };
-  }, [BACKSERVER, open, post?.postId]);
+  }, [open, post?.postId]);
 
   useEffect(() => {
     const collectExpandableIds = (items, ids = []) => {
@@ -356,13 +352,9 @@ export function CommentModal({
   const handleEditSave = async (commentId) => {
     if (!editText.trim()) return;
     try {
-      await axios.put(
-        `${BACKSERVER}/posts/comments/${commentId}`,
-        { content: editText.trim() },
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        },
-      );
+      await apiClient.put(`/posts/comments/${commentId}`, {
+        content: editText.trim(),
+      });
       const updateContent = (comments) =>
         comments.map((c) => {
           if (c.commentId === commentId)
@@ -380,9 +372,7 @@ export function CommentModal({
   const handleDeleteComment = async (commentId) => {
     if (!window.confirm("댓글을 삭제하시겠습니까?")) return;
     try {
-      await axios.delete(`${BACKSERVER}/posts/comments/${commentId}`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
+      await apiClient.delete(`/posts/comments/${commentId}`);
       const removeById = (list) =>
         list
           .filter((c) => c.commentId !== commentId)
@@ -418,15 +408,11 @@ export function CommentModal({
 
     submittingRef.current = true;
     try {
-      const res = await axios.post(
-        `${BACKSERVER}/posts/${post.postId}/comments`,
-        {
-          content: replyText.trim(),
-          parentCommentId,
-          mentions: replyMentions,
-        },
-        { headers: { Authorization: `Bearer ${accessToken}` } },
-      );
+      const res = await apiClient.post(`/posts/${post.postId}/comments`, {
+        content: replyText.trim(),
+        parentCommentId,
+        mentions: replyMentions,
+      });
       const newReply = res.data.comment;
       newReply.mentions = newReply.mentions ?? replyMentions;
       newReply.profileImageUrl =
@@ -472,11 +458,11 @@ export function CommentModal({
       return;
     }
     try {
-      await axios.post(
-        `${BACKSERVER}/reports`,
-        { commentId: reportingComment.commentId, reason },
-        { headers: { Authorization: `Bearer ${accessToken}` } },
-      );
+      await apiClient.post(`/reports`, {
+        commentId: reportingComment.commentId,
+        reason,
+      });
+
       setReportModalOpen(false);
       alert("댓글 신고가 정상적으로 접수되었습니다.");
     } catch (error) {

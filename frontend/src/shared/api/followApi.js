@@ -1,31 +1,27 @@
-import { normalizeMentionCandidate } from '../lib/mentionUtils';
+import { normalizeMentionCandidate } from "../lib/mentionUtils";
+import { apiClient } from "./client";
 
-const API_BASE = import.meta.env.VITE_BACKSERVER || 'http://localhost:8080';
-
-export async function fetchMentionCandidates(memberId, keyword = '') {
+export async function fetchMentionCandidates(memberId, keyword = "") {
   if (!memberId) {
     return [];
   }
-
   const params = new URLSearchParams();
-  params.set('memberId', String(memberId));
-  if (keyword && keyword.trim()) {
-    params.set('keyword', keyword.trim());
+  params.set("memberId", String(memberId));
+  if (keyword?.trim()) {
+    params.set("keyword", keyword.trim());
   }
 
-  const response = await fetch(`${API_BASE}/api/follows/mention-candidates?${params.toString()}`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-    },
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`멘션 후보 조회 실패: ${response.status}`);
+  try {
+    // apiClient의 baseURL에 '/api'가 포함되어 있으므로, 여기서는 '/api'를 제거합니다.
+    // Authorization 헤더는 apiClient의 인터셉터가 자동으로 처리합니다.
+    const response = await apiClient.get(`/follows/mention-candidates`, {
+      params,
+    });
+    return Array.isArray(response.data)
+      ? response.data.map(normalizeMentionCandidate)
+      : [];
+  } catch (error) {
+    console.error("멘션 후보 조회 실패:", error);
+    throw error;
   }
-
-  const data = await response.json();
-  const normalized = Array.isArray(data) ? data.map(normalizeMentionCandidate) : [];
-  return normalized;
 }

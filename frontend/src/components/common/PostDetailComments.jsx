@@ -5,9 +5,9 @@ import FlagIcon from "@mui/icons-material/Flag";
 import ReplyIcon from "@mui/icons-material/Reply";
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import { useEffect, useMemo, useRef, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../stores/useAuthStore";
+import { apiClient } from "../../shared/api/client";
 import { defaultAvatarSrc } from "../../shared/lib/defaultAvatar";
 import { fetchMentionCandidates } from "../../shared/api/followApi";
 import { RichTextContent } from "../../shared/ui/rich-text/RichTextContent";
@@ -47,8 +47,6 @@ export function PostDetailComments({
 }) {
   const navigate = useNavigate();
   const { member, accessToken } = useAuthStore();
-  const BACKSERVER =
-    import.meta.env.VITE_BACKSERVER ?? "http://localhost:8080/api";
   const [comment, setComment] = useState("");
   const [localComments, setLocalComments] = useState([]);
   const [menuOpenId, setMenuOpenId] = useState(null);
@@ -93,9 +91,7 @@ export function PostDetailComments({
     let active = true;
     const loadComments = async () => {
       try {
-        const response = await axios.get(
-          `${BACKSERVER}/posts/${postId}/comments`,
-        );
+        const response = await apiClient.get(`/posts/${postId}/comments`);
         const items = response.data?.results || [];
         if (!active) return;
 
@@ -113,7 +109,7 @@ export function PostDetailComments({
     return () => {
       active = false;
     };
-  }, [BACKSERVER, member, postId]);
+  }, [member, postId]);
 
   useEffect(() => {
     const collectExpandableIds = (items, ids = []) => {
@@ -377,11 +373,9 @@ export function PostDetailComments({
     if (!editText.trim()) return;
 
     try {
-      await axios.put(
-        `${BACKSERVER}/posts/comments/${commentId}`,
-        { content: editText.trim() },
-        { headers: { Authorization: `Bearer ${accessToken}` } },
-      );
+      await apiClient.put(`/posts/comments/${commentId}`, {
+        content: editText.trim(),
+      });
 
       setLocalComments((prev) =>
         updateCommentContent(prev, commentId, editText.trim()),
@@ -404,9 +398,7 @@ export function PostDetailComments({
     if (!window.confirm("댓글을 삭제하시겠습니까?")) return;
 
     try {
-      await axios.delete(`${BACKSERVER}/posts/comments/${commentId}`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
+      await apiClient.delete(`/posts/comments/${commentId}`);
 
       setLocalComments((prev) => removeCommentById(prev, commentId));
       setMenuOpenId(null);
@@ -438,15 +430,11 @@ export function PostDetailComments({
 
     submittingRef.current = true;
     try {
-      const response = await axios.post(
-        `${BACKSERVER}/posts/${postId}/comments`,
-        {
-          content: replyText.trim(),
-          parentCommentId,
-          mentions: replyMentions,
-        },
-        { headers: { Authorization: `Bearer ${accessToken}` } },
-      );
+      const response = await apiClient.post(`/posts/${postId}/comments`, {
+        content: replyText.trim(),
+        parentCommentId,
+        mentions: replyMentions,
+      });
       const newReply = normalizeCommentItem(response.data.comment, member);
       newReply.mentions = response.data.comment?.mentions ?? replyMentions;
 
@@ -481,11 +469,11 @@ export function PostDetailComments({
       return;
     }
     try {
-      await axios.post(
-        `${BACKSERVER}/reports`,
-        { commentId: reportingComment.commentId, reason },
-        { headers: { Authorization: `Bearer ${accessToken}` } },
-      );
+      await apiClient.post(`/reports`, {
+        commentId: reportingComment.commentId,
+        reason,
+      });
+
       setReportModalOpen(false);
       alert("댓글 신고가 정상적으로 접수되었습니다.");
     } catch (error) {
@@ -513,11 +501,10 @@ export function PostDetailComments({
 
     submittingRef.current = true;
     try {
-      const response = await axios.post(
-        `${BACKSERVER}/posts/${postId}/comments`,
-        { content: value, mentions: commentMentions },
-        { headers: { Authorization: `Bearer ${accessToken}` } },
-      );
+      const response = await apiClient.post(`/posts/${postId}/comments`, {
+        content: value,
+        mentions: commentMentions,
+      });
 
       const nextComment = normalizeCommentItem(response.data.comment, member);
       nextComment.mentions = response.data.comment?.mentions ?? commentMentions;

@@ -1,10 +1,10 @@
-﻿﻿import axios from "axios";
-import { DesktopShell } from "../../components/layout/DesktopShell";
+﻿﻿import { DesktopShell } from "../../components/layout/DesktopShell";
 import { MobileShell } from "../../components/layout/MobileShell";
 import { useIsDesktop } from "../../hooks/useViewportWidth";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../stores/useAuthStore";
+import { apiClient } from "../../shared/api/client";
 import styles from "./CreatePostPage.module.css";
 import { uploadImage } from "../../shared/lib/uploadImage";
 import { fetchMentionCandidates } from "../../shared/api/followApi";
@@ -53,8 +53,6 @@ export function CreatePostPage() {
   const [mentions, setMentions] = useState([]);
   const mentionMode = mentionOpen;
   const { accessToken: token, member } = useAuthStore();
-  const BACKSERVER =
-    import.meta.env.VITE_BACKSERVER ?? "http://localhost:8080/api";
 
   const closeMentionBox = () => {
     setMentionKeyword("");
@@ -251,7 +249,7 @@ export function CreatePostPage() {
         mentions,
       };
 
-      await axios.post(`${BACKSERVER}/posts`, requestData, {
+      await apiClient.post(`/posts`, requestData, {
         headers: {
           Authorization: `Bearer ${effectiveToken}`,
         },
