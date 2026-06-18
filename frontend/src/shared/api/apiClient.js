@@ -10,6 +10,12 @@ let refreshPromise = null;
 
 axios.interceptors.request.use(
   (config) => {
+    // Vercel 환경에서 발생하는 /api/api/... 중복 경로 생성 방지 로직
+    // baseURL이 이미 /api로 설정되어 있으므로, url에 포함된 /api/는 제거합니다.
+    if (config.url && config.url.startsWith("/api/")) {
+      config.url = config.url.replace(/^\/api\//, "/");
+    }
+
     // 요청을 보낼 때마다 현재 저장된 토큰을 가져옴
     // 토큰이 있으면 Authorization 헤더에 붙여서 보냄
     const state = useAuthStore.getState ? useAuthStore.getState() : null;

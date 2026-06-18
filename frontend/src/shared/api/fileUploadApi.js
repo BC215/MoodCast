@@ -1,7 +1,5 @@
 import axios from "axios";
 
-const API_BASE = import.meta.env.VITE_BACKSERVER || "/api";
-
 export async function uploadChatImages(files) {
   if (!Array.isArray(files) || files.length === 0) {
     return [];
@@ -14,7 +12,7 @@ export async function uploadChatImages(files) {
   formData.append("folderType", "chat-images");
 
   try {
-    const response = await axios.post(`${API_BASE}/upload/batch`, formData);
+    const response = await axios.post(`/upload/batch`, formData); // baseURL이 자동 적용되므로 중복 경로 방지
     const uploadedFiles = Array.isArray(response.data) ? response.data : [];
     return uploadedFiles
       .map((item) => item?.url || item?.s3Url || item?.viewUrl || "")
