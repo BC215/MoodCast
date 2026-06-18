@@ -23,10 +23,7 @@ axios.interceptors.request.use(
       state?.accessToken ||
       window.sessionStorage.getItem("moodcast-access-token");
     if (token) {
-      config.headers = {
-        ...config.headers,
-        Authorization: `Bearer ${token}`,
-      };
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },

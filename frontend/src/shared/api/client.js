@@ -25,10 +25,13 @@ apiClient.interceptors.request.use(
       config.url = config.url.replace(/^\/api/, "");
     }
 
-    // Zustand 스토어에서 직접 상태를 가져옵니다. (컴포넌트 외부이므로 hook 사용 불가)
-    const { accessToken } = useAuthStore.getState();
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+    // Zustand 스토어와 sessionStorage 모두에서 토큰을 찾아봅니다.
+    const state = useAuthStore.getState();
+    const token =
+      state?.accessToken ||
+      window.sessionStorage.getItem("moodcast-access-token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },

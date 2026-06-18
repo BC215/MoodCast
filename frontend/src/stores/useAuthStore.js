@@ -45,6 +45,26 @@ export const useAuthStore = create((set) => ({
     });
   },
 
+  // 로그인 응답을 받아 헤더 또는 바디에서 토큰을 영리하게 추출하여 저장하는 헬퍼 함수
+  loginFromResponse: (response) => {
+    let token = response.data?.accessToken || response.data?.token;
+
+    // 헤더에서 추출 (대소문자 구분을 없애기 위해 toLowerCase 사용)
+    const authHeader =
+      response.headers?.authorization || response.headers?.Authorization;
+    if (authHeader && authHeader.toLowerCase().startsWith("bearer ")) {
+      token = authHeader.substring(7);
+    }
+
+    const memberData = response.data?.member || response.data;
+
+    if (token) {
+      useAuthStore.getState().setAuthData(token, memberData);
+      return true; // 로그인/토큰 저장 성공
+    }
+    return false; // 토큰 추출 실패
+  },
+
   // 로그아웃
   clearAuthData: () => {
     // 저장된 토큰과 회원 정보를 모두 삭제함
@@ -64,14 +84,18 @@ export const logoutAndRedirect = () => {
   // 인증 실패나 토큰 만료 시 호출됨
   // 회원 정보와 토큰을 모두 삭제하고 로그인 페이지로 이동함
   const store = useAuthStore.getState();
-  if (store && typeof store.clearAuthData === 'function') {
+  if (store && typeof store.clearAuthData === "function") {
     store.clearAuthData();
   } else {
     window.sessionStorage.removeItem(ACCESS_TOKEN_KEY);
     window.sessionStorage.removeItem(MEMBER_KEY);
-    useAuthStore.setState({ accessToken: null, member: null, isLoggedIn: false });
+    useAuthStore.setState({
+      accessToken: null,
+      member: null,
+      isLoggedIn: false,
+    });
   }
-  if (typeof window !== 'undefined') {
-    window.location.replace('/auth/login');
+  if (typeof window !== "undefined") {
+    window.location.replace("/auth/login");
   }
 };
