@@ -44,21 +44,20 @@ export function normalizeBackendUrl(
     }
 
     if (url.startsWith("http://") || url.startsWith("https://")) {
-      try {
-        const parsed = new URL(url);
-        const absoluteLegacyMatch =
-          parsed.pathname.match(/^\/uploads\/([^/]+)$/i);
-        if (absoluteLegacyMatch) {
-          return (
-            buildPublicS3Url(`${legacyFolderType}/${absoluteLegacyMatch[1]}`) ||
-            buildLegacyViewUrl(
-              absoluteLegacyMatch[1],
-              legacyFolderType,
-              backserver,
-            )
-          );
-        }
-      } catch (error) {}
+      // new URL() 사용으로 인한 Invalid URL 크래시 예방을 위해 정규식으로 안전하게 파싱합니다.
+      const urlWithoutQuery = url.split("?")[0];
+      const absoluteLegacyMatch =
+        urlWithoutQuery.match(/\/?uploads\/([^/]+)$/i);
+      if (absoluteLegacyMatch) {
+        return (
+          buildPublicS3Url(`${legacyFolderType}/${absoluteLegacyMatch[1]}`) ||
+          buildLegacyViewUrl(
+            absoluteLegacyMatch[1],
+            legacyFolderType,
+            backserver,
+          )
+        );
+      }
     }
   }
 

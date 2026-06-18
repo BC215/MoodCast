@@ -112,7 +112,7 @@ export function SearchModal({ open, onClose }) {
         setLoadingTrendingData(false);
         setLoadingTrending(false);
       });
-  }, [open, query, BACKSERVER, token]);
+  }, [open, query, token]);
 
   useEffect(() => {
     if (!open) return undefined;
