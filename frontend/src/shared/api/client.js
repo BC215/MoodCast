@@ -26,9 +26,10 @@ apiClient.interceptors.request.use(
     }
 
     // Zustand 상태를 거치지 않고, 브라우저의 sessionStorage에서 직접 토큰을 꺼냅니다.
-    const token = window.sessionStorage.getItem("moodcast-access-token");
+    let token = window.sessionStorage.getItem("moodcast-access-token");
 
     if (token) {
+      token = token.replace(/^"|"$/g, ""); // 🚨 불필요한 앞뒤 따옴표 완벽 제거
       config.headers = config.headers || {};
       config.headers["Authorization"] = `Bearer ${token}`;
     }
@@ -76,7 +77,33 @@ apiClient.interceptors.response.use(
           "토큰 갱신 실패. 강제 로그아웃 처리됩니다.",
           refreshError,
         );
+        // 스토리지 완전 폭파
+        window.sessionStorage.removeItem("moodcast-access-token");
+        window.sessionStorage.removeItem("moodcast-member");
+        try {
+          if (typeof useAuthStore.getState().clearAuthData === "function") {
+            useAuthStore.getState().clearAuthData();
+          }
+        } catch (e) {}
         logoutAndRedirect();
+      }
+    } else if (
+      error.response &&
+      (error.response.status === 401 || error.response.status === 403)
+    ) {
+      // 리프레시를 시도할 수 없는 조건의 401/403 에러일 때 즉각 폭파 및 리다이렉트
+      const requestUrl = error.config?.url || "";
+      if (!requestUrl.includes("/auth/login")) {
+        window.sessionStorage.removeItem("moodcast-access-token");
+        window.sessionStorage.removeItem("moodcast-member");
+        try {
+          if (typeof useAuthStore.getState().clearAuthData === "function") {
+            useAuthStore.getState().clearAuthData();
+          }
+        } catch (e) {}
+        if (typeof window !== "undefined") {
+          window.location.replace("/auth/login");
+        }
       }
     }
     return Promise.reject(error);
