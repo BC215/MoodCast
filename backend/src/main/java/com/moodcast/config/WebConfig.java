@@ -24,11 +24,13 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:5173",
                                 "http://127.0.0.1:5173",
                                 "http://3.39.49.9:5173",
-                        "http://moodcast-frontend-s3-qqqq.s3-website.ap-northeast-2.amazonaws.com",
-                        "https://mood-cast-sooty.vercel.app")
+                                "http://moodcast-frontend-s3-qqqq.s3-website.ap-northeast-2.amazonaws.com",
+                                "https://mood-cast-sooty.vercel.app")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true);
+                .allowedHeaders("Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin", "Cookie", "Set-Cookie")
+                .exposedHeaders("Authorization", "Set-Cookie", "Location")
+                .allowCredentials(true)
+                .maxAge(3600);
     }
 
     @Override
