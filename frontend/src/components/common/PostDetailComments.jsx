@@ -1,4 +1,4 @@
-﻿import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+﻿﻿import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import FlagIcon from "@mui/icons-material/Flag";
@@ -47,7 +47,8 @@ export function PostDetailComments({
 }) {
   const navigate = useNavigate();
   const { member, accessToken } = useAuthStore();
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+  const BACKSERVER =
+    import.meta.env.VITE_BACKSERVER ?? "http://localhost:8080/api";
   const [comment, setComment] = useState("");
   const [localComments, setLocalComments] = useState([]);
   const [menuOpenId, setMenuOpenId] = useState(null);

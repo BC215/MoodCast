@@ -1,4 +1,4 @@
-﻿import CloseIcon from "@mui/icons-material/Close";
+﻿﻿import CloseIcon from "@mui/icons-material/Close";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
@@ -37,7 +37,8 @@ export function CommentModal({
 }) {
   const navigate = useNavigate();
   const { member, accessToken } = useAuthStore();
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+  const BACKSERVER =
+    import.meta.env.VITE_BACKSERVER ?? "http://localhost:8080/api";
   const [comment, setComment] = useState("");
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);

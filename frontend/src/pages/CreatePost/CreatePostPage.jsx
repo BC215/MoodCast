@@ -1,4 +1,4 @@
-﻿import axios from "axios";
+﻿﻿import axios from "axios";
 import { DesktopShell } from "../../components/layout/DesktopShell";
 import { MobileShell } from "../../components/layout/MobileShell";
 import { useIsDesktop } from "../../hooks/useViewportWidth";
@@ -53,7 +53,8 @@ export function CreatePostPage() {
   const [mentions, setMentions] = useState([]);
   const mentionMode = mentionOpen;
   const { accessToken: token, member } = useAuthStore();
-  const BACKSERVER = import.meta.env.VITE_BACKSERVER || "http://localhost:8080";
+  const BACKSERVER =
+    import.meta.env.VITE_BACKSERVER ?? "http://localhost:8080/api";
 
   const closeMentionBox = () => {
     setMentionKeyword("");
@@ -250,7 +251,7 @@ export function CreatePostPage() {
         mentions,
       };
 
-      await axios.post(`${BACKSERVER}/api/posts`, requestData, {
+      await axios.post(`${BACKSERVER}/posts`, requestData, {
         headers: {
           Authorization: `Bearer ${effectiveToken}`,
         },
