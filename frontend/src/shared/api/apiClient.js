@@ -50,8 +50,7 @@ axios.interceptors.response.use(
     if (!shouldTryRefresh) {
       // 🚨 재시도할 수 없는 401/403 에러인 경우 로컬 스토리지를 완전히 폭파시켜 무한 루프를 막습니다.
       if ((status === 401 || status === 403) && !isLoginRequest) {
-        window.sessionStorage.removeItem("moodcast-access-token");
-        window.sessionStorage.removeItem("moodcast-member");
+        window.sessionStorage.clear(); // 🚨 스토리지 전체 초기화 (찌꺼기 데이터 완전 제거)
         try {
           useAuthStore.setState({
             isLoggedIn: false,
@@ -98,8 +97,7 @@ axios.interceptors.response.use(
       return axios(originalRequest);
     } catch (refreshError) {
       // 🚨 토큰 갱신 실패 시에도 스토리지를 먼저 완전히 폭파시킵니다.
-      window.sessionStorage.removeItem("moodcast-access-token");
-      window.sessionStorage.removeItem("moodcast-member");
+      window.sessionStorage.clear();
       try {
         useAuthStore.setState({
           isLoggedIn: false,
