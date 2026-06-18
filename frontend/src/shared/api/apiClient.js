@@ -16,14 +16,12 @@ axios.interceptors.request.use(
       config.url = config.url.replace(/^\/api\//, "/");
     }
 
-    // 요청을 보낼 때마다 현재 저장된 토큰을 가져옴
-    // 토큰이 있으면 Authorization 헤더에 붙여서 보냄
-    const state = useAuthStore.getState ? useAuthStore.getState() : null;
-    const token =
-      state?.accessToken ||
-      window.sessionStorage.getItem("moodcast-access-token");
+    // Zustand 상태를 거치지 않고, 브라우저의 sessionStorage에서 직접 토큰을 꺼냅니다.
+    const token = window.sessionStorage.getItem("moodcast-access-token");
+
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers = config.headers || {};
+      config.headers["Authorization"] = `Bearer ${token}`;
     }
     return config;
   },

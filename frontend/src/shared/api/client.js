@@ -25,13 +25,12 @@ apiClient.interceptors.request.use(
       config.url = config.url.replace(/^\/api/, "");
     }
 
-    // Zustand 스토어와 sessionStorage 모두에서 토큰을 찾아봅니다.
-    const state = useAuthStore.getState();
-    const token =
-      state?.accessToken ||
-      window.sessionStorage.getItem("moodcast-access-token");
+    // Zustand 상태를 거치지 않고, 브라우저의 sessionStorage에서 직접 토큰을 꺼냅니다.
+    const token = window.sessionStorage.getItem("moodcast-access-token");
+
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers = config.headers || {};
+      config.headers["Authorization"] = `Bearer ${token}`;
     }
     return config;
   },
