@@ -6,7 +6,18 @@ services:
     ports:
       - "8080:8080"
     restart: always
+    depends_on:
+      - redis
     env_file:
       - .env
     environment:
       - TZ=Asia/Seoul
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+
+  redis:
+    image: redis:7-alpine
+    container_name: moodcast-redis
+    ports:
+      - "6380:6379"
+    restart: always

@@ -36,9 +36,9 @@ spring:
     name: moodcast-backend
   data:
     redis:
-      host: localhost # Docker 컨테이너가 로컬에서 실행 중이므로 localhost로 설정
-      port: 6380 # Docker 컨테이너의 포트 매핑에 따라 6380으로 설정
-      # password: ${REDIS_PASSWORD} # 로컬 Redis에 비밀번호가 없다면 주석 처리하거나 빈 값으로 둡니다.
+      host: ${REDIS_HOST:redis}
+      port: ${REDIS_PORT:6379}
+      # password: ${REDIS_PASSWORD:}
   datasource:
     # Supabase Pooler 사용 시 username은 반드시 postgres.[YOUR_PROJECT_REF_ID] 형식이어야 합니다.
     # DATABASE_USER 환경 변수에 해당 값을 설정하세요.
