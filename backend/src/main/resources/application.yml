@@ -38,7 +38,7 @@ spring:
     redis:
       host: ${REDIS_HOST:redis}
       port: ${REDIS_PORT:6379}
-      # password: ${REDIS_PASSWORD:}
+      # password: ${REDIS_PASSWORD:}x
   datasource:
     # Supabase Pooler 사용 시 username은 반드시 postgres.[YOUR_PROJECT_REF_ID] 형식이어야 합니다.
     # DATABASE_USER 환경 변수에 해당 값을 설정하세요.
